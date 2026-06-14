@@ -15,7 +15,8 @@
 - [MVP-v0 video demonstration](https://drive.google.com/file/d/14K1-BOBoNq8PByQC2vPfBQOLUVRdlA4M/view?usp=sharing)
 
 ### PR/MR templates
-Link to the minimal PR/MR template and reviewed PRs/MRs created during Week 2.
+- [Minimal PR/MR template](https://github.com/plaksiki/SU-Website/pull/5)
+- [Reviewed PRs/MRs created during week 2](https://github.com/plaksiki/SU-Website/pulls?q=is%3Apr+is%3Aclosed)
 
 ### Lychee Link Checking 
 - [Lychee Configuration](https://github.com/plaksiki/SU-Website/blob/main/.github/workflows/check-links.yml)
@@ -29,13 +30,16 @@ Link to the minimal PR/MR template and reviewed PRs/MRs created during Week 2.
 ### Week 2 Screenshots
 
 #### Protected default branch settings
+-[reports/week2/images/Default_Branch](https://github.com/plaksiki/SU-Website/tree/main/reports/week2/images/Default_Branch)
 
 #### Reviewed PR/MR examples
+- [reports/week2/images/PR_MR_example.png](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/images/PR_MR_example.png)
 
-#### Selected prototype
+#### Selected prototype and interface artifacts
+- [reports/week2/images/FigmaPrototype](https://github.com/plaksiki/SU-Website/tree/main/reports/week2/images/FigmaPrototype)
 
 #### Deployed MVP v0 or runnable artifact
-
+- [reports/week2/images/Deployed-MVP-v0](https://github.com/plaksiki/SU-Website/tree/main/reports/week2/images/Deployed-MVP-v0)
 
 ### Coverage
 
@@ -47,29 +51,29 @@ Link to the minimal PR/MR template and reviewed PRs/MRs created during Week 2.
 
 #### Prototype and interface artifacts
 - Figma mock serves as the prototype.
-  | Artifact | User story | Description |
-|--------------|--------------|---------------|
-| Events info | US-01 | Separate page with events "options" |
-| SU info | US-03 | Main page contains info about departments and SU members |
-| Donation | US-07 | Events conatins QR-code to donate |
-| Internship | US-08 | Form to fill for application |
+**Interface artifacts and corresponding user stories:**
+
+- **Events info (US-01)** — Separate page with events options
+- **SU info (US-03)** — Main page contains info about departments and SU members  
+- **Donation (US-07)** — Events page contains QR code to donate
+- **Internship (US-08)** — Form to fill for application
 
 #### MVP-v0 report
-[reports/week2/mvp-v0-report.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/mvp-v0-report.md)
+- [reports/week2/mvp-v0-report.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/mvp-v0-report.md)
 
 #### Stable IDs presented  by the MVP-v0
 - US-01: Events page
 - US-03: Short info about departments on the main page
 
 ### Customer notes
-[reports/week2/customer-meeting-transcript.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/customer-meeting-transcript.md)
+- [reports/week2/customer-meeting-transcript.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/customer-meeting-transcript.md)
     
 ### Customer meeting summary
-[reports/week2/customer-meeting-summary.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/customer-meeting-summary.md)
+- [reports/week2/customer-meeting-summary.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/customer-meeting-summary.md)
 
 ### Week 2 analysis
-[reports/week2/analysis.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/analysis.md)
+- [reports/week2/analysis.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/analysis.md)
 
 ### LLM usage report
-[reports/week2/llm-report.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/llm-report.md)
+- [reports/week2/llm-report.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/llm-report.md)
 
