@@ -4,7 +4,7 @@
 - **License:** [MIT License](https://github.com/plaksiki/SU-Website/blob/main/LICENSE)
 
 # User Stories
-- [reports/week2/user-stories.md]([user-stories.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/user-stories.md))
+- [reports/week2/user-stories.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/user-stories.md)
 
 # Prototype and Interface artifacts
 - [Selected prototype(Version 3)](https://www.figma.com/make/CDtZZDzx2q8IrtkngSSKSP/Student-Council-Website-Design?p=f&t=yEo00d2RFTiGB31K-0&preview-route=%2Fevents)
