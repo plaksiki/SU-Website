@@ -1,3 +1,3 @@
 # How AI were used:
-- LLM was used to generate website designs, create a website prototype in Figma, translate notes, and help with GitHub.
+- Gemini and Figma's agent were used to generate website designs and to сreate website prototype in Figma. Claude was also used to translate notes and describe what is required for some report writing parts. Deepseek was used as a GitHub navigator
 
