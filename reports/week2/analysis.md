@@ -17,6 +17,9 @@
 ## Needs clarification
 
 - Sorting by stream and dividing content by departments was discussed but no clear decision was made
+- The opinion of the second customer weren't obtained. Therefore questions about the user-stories and design should be discussed.
+- What backend functionality except for questionaries traverse should be implemented?
+- Brandbook of innopolis, as well as all info about the SU, departments and photos shall be asked from customers.
 
 ## Planned response
 

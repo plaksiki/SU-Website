@@ -29,7 +29,7 @@
 # Week 2 Screenshots
 
 ## Protected default branch settings
--[reports/week2/images/Default_Branch](https://github.com/plaksiki/SU-Website/tree/main/reports/week2/images/Default_Branch)
+- [reports/week2/images/Default_Branch](https://github.com/plaksiki/SU-Website/tree/main/reports/week2/images/Default_Branch)
 
 ## Reviewed PR/MR examples
 - [reports/week2/images/PR_MR_example.png](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/images/PR_MR_example.png)
