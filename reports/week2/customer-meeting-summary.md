@@ -19,6 +19,14 @@ All events should be displayed with a clear division into two categories: upcomi
 ### Design
 The Figma mockups are good, and the clients liked them. The overall design requirement is for a minimalist and simple solution.
 
-### Other
-Quick links are not needed, and no widgets or panels with quick links are required on the main page.
-In the first version (which is reflected in Figma), there was statistics at the beginning, and this feature can be retained. Additionally, the "Get Involved" section is not necessary in this version.
+### Other:
+- anonymous feedback is fine;
+- no open interships (meaning there is no button on the main page, it should be in events);
+- in the first version (in Figma), there was something about numbers at the beginning;
+- no 'Get Involved' section;
+- the designs in Figma are decent. Need something minimalist and simple.
+
+## What discussed:
+
+First of all we discussed User stories with our customers. Our member Sveta presented them in-order. Mainly, the customers accepted our stories, however we found disagreements in events feedback part.
+Second of all, we communicated about the prototypes we provided. All of them can be seen [here](https://drive.google.com/drive/folders/14sQZLLDMVjEZbN1p9fOVTFNBpgCKkwv-?usp=drive_link). We discussed every design one by one and concluded, that prototype 0 and 2 - are the best-looking for the customers, Svetlana and Daria was involved in such discussion. Other participant of the call were taking notes.
