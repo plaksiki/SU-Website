@@ -35,7 +35,7 @@ As a user, I want to open an event page, so that I can find all relevant details
 
 ### Notes and constraints
 
-
+However feedbsck for events won'tt be present.
 
 ## US-02: Managing questionnaires
 
