@@ -7,19 +7,19 @@
 - [reports/week2/user-stories.md]([user-stories.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/user-stories.md))
 
 ### Prototype and Interface artifacts
-[Selected prototype(Version 3)](https://www.figma.com/make/CDtZZDzx2q8IrtkngSSKSP/Student-Council-Website-Design?p=f&t=yEo00d2RFTiGB31K-0&preview-route=%2Fevents)
+- [Selected prototype(Version 3)](https://www.figma.com/make/CDtZZDzx2q8IrtkngSSKSP/Student-Council-Website-Design?p=f&t=yEo00d2RFTiGB31K-0&preview-route=%2Fevents)
 
 ### MVP-v0 Report
-[reports/week2/mvp-v0-report.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/mvp-v0-report.md)
-[Deployed MVP-v0](https://innopolissu.netlify.app/)
-[MVP-v0 video demonstration](https://drive.google.com/file/d/14K1-BOBoNq8PByQC2vPfBQOLUVRdlA4M/view?usp=sharing)
+- [reports/week2/mvp-v0-report.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/mvp-v0-report.md)
+- [Deployed MVP-v0](https://innopolissu.netlify.app/)
+- [MVP-v0 video demonstration](https://drive.google.com/file/d/14K1-BOBoNq8PByQC2vPfBQOLUVRdlA4M/view?usp=sharing)
 
 ### PR/MR templates
 Link to the minimal PR/MR template and reviewed PRs/MRs created during Week 2.
 
 ### Lychee Link Checking 
-[Lychee Configuration](https://github.com/plaksiki/SU-Website/blob/main/.github/workflows/check-links.yml)
-[Latest Successful Run (GitHub Actions Run #9)](https://github.com/plaksiki/SU-Website/actions/runs/27496832782)
+- [Lychee Configuration](https://github.com/plaksiki/SU-Website/blob/main/.github/workflows/check-links.yml)
+- [Latest Successful Run (GitHub Actions Run #9)](https://github.com/plaksiki/SU-Website/actions/runs/27496832782)
 
 ### Excluded Lychee Links and Manual Verification
   
