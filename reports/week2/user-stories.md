@@ -1,31 +1,3 @@
-!!!SAMPLE IF ACTIVE:
-## US-01: Short title
-
-**Requirement Status:** Active
-**MoSCoW priority:** Must Have
-
-As a [type of user / persona],
-I want to [perform a specific action],
-so that [I achieve a specific goal or value].
-
-### Notes and constraints
-
-Relevant notes, constraints, assumptions, or open questions.
-
-!!!SAMPLE IF REMOVED:
-## US-09: Short title
-
-**Requirement Status:** Removed
-**Previous MoSCoW priority:** Could Have
-
-As a [type of user / persona],
-I want to [perform a specific action],
-so that [I achieve a specific goal or value].
-
-**Reason:** Explain why the story was removed.
-
-----------------------------------------------------------------------
-
 ## US-01: Viewing event details
 
 **Requirement Status:** ACTIVE
@@ -35,7 +7,7 @@ As a user, I want to open an event page, so that I can find all relevant details
 
 ### Notes and constraints
 
-However feedbsck for events won'tt be present.
+However, feedback for events will not be present.
 
 ## US-02: Managing questionnaires
 
@@ -80,7 +52,6 @@ As an admin, I want to export questionnaire results to an .xlsx file, so that I 
 ### Notes and constraints
 
 
-
 ## US-06: Language selection
 
 **Requirement Status:** ACTIVE
@@ -97,11 +68,11 @@ The main language shall be English, and secondary - Russian.
 **Requirement Status:** ACTIVE
 **MoSCoW priority:** COULD have
 
-As a student, I want to find a QR code or a payment link on the website, so that I can financially support the Student Union.
+As a student, I want to find a payment link on the website, so that I can financially support the Student Union.
 
 ### Notes and constraints
 
-
+We will place QR-code which contains ways of donation.
 
 ## US-08: Applying for an internship
 
