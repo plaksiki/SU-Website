@@ -3,16 +3,23 @@ Website of the Innopolis University students union. This is the bussines card of
 
 ## Development Team
 
-| Role | Name | GitHub |
-| :--- | :--- | :--- | :--- |
-| **Product Owner** / Microservices Developer| Alina Petrova | [@bilidjinka](https://github.com/bilidjinka) |
-| **Scrum Master** / Backend | Daria Sevostianova | [@dashasevostianova](https://github.com/dashasevostianova) | 
-| **Developer** / Frontend | Bulat Shaikhutdinov | [@LoLiTop1gg](https://github.com/LoLiTop1gg) |
-| **Developer** / Database | Emil Gilfanov | [@EMIL2007da](https://github.com/EMIL2007da) |
-| **Developer** / Frontend | Kristina Butkina | [@smorodina2128506](https://github.com/smorodina2128506) |
-| **Developer** / Frontend | Svetlana Levagina | [@moddyl](https://github.com/moddyl) |
+- **Alina Petrova** — Product Owner / Microservices  
+  [GitHub](https://github.com/bilidjinka) · [al.petrova@innopolis.university](mailto:al.petrova@innopolis.university)
 
-- Team emails available upon request.
+- **Daria Sevostianova** — Scrum Master / Backend  
+  [GitHub](https://github.com/dashasevostianova) · [d.sevostianova@innopolis.university](mailto:d.sevostianova@innopolis.university)
+
+- **Bulat Shaikhutdinov** — Frontend  
+  [GitHub](https://github.com/LoLiTop1gg) · [b.shaikhutdinov@innopolis.university](mailto:b.shaikhutdinov@innopolis.university)
+
+- **Emil Gilfanov** — Database  
+  [GitHub](https://github.com/EMIL2007da) · [e.gilfanov@innopolis.university](mailto:e.gilfanov@innopolis.university)
+
+- **Kristina Butkina** — Frontend  
+  [GitHub](https://github.com/smorodina2128506) · [k.butkina@innopolis.university](mailto:k.butkina@innopolis.university)
+
+- **Svetlana Levagina** — Frontend  
+  [GitHub](https://github.com/moddyl) · [s.levagina@innopolis.university](mailto:s.levagina@innopolis.university)
 
 ## [MIT license](https://github.com/plaksiki/SU-Website/blob/main/LICENSE)
 
