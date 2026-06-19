@@ -1,5 +1,5 @@
 ## US-01: Viewing event details
-
+[#43] [Sprint 1 backlog]
 **Requirement Status:** ACTIVE
 **MoSCoW priority:** MUST Have
 
@@ -21,7 +21,7 @@ As an admin, I want to create and manage questionnaires, so that I can collect s
 Admin should not take a feedback to improve event quality. Feedback are reasonable to improve student life in campuses, university and so on.
 
 ## US-03: Viewing general information about SU
-
+[#44] [Sprint 1 backlog]
 **Requirement Status:** ACTIVE
 **MoSCoW priority:** MUST have
 
@@ -43,7 +43,7 @@ As a user, I want to leave feedback and comments about events, so that I can hel
 User should not give a feedback to improve event quality. Feedback are reasonable to improve student life in campuses, university and so on.
 
 ## US-05: Exporting questionnaire results
-
+[#45]
 **Requirement Status:** ACTIVE
 **MoSCoW priority:** SHOULD have
 
@@ -53,7 +53,7 @@ As an admin, I want to export questionnaire results to an .xlsx file, so that I 
 
 
 ## US-06: Language selection
-
+[#46] [Sprint 1 backlog]
 **Requirement Status:** ACTIVE
 **MoSCoW priority:** SHOULD have
 
@@ -64,7 +64,7 @@ As a student, I want to switch between Russian and English, so that I can read a
 The main language shall be English, and secondary - Russian.
 
 ## US-07: Making donations
-
+[#47] [Sprint 1 backlog]
 **Requirement Status:** ACTIVE
 **MoSCoW priority:** COULD have
 
@@ -75,7 +75,7 @@ As a student, I want to find a payment link on the website, so that I can financ
 We will place QR-code which contains ways of donation.
 
 ## US-08: Applying for an internship
-
+[#48] [Sprint 1 backlog]
 **Requirement Status:** ACTIVE
 **MoSCoW priority:** COULD have
 
