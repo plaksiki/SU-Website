@@ -1,0 +1,189 @@
+/*это тупо обнуление всех настроек, чтобы во всех браузерах были одинаковые условия открытия сайта*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f1f5f9;
+  color: #1e293b;
+}
+
+.navbar {
+  background-color: white;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-box {
+  background-color: #40ba21;
+  color: white;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.logo-text {
+  font-weight: bold;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  color: #40ba21;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px 20px;
+}
+
+.hero {
+  background-color: white;
+  border-radius: 24px;
+  padding: 60px;
+  margin-top: 20px;
+}
+
+.hero h1 {
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.green {
+  color: #40ba21;
+}
+
+.hero p {
+  color: #64748b;
+  font-size: 16px;
+  margin-bottom: 32px;
+}
+
+.btn {
+  display: inline-block;
+  background-color: #40ba21;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.section-title {
+  background-color: white;
+  border-radius: 8px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.section-title h2 {
+  font-size: 32px;
+  font-weight: 900;
+  color: #1e293b;
+}
+
+.section-title p{
+  color: #64748b;
+  margin-top: 8px;
+}
+
+.departments {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.dep-card {
+  background-color: white;
+  border-radius: 16px;
+  padding: 24px;
+  flex: 1;
+  min-width: 250px;
+  border: 1px solid #e2e8f0;
+}
+
+.dep-card h3 {
+  color: #40ba21;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.dep-card p {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.events-header {
+  background-color: white;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 20px 0;
+  max-width: 200px;
+}
+
+.events-list {
+  display: flex;
+  gap: 50px;
+  flex-wrap: wrap;
+}
+
+.event-card {
+  background-color: white;
+  border-radius: 16px;
+  padding: 24px;
+  flex: 1;
+  min-width: 250px;
+  border: 1px solid #e2e8f0;
+}
+
+.event-card h2 {
+  display: inline-block;
+  background-color: #40ba21 ;
+  color: white;
+  font-size: 20px;
+  margin-bottom: 8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.event-card p {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.event-card img {
+  width: 100%; /* ← занимает всю ширину карточки */
+  border-radius: 8px;
+}
