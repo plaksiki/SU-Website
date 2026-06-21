@@ -179,7 +179,7 @@ Reviewed issue-linked PRs/MRs created during Week 3 (#[PR/MR 3] - [Brief descrip
 
 **Deployment Link:** [SU-portal](http://10.93.26.192/)
 
-**Access/Run Instructions:** [DEPLOY.md]()
+**Access/Run Instructions:** [DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/week3-bilidjinka/DEPLOY.md)
 
 ---
 
@@ -207,7 +207,7 @@ Reviewed issue-linked PRs/MRs created during Week 3 (#[PR/MR 3] - [Brief descrip
 ![SemVer Release]()
 
 ### Delivered MVP v1
-![MVP v1 Delivery](https://github.com/plaksiki/SU-Website/tree/main/reports/week3/images/MVP-v1)
+[MVP v1 Delivery Scope](https://github.com/plaksiki/SU-Website/tree/main/reports/week3/images/MVP-v1)
 
 ### Example Reviewed Issue-Linked PR/MR
 ![Reviewed PR](https://github.com/plaksiki/SU-Website/blob/main/reports/week3/images/Reviewed-PR-MR-example.png)
