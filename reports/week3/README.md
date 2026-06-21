@@ -204,7 +204,7 @@ Reviewed issue-linked PRs/MRs created during Week 3 (#[PR/MR 3] - [Brief descrip
 ![MVP Version View](https://github.com/plaksiki/SU-Website/blob/main/reports/week3/images/MVP-v1_Milestone.png)
 
 ### SemVer Release
-![SemVer Release]()
+![SemVer Release](https://github.com/plaksiki/SU-Website/blob/main/reports/week3/images/SemVer_Release.png)
 
 ### Delivered MVP v1
 [MVP v1 Delivery Scope](https://github.com/plaksiki/SU-Website/tree/main/reports/week3/images/MVP-v1)
@@ -223,7 +223,7 @@ Reviewed issue-linked PRs/MRs created during Week 3 (#[PR/MR 3] - [Brief descrip
 
 ## Team Reflections
 
-- **Week 3 Reflection:** [reports/week3/reflection.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week3/reflection.md)
+- **Reflection:** [reports/week3/reflection.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week3/reflection.md)
 - **Retrospective:** [reports/week3/retrospective.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week3/retrospective.md)
 - **LLM Report:** [reports/week3/llm-report.md](https://github.com/plaksiki/SU-Website/blob/main/reports/week3/llm-report.md)
 
