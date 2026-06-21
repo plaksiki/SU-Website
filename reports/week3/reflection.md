@@ -3,7 +3,7 @@
 ## 1. Learning Points
 
 **Product Backlog migration & refinement:**
-Tasks were migrated from a spreadsheet into GitHub Issues. To track progress more easily, we added 5 columns (Backlog, Ready, In Progress, In Review, Done). Through this process, we learned that breaking tasks into smaller subtasks with detailed descriptions significantly simplifies the workflow, so each team member clearly understands what is expected of them. Setting priorities (Urgent, High, Medium, Low) helped the team stay focused on the most critical tasks first.
+- Tasks were migrated from a spreadsheet into GitHub Issues. To track progress more easily, we added 5 columns (Backlog, Ready, In Progress, In Review, Done). Through this process, we learned that breaking tasks into smaller subtasks with detailed descriptions significantly simplifies the workflow, so each team member clearly understands what is expected of them. Setting priorities (Urgent, High, Medium, Low) helped the team stay focused on the most critical tasks first.
 
 **Estimation & Sprint Planning:**
 Tasks were estimated in units of time. Sprint Planning was conducted via Telegram, the team lead distributed tasks among team members and determined what to include in the sprint. We found that this approach worked well for our team size and allowed us to start working quickly.
