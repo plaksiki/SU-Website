@@ -40,7 +40,7 @@
 | **Sprint** | Sprint 2 |
 | **Milestone** | [Sprint 2](https://github.com/plaksiki/SU-Website/milestone/2) |
 | **Dates** | Start: 2026-06-23 / Finish: 2026-06-28 |
-| **Sprint Goal** | Deliver MVP v2 with core features |
+| **Sprint Goal** | Deliver MVP v2 with more detailed event pages and integrated backend |
 
 ### Focus & Outcomes
 - Complete all Must Have user stories
@@ -55,6 +55,7 @@
 - **Supporting PBIs:**
   - [#60] Setup Redis
   - [#62] Swagger/OpenAPI Documentation
+  - Light/Dark Theme Switch
 
 ---
 
