@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.0] - 2026-06-21
 ### Added
+- Databases for questionnaires
+- The base for backend, survey entity and controller
 - Donations page
 - Department members display
 - Localization support (two languages)
