@@ -25,7 +25,7 @@
 * **Events:** No "Join" button; use informative cards with name, description, date, time, and department tags. Include links to photos for past events.
 * **Donations:** Overloaded page; remove "total collected" and specific amounts, leave only a QR code or link.
 * **Data Export:** Support for .xlsx or .csv download instead of Excel import.
-* **Admin/Backlog:** Backlog must be for the team only; admin will manage pre-registered users.
+* **Admin/Backlog:** Backlog must be for the team only. Only admins have accounts, they can register other SU members as admins too separately.
 * **UI/UX:** Dark theme is approved but requires alignment checks; use pie charts for statistics and collapsible lists for open-ended answers.
 
 ### Prioritized Feedback Items for the Next Sprint
@@ -33,13 +33,13 @@
 * **High Priority:**
     * Backend and database integration for the Events and [redacted] pages to ensure end-to-end functionality.
     * Implementation of .xlsx/.csv download functionality for analytics (frontend task).
-    * Development of the History section as required by technical specifications.
+    * SU History section on the main page.
 * **Medium Priority:**
-    * Refinement of the Admin Panel, including the backlog and user management (admin-controlled registration).
-    * UI/UX adjustments: updating the Donation page to a simple QR/link format and fixing potential misalignment in the Dark Theme.
+    * Refinement of the Admin Panel, including the backlog.
+    * UI/UX adjustments: fixing potential misalignment in the Dark Theme.
     * Integration of statistics visualization (pie charts) and collapsible lists for open-ended survey answers.
 * **Low Priority:**
-    * Collection of brand book assets, member photos, and department descriptions.
+    * Collection of brand book assets, member photos, and department descriptions to implement for frontend.
     * Filtering functionality for the events page.
 
 ### Risks
