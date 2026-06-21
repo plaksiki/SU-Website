@@ -15,13 +15,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.1.0] - 2026-06-21
+## [1.0.0] - 2026-06-21
 ### Added
-- Databases for questionnaires
-- The base for backend, survey entity and controller
-- Donations page
 - Department members display
+- Donations page
+- Event page with filters
 - Localization support (two languages)
+- Production Docker setup with auto-update script,
+Docker Compose configuration for production deployment
+- Deployment to Virtual Machine
+
 
 ### Changed
 - Migrated codebase from HTML/CSS to React
@@ -32,6 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.0] - MVP v1
+## [0.1.0] - MVP v0 - 2026-06-14
 ### Added
-- Initial project setup
+- Initial repository structure
+- Basic HTML/CSS prototype
+- Static pages for testing
