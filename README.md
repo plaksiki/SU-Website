@@ -24,17 +24,31 @@ Website of the Innopolis University students union. This is the bussines card of
 ## [MIT license](https://github.com/plaksiki/SU-Website/blob/main/LICENSE)
 
 ## Deployment
+### MVP v1.0.0 (Current Release - Assignment 3)
+- **Production:** [SU Portal](http://10.93.26.192/)
+- **Release:** [v1.0.0](https://github.com/plaksiki/SU-Website/releases/tag/v1.0.0)
+- **Deploy instructions:** [DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md)
+- **Video demonstration:** [MVP v1 Demo](https://drive.google.com/file/d/1BB24vPEWdS3sDSKUaNwpFbZiY8T7Vzl2/view)
+
+### MVP v0 (Previous Version)
 - [SU Website MVP v0](https://innopolissu.netlify.app/)
 - Current version deployed within Netlify (free deployment service)
 - [MVP v0 video demonstration](https://drive.google.com/file/d/14K1-BOBoNq8PByQC2vPfBQOLUVRdlA4M/view)
-- [main/MVP-v0](https://github.com/plaksiki/SU-Website/tree/main/MVP-v0)
+- [MVP-v0 report](https://github.com/plaksiki/SU-Website/blob/main/reports/week2/mvp-v0-report.md)
 
-## Lychee Link Checking 
-- [Lychee Configuration](https://github.com/plaksiki/SU-Website/blob/main/.github/workflows/check-links.yml)
-- [Latest Successful Run (GitHub Actions Run #9)](https://github.com/plaksiki/SU-Website/actions/runs/27496832782)
+## Core Documentation
+- **[DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md)** — Deployment instructions
+- **[CHANGELOG.md](https://github.com/plaksiki/SU-Website/blob/main/CHANGELOG.md)** — Version history
 
-## [Gitignore file](https://github.com/plaksiki/SU-Website/blob/Week2/.gitignore)
+### Development Resources
+- **[.gitignore](https://github.com/plaksiki/SU-Website/blob/Week2/.gitignore)** — Git ignore rules
+- **[PR/MR Template](https://github.com/plaksiki/SU-Website/blob/main/.github/pull_request_template.md)** — Pull request guidelines
+- **[Issue Templates](https://github.com/plaksiki/SU-Website/tree/main/.github/ISSUE_TEMPLATE)** - Bug, Task and User Story types of issues
+- **[CI/CD Workflows](https://github.com/plaksiki/SU-Website/tree/main/.github/workflows)** — GitHub Actions configurations
 
-## PRs/MRs template 
-- [PR/MR template content](https://github.com/plaksiki/SU-Website/blob/main/.github/workflows/pull_request_template.md)
+
+
+## 📌 **Version History**
+- **v1.0.0** - MVP v1 (Assignment 3) - React frontend with Docker deployment
+- **v0.1.0** - MVP v0 - Initial HTML/CSS prototype
 
