@@ -1,0 +1,39 @@
+services:
+  su-postgres:
+    image: postgres:15-alpine
+    container_name: su-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: su_database
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+
+  su-redis:
+    image: redis:7-alpine
+    container_name: su-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  su-thumbor:
+    image: python:3.9-slim
+    container_name: su-thumbor
+    command: >
+      sh -c "pip install --no-cache-dir thumbor && thumbor -p 8888"
+    ports:
+      - "8888:8888"
+    restart: unless-stopped
+
+  su-frontend:
+    build: ./su-frontend
+    container_name: su-frontend
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
