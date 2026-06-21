@@ -179,7 +179,7 @@ Reviewed issue-linked PRs/MRs created during Week 3 (#[PR/MR 3] - [Brief descrip
 
 **Deployment Link:** [SU-portal](http://10.93.26.192/)
 
-**Access/Run Instructions:** [DEPLOY.md]()
+**Access/Run Instructions:** [DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/week3-bilidjinka/DEPLOY.md)
 
 ---
 
