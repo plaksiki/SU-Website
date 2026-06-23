@@ -2,25 +2,33 @@ package com.example.demo.entity;
 
 import java.time.LocalDate;
 
-public class Survey {
-    private long id = 0;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "questionnaires")
+public class Questionnaire {
+    @Id
+    private long id;
     private String title;
     private String description;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    @Column(name = "created_at")
+    private LocalDate createdAt;
 
-    public Survey () {
+
+    public Questionnaire () {
         title = "default";
         description = "no description";
     }
 
-    public Survey (long id, String title, String description,
-        LocalDate startDate, LocalDate endDate) {
+    public Questionnaire (long id, String title, String description,
+        LocalDate createdAt) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.createdAt = createdAt;
     }
 
     public long getId() {
@@ -47,19 +55,11 @@ public class Survey {
         this.description = description;
     }
 
-    public LocalDate getStartDate() {
-        return startDate;
+    public LocalDate getCreated_at() {
+        return createdAt;
     }
 
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
     }
 }
