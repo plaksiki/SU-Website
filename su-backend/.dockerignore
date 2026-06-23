@@ -1,0 +1,41 @@
+# dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# env variables
+.env
+.env.*
+!.env.example
+
+# Git
+.git/
+.gitignore
+.github/
+
+# Logs
+logs/
+*.log
+
+# dev
+.DS_Store
+*.tmp
+*.swp
+
+# Tests
+coverage/
+.nyc_output/
+test/
+__tests__/
+
+# Documentation
+README.md
+CHANGELOG.md
+docs/
+
+# Frontend
+../su-frontend/
+
+# Reports
+../reports/
+../docs/reports/
