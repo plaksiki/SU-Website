@@ -30,7 +30,10 @@ jobs:
 
       - name: Lint (ESLint)
         run: npm run lint
-
+        
+      - name: Run tests
+        run: npm run test
+        
       - name: Type check & Build
         run: npm run build
 
