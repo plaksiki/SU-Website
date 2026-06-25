@@ -33,3 +33,13 @@ jobs:
 
       - name: Type check & Build
         run: npm run build
+
+      - name: Check bundle size (max 1 MB)
+        run: |
+          size=$(find dist/assets -name "*.js" | xargs wc -c 2>/dev/null | tail -1 | awk '{print $1}')
+          echo "Bundle size: $size bytes"
+          if [ "$size" -gt 1048576 ]; then
+            echo "❌ Bundle size exceeds 1 MB limit ($size bytes)"
+            exit 1
+          fi
+          echo "✅ Bundle size is within 1 MB limit"
