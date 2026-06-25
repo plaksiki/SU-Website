@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,8 +14,10 @@ public class Questionnaire {
     private long id;
     private String title;
     private String description;
-    @Column(name = "created_at")
-    private LocalDate createdAt;
+    @Column(name = "started_at")
+    private LocalDateTime startedAt;
+    @Column(name = "finished_at")
+    private LocalDateTime finishedAt;
 
 
     public Questionnaire () {
@@ -24,11 +26,12 @@ public class Questionnaire {
     }
 
     public Questionnaire (long id, String title, String description,
-        LocalDate createdAt) {
+        LocalDateTime startedAt, LocalDateTime finishedAt) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.createdAt = createdAt;
+        this.startedAt = startedAt;
+        this.finishedAt = finishedAt;
     }
 
     public long getId() {
@@ -55,11 +58,19 @@ public class Questionnaire {
         this.description = description;
     }
 
-    public LocalDate getCreated_at() {
-        return createdAt;
+    public LocalDateTime getStartedAt() {
+        return startedAt;
     }
 
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
+    public void setStartedAt(LocalDateTime startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public LocalDateTime getFinishedAt() {
+        return finishedAt;
+    }
+
+    public void setFinishedAt(LocalDateTime finishedAt) {
+        this.finishedAt = finishedAt;
     }
 }
