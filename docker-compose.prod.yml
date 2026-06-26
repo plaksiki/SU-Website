@@ -1,39 +1,74 @@
 services:
-  su-postgres:
-    image: postgres:15-alpine
-    container_name: su-postgres
+  backend:
+    image: su-backend
+    build: 
+      context: ./su-backend
+    depends_on:
+        db: 
+          condition: service_healthy
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: su_database
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      # SPRING_REDIS_HOST: redis
+      # SPRING_REDIS_PORT: 6379
     restart: unless-stopped
     ports:
-      - "5432:5432"
-
-  su-redis:
-    image: redis:7-alpine
-    container_name: su-redis
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-
-  su-thumbor:
-    image: python:3.9-slim
-    container_name: su-thumbor
-    command: >
-      sh -c "pip install --no-cache-dir thumbor && thumbor -p 8888"
-    ports:
-      - "8888:8888"
-    restart: unless-stopped
-
-  su-frontend:
-    build: ./su-frontend
-    container_name: su-frontend
+      - "8080:8080"
+  frontend:
+    image: su-frontend
+    build:
+      context: ./su-frontend
     ports:
       - "80:80"
+    environment:
+      BACKEND_HOST: backend
+      BACKEND_PORT: 8080
+    depends_on:
+      - backend
     restart: unless-stopped
-
+        
+  db:
+    image: postgres:16.0
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./su-backend/migrations:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+  # redis:
+  #   image: redis:7-alpine
+  #   command: redis-server --appendonly yes
+  #   volumes:
+  #     - redis_data:/data
+  #   ports:
+  #     - "6379:6379"
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  # thumbor:
+  #   image: mvhirsch/thumbor-fundamentals
+  #   environment:
+  #     SECURITY_KEY: ${THUMBOR_SECURITY_KEY}
+  #     ALLOW_UNSAFE_URL: "False"
+  #     LOADER: thumbor.loaders.file_loader
+  #     FILE_LOADER_ROOT_PATH: /data/images
+  #   ports:
+  #     - "8888:8888"
+  #   volumes:
+  #     - ./uploads:/data/images
+  #   restart: unless-stopped
 volumes:
-  postgres_data:
+  db_data:
+  # redis_data:
