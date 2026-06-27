@@ -3,16 +3,16 @@
 ## 1. Learning Points
 
 ### Customer review and feedback:
-The team conducted a customer review session with already connecting frontend, backend, databases of the SU questionnaires. Feedback was collected and documented. See: [meeting summary](https://github.com/plaksiki/SU-Website/blob/Assignment/reports/week4/customer-review-summary.md), [transcript](https://github.com/plaksiki/SU-Website/blob/Assignment/reports/week4/customer-review-transcript.md).
+The team conducted a customer review session with already connected frontend, backend, databases of the SU questionnaires. Feedback was collected and documented. See: [meeting summary](https://github.com/plaksiki/SU-Website/reports/week4/customer-review-summary.md), [transcript](https://github.com/plaksiki/SU-Website/reports/week4/customer-review-transcript.md).
 
 ### Quality requirements and quality requirements tests:
 Code style & linting: ESLint and TypeScript checks are enforced as quality requirements to maintain uniform code style across the frontend team. These are automatically tested on every PR via CI — any linting error blocks the merge.
 
-Bundle size: A maximum frontend bundle size of 1 MB was defined as a performance quality requirement. An automated bundle size check runs in CI to verify this threshold is not exceeded on each PR.
+**Bundle size:** A maximum frontend bundle size of 1 MB was defined as a performance quality requirement. An automated bundle size check runs in CI to verify this threshold is not exceeded on each PR.
 
-Unit test coverage: Correct event filtering logic was defined as a functional quality requirement. 4 unit tests were written using Vitest and run automatically in CI, confirming the filtering behavior works as expected with our Vite + TypeScript stack.
+**Unit test coverage:** Correct event filtering logic was defined as a functional quality requirement. 4 unit tests were written using Vitest and run automatically in CI, confirming the filtering behavior works as expected with our Vite + TypeScript stack.
 
-Backend build integrity: Successful Maven build was set as a quality requirement for the backend. CI runs the build on every PR; PostgreSQL dependency was identified as a risk — temporarily resolved by using the -DskipTests flag until a test database is configured in CI.
+**Backend build integrity:** Successful Maven build was set as a quality requirement for the backend. CI runs the build on every PR; PostgreSQL dependency was identified as a risk — temporarily resolved by using the -DskipTests flag until a test database is configured in CI.
 
 ### CI configuration:
 During Sprint 2, the team configured GitHub Actions for both frontend and backend. For the frontend (Node.js), we set up ESLint, TypeScript, Vitest, and bundle size checks. For the backend (Java 21 + Maven), we configured an automated build pipeline.
@@ -42,7 +42,6 @@ In Sprint 2, we created a new feature, questionnaires, to do this, we combined t
 
 ### Customer feedback:
 **Several assumptions were revised based on customer feedback:**
-
 
 ## 3. Friction and Gaps
 
@@ -83,8 +82,7 @@ In Sprint 2, we created a new feature, questionnaires, to do this, we combined t
 - A new UAT session with the SU representative is planned for Sprint 3, where the xlsx export feature will be demonstrated and validated.
 
 ### New features:
-- The team will implement export of questionnaire results to .xlsx format via the backend. See: Issue #45
+- The team will implement export of questionnaire results to .xlsx format via the backend. See: 'Issue [#45](https://github.com/plaksiki/SU-Website/issues/45)'
 
 ### Uncertainties:
-- The team will clarify with the customer how Thumbor is expected to be used by frontend developers and document the agreed approach to avoid carrying this uncertainty into future sprints.
-- The questionnaire data export format and flow will be finalized as part of the xlsx implementation. See: Issue #45
+- The questionnaire data export format and flow will be finalized as part of the xlsx implementation. See: 'Issue [#45](https://github.com/plaksiki/SU-Website/issues/45)'
