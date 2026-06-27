@@ -39,7 +39,6 @@ For this sprint we decided to implement [US-08](https://github.com/plaksiki/SU-W
 ### Customer Feedback Addressed in Sprint-2
 The following customer feedback points Sprint-1 have been addressed:
 - When changing the language, the text does not move out.
-- The donation tab only contains a space for a QR code to transfer money.
 - Polls window implemented
 - Polls are connected to info from PostgreSQL
 
