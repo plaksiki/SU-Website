@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
+
+
+const API_URL = 'http://10.93.26.192:8080'
 
 const translations = {
   en: {
@@ -184,11 +187,38 @@ const QUESTIONNAIRES: Questionnaire[] = [
   },
 ]
 
+interface BackendQuestionnaire {
+  id: number
+  title: string
+  description: string
+  startedAt: string
+  finishedAt: string
+}
+
 function PollsPage({ t, lang }: { t: T; lang: Lang }) {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({})
   const [submitted, setSubmitted] = useState(false)
   const [errors, setErrors] = useState<Record<string, boolean>>({})
+  const [backendPolls, setBackendPolls] = useState<BackendQuestionnaire[]>([])
+  const [loading, setLoading] = useState(true)
+  const [fetchError, setFetchError] = useState(false)
+
+  useEffect(() => {
+    fetch(`${API_URL}/questionnaire/1`)
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch')
+        return res.json()
+      })
+      .then(data => {
+        setBackendPolls([data])
+        setLoading(false)
+      })
+      .catch(() => {
+        setFetchError(true)
+        setLoading(false)
+      })
+  }, [])
 
   const selected = QUESTIONNAIRES.find(q => q.id === selectedId)
 
@@ -244,9 +274,33 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
           <h2>{t.polls_title}</h2>
           <p>{t.polls_desc}</p>
         </div>
+
+        {/* Опросники с бэкенда */}
+        {loading && <p style={{ textAlign: 'center', color: '#64748b' }}>Loading...</p>}
+        {fetchError && <p style={{ textAlign: 'center', color: '#dc2626' }}>Could not connect to server.</p>}
+        
         <div className="events-list">
+          {/* Показываем данные с бэкенда если загрузились */}
+          {!loading && !fetchError && backendPolls.map(poll => (
+            <div key={poll.id} className="event-card" style={{ cursor: 'pointer' }}
+              onClick={() => setSelectedId('q1')}>
+              <span className="badge badge-upcoming">Live</span>
+              <h2>{poll.title}</h2>
+              <p>{poll.description}</p>
+              <p style={{ fontSize: 12, color: '#94a3b8', marginTop: 8 }}>
+                📅 {new Date(poll.finishedAt).toLocaleDateString()}
+              </p>
+              <br />
+              <button className="btn" style={{ fontSize: 14 }}>
+                {lang === 'en' ? 'Open →' : 'Открыть →'}
+              </button>
+            </div>
+          ))}
+
+          {/* Моковые опросники всегда показываем */}
           {QUESTIONNAIRES.map(q => (
-            <div key={q.id} className="event-card" style={{ cursor: 'pointer' }} onClick={() => setSelectedId(q.id)}>
+            <div key={q.id} className="event-card" style={{ cursor: 'pointer' }}
+              onClick={() => setSelectedId(q.id)}>
               <span className="badge badge-upcoming">
                 {q.questions.length} {lang === 'en' ? 'questions' : 'вопросов'}
               </span>
@@ -279,21 +333,19 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
 
   return (
     <div className="container">
-      <button
-        onClick={handleBack}
-        style={{ background: 'none', border: 'none', color: '#40ba21', fontWeight: 'bold', cursor: 'pointer', marginBottom: 16 }}
-      >
+      <button onClick={handleBack}
+        style={{ background: 'none', border: 'none', color: '#40ba21', fontWeight: 'bold', cursor: 'pointer', marginBottom: 16 }}>
         ← {lang === 'en' ? 'Back' : 'Назад'}
       </button>
       <div className="hero" style={{ padding: 40 }}>
         <h1 style={{ fontSize: 28, marginBottom: 8 }}>
-          {lang === 'en' ? selected.titleEn : selected.titleRu}
+          {lang === 'en' ? selected!.titleEn : selected!.titleRu}
         </h1>
         <p style={{ marginBottom: 32 }}>
-          {lang === 'en' ? selected.descriptionEn : selected.descriptionRu}
+          {lang === 'en' ? selected!.descriptionEn : selected!.descriptionRu}
         </p>
 
-        {selected.questions.map((q, idx) => {
+        {selected!.questions.map((q, idx) => {
           const options = lang === 'en' ? q.optionsEn : q.optionsRu
           const hasError = errors[q.id]
           return (
@@ -302,71 +354,46 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
                 {idx + 1}. {lang === 'en' ? q.textEn : q.textRu}
                 {q.required && <span style={{ color: '#dc2626' }}> *</span>}
               </p>
-
-              {/* Single choice */}
               {q.type === 'single' && options?.map(opt => (
                 <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, cursor: 'pointer' }}>
-                  <input
-                    type="radio"
-                    name={q.id}
-                    value={opt}
+                  <input type="radio" name={q.id} value={opt}
                     checked={answers[q.id] === opt}
                     onChange={() => handleSingle(q.id, opt)}
-                    style={{ accentColor: '#40ba21' }}
-                  />
+                    style={{ accentColor: '#40ba21' }} />
                   {opt}
                 </label>
               ))}
-
-              {/* Multiple choice */}
               {q.type === 'multiple' && options?.map(opt => {
                 const selected_opts = (answers[q.id] as string[]) || []
                 return (
                   <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, cursor: 'pointer' }}>
-                    <input
-                      type="checkbox"
-                      value={opt}
+                    <input type="checkbox" value={opt}
                       checked={selected_opts.includes(opt)}
                       onChange={() => handleMultiple(q.id, opt)}
-                      style={{ accentColor: '#40ba21' }}
-                    />
+                      style={{ accentColor: '#40ba21' }} />
                     {opt}
                   </label>
                 )
               })}
-
-              {/* Open text */}
               {q.type === 'text' && (
-                <textarea
-                  rows={3}
+                <textarea rows={3}
                   value={(answers[q.id] as string) || ''}
                   onChange={e => handleText(q.id, e.target.value)}
                   placeholder={lang === 'en' ? 'Your answer...' : 'Ваш ответ...'}
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px',
-                    borderRadius: 10,
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: 10,
                     border: `1px solid ${hasError ? '#dc2626' : '#e2e8f0'}`,
-                    fontFamily: 'Arial, sans-serif',
-                    fontSize: 14,
-                    resize: 'vertical',
-                    outline: 'none',
-                  }}
-                />
+                    fontFamily: 'Arial, sans-serif', fontSize: 14, resize: 'vertical', outline: 'none' }} />
               )}
-
-              {hasError && (
-                <p style={{ color: '#dc2626', fontSize: 13, marginTop: 4 }}>{t.required}</p>
-              )}
+              {hasError && <p style={{ color: '#dc2626', fontSize: 13, marginTop: 4 }}>{t.required}</p>}
             </div>
           )
         })}
-
         <button className="btn" onClick={handleSubmit}>{t.submit}</button>
       </div>
     </div>
   )
 }
+
 type Lang = 'en' | 'ru'
 type T = typeof translations.en
 

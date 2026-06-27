@@ -7,8 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "questionnaires")
@@ -33,9 +31,7 @@ public class Questionnaire {
         this.description = description;
         this.createdAt = createdAt;
     }
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "questionnaire_id")
-    private List<Question> questions;
+   
 
     public long getId() {
         return this.id;
@@ -68,7 +64,5 @@ public class Questionnaire {
     public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
-    public List<Question> getQuestions() {
-    return questions;
-}
+    
 }
