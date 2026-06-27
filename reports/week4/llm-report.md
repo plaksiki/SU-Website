@@ -2,7 +2,7 @@
 
 
 ## Tools Used
-- Claude (Anthropic) — consulted for For GitHub templates, connecting frontend with backend, design realization, the logic of working with ci.yml, frontend for questionnaires.
+- Claude (Anthropic) — consulted for GitHub templates, connecting frontend with backend, design realization, the logic of working with ci.yml, frontend for questionnaires.
 - Deepseek – consulted for Docker errors, connecting databases with backend. Decoding assignment tasks.
 - Google AI Studio (Gemini) — reference UI prototype generation and transcription of the text.
 - ChatGPT - connecting backend with Docker, databases, and VM. Decoding assignment tasks.
