@@ -2,7 +2,7 @@
 
 ## 1. Learning Points
 
-### Customer review and feedback:b/main/reports/week4/customer-review-summary.md
+### Customer review and feedback:
 The team conducted a customer review session with already connecting frontend, backend, databases of the SU questionnaires. Feedback was collected and documented. See: [meeting summary](https://github.com/plaksiki/SU-Website/blob/Assignment/reports/week4/customer-review-summary.md), [transcript](https://github.com/plaksiki/SU-Website/blob/Assignment/reports/week4/customer-review-transcript.md).
 
 ### Quality requirements and quality requirements tests:
@@ -26,22 +26,23 @@ A demonstration of the website was conducted to a representative of the Student 
 In Sprint 2, we created a new feature, questionnaires, to do this, we combined the parts, important concepts of backend, frontend and databases. We also studied the CI configuration. We also presented the UAT phase for the customer. And since one of the customers is from SU core, that's why we tested our project on future users. We also designed the Github, added new issues with descriptions for Sprint 2, and also tracked all changes and completed tasks in the Backlog.
 
 ## 2. Validated Assumptions
-It was assumed that ESLint and TypeScript checks are sufficient to maintain a uniform code style among the three front—enders - CI is confirmed to automatically catch errors with each PR in main. Also guessed that the size of the frontend bundle would remain within 1 MB — it is confirmed that the current bundle is undergoing automatic verification in CI. And that the backend tests require PostgreSQL — it is confirmed that DemoApplicationTests crashes without connecting to the database. A temporary solution is to compile Maven with the -DskipTests flag. Also thought that Vitest is compatible with our Vite + TypeScript stack without additional configuration — it is confirmed that 4 unit tests for event filtering logic are successfully running in CI. CI was supposed to work correctly on GitHub Actions for the front (Node.js) and beck (Java 21 + Maven) — confirmed, all checks are green on PR in main.
 
+### CI & automated testing:
+- ESLint and TypeScript checks are sufficient to maintain uniform code style — confirmed, CI automatically catches errors on every PR to main.
+- Frontend bundle size stays within 1 MB — confirmed, automatic bundle size verification is passing in CI.
+- Vitest is compatible with our Vite + TypeScript stack without additional configuration — confirmed, 4 unit tests for event filtering logic run successfully in CI.
+- GitHub Actions works correctly for both frontend (Node.js) and backend (Java 21 + Maven) — confirmed, all checks are green on PRs to main.
+- Backend tests can run without a database connection — rejected, DemoApplicationTests crashes without PostgreSQL. Temporarily resolved using the -DskipTests flag in Maven.
 
 ### Implementation:
-- The React + TypeScript stack proved to be a suitable choice for the team, allowing successful delivery of the frontend prototype including language switching and event/team templates.
+- React + TypeScript stack is a suitable choice for the team — confirmed, the questionnaire feature was successfully delivered by connecting frontend, backend, and database.
 
-### Testing & deployment:
-- The prototype was successfully demonstrated to the customer, confirming that the core structure of the application meets the basic requirements. The website was deployed on the IU virtual
-machine(VM).
+### Deployment:
+- The website remains deployable on the IU virtual machine — confirmed, the Sprint 2 increment was successfully demonstrated to the customer on the VM.
 
 ### Customer feedback:
 **Several assumptions were revised based on customer feedback:**
 
-- The donation page was assumed to need detailed financial information, but the customer requested a simplified version with only a QR code or link.
-- The events page was assumed to need a "Join" button, but the customer confirmed that informative cards with event details are sufficient.
-- The admin backlog was confirmed to be for internal team use only.
 
 ## 3. Friction and Gaps
 
@@ -49,20 +50,19 @@ machine(VM).
 - The brand book and content (logos, photos, member descriptions) have not yet been provided by the customer, which may affect the final UI implementation.
 
 ### Technical risks:
-- Potential delay in backend integration may impact the delivery of data-dependent features in upcoming sprints.
+- The PostgreSQL dependency in CI remains an unresolved technical risk. The current -DskipTests flag is a temporary workaround — backend tests are not actually running in CI, which means integration issues may go undetected.
 
 ### Missing scope:
-- No missing scope was identified — all planned tasks for Sprint 1 were completed successfully.
+- No missing scope was identified — all planned tasks for Sprint 2 were completed successfully.
 
 ### Blocked work:
-- No blocked tasks were identified during Sprint 1.
+- No blocked tasks were identified during Sprint 2.
 
 ### Process friction:
 - In some cases, PR approvals were delayed, which slightly slowed down the merging process.
 
 ### Uncertainties:
-- For now it is on discussion stage how to match backend and frontend with databases drafts.
-- There are questons about how Thumbor is expected to be used by frontenders form customers' side opinion. 
+- How Thumbor is expected to be used by frontend developers remains unclear — this question was carried over from Sprint 1 and has not yet been resolved with the customer.
 
 ## 4. Planned Response
 
@@ -71,8 +71,7 @@ machine(VM).
 (logos, photos, member descriptions) as soon as possible to unblock UI implementation.
 
 ### Technical risks:
-- Backend integration with the frontend is planned for Sprint 2. The team will
-prioritize delivering working end-to-end features as requested by the customer.
+- The team will work on properly configuring backend tests in CI by setting up a PostgreSQL test database or introducing database mocking, replacing the temporary -DskipTests workaround. This will ensure backend logic is actually validated on every PR.
 
 ### Missing scope:
 - No action required.
@@ -80,10 +79,12 @@ prioritize delivering working end-to-end features as requested by the customer.
 ### Blocked work:
 - No action required.
 
-### Process friction:
-- The team will aim to review and approve PRs more promptly to avoid delays in
-the merging process.
+### UAT:
+- A new UAT session with the SU representative is planned for Sprint 3, where the xlsx export feature will be demonstrated and validated.
+
+### New features:
+- The team will implement export of questionnaire results to .xlsx format via the backend. See: Issue #45
 
 ### Uncertainties:
-- How finally data from questionaires will be exported
-- How Thumbor will be used by frontenders
+- The team will clarify with the customer how Thumbor is expected to be used by frontend developers and document the agreed approach to avoid carrying this uncertainty into future sprints.
+- The questionnaire data export format and flow will be finalized as part of the xlsx implementation. See: Issue #45
