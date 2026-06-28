@@ -27,7 +27,13 @@ and frontend pieces of code).
 unnecessary haste and pressure ahead of the deadline, as everything
 must be documented in reports.
 
-## Action Points
+## What you changed compared to the previous Sprint
+
+1. We clearly assigned all responsibilities to all team members at the beginning of the sprint. Certain issues were linked, where a team member understands and it is not very difficult for him, it belongs to his range of possibilities.
+
+2. We tried to arrange an interview time with the customers in advance so that both customers could be present for a full and high-quality review.
+
+## Process improvements for the next Sprint
 
 1. Clearly allocate tasks at the beginning of each sprint and understand the burden on each team member, especially those who cannot attend the interview with the customer or are on some kind of trip to avoid
 rushing at the last minute before the deadline.
