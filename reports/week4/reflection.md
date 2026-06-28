@@ -3,7 +3,7 @@
 ## 1. Learning Points
 
 ### Customer review and feedback:
-The team conducted a customer review session with already connected frontend, backend, databases of the SU questionnaires. Feedback was collected and documented. See: [meeting summary](https://github.com/plaksiki/SU-Website/reports/week4/customer-review-summary.md), [transcript](https://github.com/plaksiki/SU-Website/reports/week4/customer-review-transcript.md).
+The team conducted a customer review session with already connected frontend, backend, databases of the SU questionnaires. Feedback was collected and documented. See: [meeting summary](https://github.com/plaksiki/SU-Website/blob/main/reports/week4/customer-review-summary.md), [transcript](https://github.com/plaksiki/SU-Website/blob/main/reports/week4/customer-review-transcript.md).
 
 ### Quality requirements and quality requirements tests:
 Code style & linting: ESLint and TypeScript checks are enforced as quality requirements to maintain uniform code style across the frontend team. These are automatically tested on every PR via CI — any linting error blocks the merge.
@@ -66,7 +66,7 @@ In Sprint 2, we created a new feature, questionnaires, to do this, we combined t
 - In some cases, PR approvals were delayed, which slightly slowed down the merging process.
 
 ### Uncertainties:
-- How Thumbor is expected to be used by frontend developers remains unclear — this question was carried over from Sprint 1 and has not yet been resolved with the customer.
+- How far will we get the brandbook and how much time there will be left to implement it in frontend part of the project.
 
 ## 4. Planned Response
 
