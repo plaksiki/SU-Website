@@ -42,11 +42,16 @@ In Sprint 2, we created a new feature, questionnaires, to do this, we combined t
 
 ### Customer feedback:
 **Several assumptions were revised based on customer feedback:**
+- The overall UI design direction was confirmed by the customer as visually appealing and on the right track.
+- The intership was assumed as a questionnaires only, but the customer confirmed that it's better to have a basic event, but with a link to the questionnaire.
 
 ## 3. Friction and Gaps
 
 ### Unresolved requirements:
 - The brand book and content (logos, photos, member descriptions) have not yet been provided by the customer, which may affect the final UI implementation.
+- Individual pages for each department and a separate SU History page have not yet been implemented.
+- An Internship event page redirecting to questionnaires has not yet been created.
+- The admin side via PgAdmin has not yet been configured.
 
 ### Technical risks:
 - The PostgreSQL dependency in CI remains an unresolved technical risk. The current -DskipTests flag is a temporary workaround — backend tests are not actually running in CI, which means integration issues may go undetected.
@@ -66,6 +71,9 @@ In Sprint 2, we created a new feature, questionnaires, to do this, we combined t
 ## 4. Planned Response
 
 ### Unresolved requirements:
+- The team will implement individual pages for each department and a dedicated SU History page.
+- A basic Internship event page redirecting to the questionnaire will be created.
+- The admin side will be configured via PgAdmin.
 - The team will follow up with the customer to obtain the brand book and content
 (logos, photos, member descriptions) as soon as possible to unblock UI implementation.
 
@@ -79,7 +87,7 @@ In Sprint 2, we created a new feature, questionnaires, to do this, we combined t
 - No action required.
 
 ### UAT:
-- A new UAT session with the SU representative is planned for Sprint 3, where the xlsx export feature will be demonstrated and validated.
+- A new UAT session with the SU representative is planned for Sprint 3, where the xlsx export feature will be demonstrated and validated. Also with admin page to create and control all events and questionnaries. And with events and questionnaires completed to a better and final look.
 
 ### New features:
 - The team will implement export of questionnaire results to .xlsx format via the backend. See: 'Issue [#45](https://github.com/plaksiki/SU-Website/issues/45)'
