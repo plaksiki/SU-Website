@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  frontend:
+    name: Frontend Checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: su-frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: su-frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint (ESLint)
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Type check & Build
+        run: npm run build
+
+      - name: Check bundle size (max 1 MB)
+        run: |
+          size=$(find dist/assets -name "*.js" | xargs wc -c 2>/dev/null | tail -1 | awk '{print $1}')
+          echo "Bundle size: $size bytes"
+          if [ "$size" -gt 1048576 ]; then
+            echo "❌ Bundle size exceeds 1 MB limit ($size bytes)"
+            exit 1
+          fi
+          echo "✅ Bundle size is within 1 MB limit"
+
+  backend:
+    name: Backend Checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: su-backend/backend/demo
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Make mvnw executable
+        run: chmod +x mvnw
+
+      - name: Build
+        run: ./mvnw clean compile -DskipTests
+     
