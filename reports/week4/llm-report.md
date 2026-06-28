@@ -2,9 +2,9 @@
 
 
 ## Tools Used
-- Claude (Anthropic) — consulted for GitHub templates, connecting frontend with backend, design realization, the logic of working with ci.yml, frontend for questionnaires.
+- Claude (Anthropic) — consulted for GitHub templates, connecting frontend with backend, design realization, the logic of working with ci.yml, frontend for questionnaires, decoding transcript and underlining summary.
 - Deepseek – consulted for Docker errors, connecting databases with backend. Decoding assignment tasks.
-- Google AI Studio (Gemini) — reference UI prototype generation and transcription of the text.
+- Google AI Studio (Gemini) — reference UI prototype generation and transcription of the text, decoding transcript and underlining summary.
 - ChatGPT - connecting backend with Docker, databases, and VM. Decoding assignment tasks.
 
 
@@ -17,7 +17,7 @@
 **How AI was used:**
 - Kristina asked Claude to help her create a description of assignments in issues.
 - Bulat asked Claude to help him figure out the necessary commands and concepts for connecting the frontend to backend and for understanding the concepts of ci.yml. In addition, AI was used to solve design realization problems.
-- Svetlana asked Claude to help her figure out the necessary commands and concepts for connecting the frontend to backend. In addition, AI was used to understanding the concepts for frontend realization of questionnaires.
+- Svetlana asked Claude to help her figure out the necessary commands and concepts for connecting the frontend to backend. In addition, AI was used to understanding the concepts for frontend realization of questionnaires, and Svetlana with Claude and Gemini decoded transcript and underlined summary.
 
 ### Backend Team (Sevostianova Daria)
 **Tasks where AI was used:**
