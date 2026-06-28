@@ -1,12 +1,13 @@
-FROM node:18-alpine
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
+COPY backend/demo/pom.xml .
+RUN mvn dependency:go-offline
+COPY backend/demo/src ./src
+RUN mvn package -DskipTests
 
-# Uncomment after adding server.js:
-# COPY package*.json ./
-# RUN npm install
-# COPY . .
-# EXPOSE 3000
-# CMD ["node", "server.js"]
+COPY backend/demo/target/demo-0.0.1-SNAPSHOT.jar app.jar
 
-CMD ["echo", "Backend is not ready yet"]
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,68 +1,68 @@
-version: '3.8'
+# version: '3.8'
 
-services:
-  postgres:
-    image: postgres:15-alpine
-    container_name: su-postgres
-    environment:
-      POSTGRES_DB: su_db
-      POSTGRES_USER: su_user
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U su_user"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+# services:
+#   postgres:
+#     image: postgres:15-alpine
+#     container_name: su-postgres
+#     environment:
+#       POSTGRES_DB: su_db
+#       POSTGRES_USER: su_user
+#       POSTGRES_PASSWORD: ${DB_PASSWORD}
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#     ports:
+#       - "5432:5432"
+#     restart: always
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -U su_user"]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
 
-  redis:
-    image: redis:7-alpine
-    container_name: su-redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    command: redis-server --appendonly yes
-    restart: always
+#   redis:
+#     image: redis:7-alpine
+#     container_name: su-redis
+#     ports:
+#       - "6379:6379"
+#     volumes:
+#       - redis_data:/data
+#     command: redis-server --appendonly yes
+#     restart: always
 
-  thumbor:
-    image: beeyev/thumbor-s3:slim-alpine
-    container_name: su-thumbor
-    ports:
-      - "8888:8888"
-    environment:
-      SECURITY_KEY: ${THUMBOR_SECRET}
-      ALLOW_UNSAFE_URL: "True"
-    volumes:
-      - ./uploads:/app/uploads
-    restart: always
+#   thumbor:
+#     image: beeyev/thumbor-s3:slim-alpine
+#     container_name: su-thumbor
+#     ports:
+#       - "8888:8888"
+#     environment:
+#       SECURITY_KEY: ${THUMBOR_SECRET}
+#       ALLOW_UNSAFE_URL: "True"
+#     volumes:
+#       - ./uploads:/app/uploads
+#     restart: always
 
-  backend:
-    image: eclipse-temurin:17-jre-alpine
-    container_name: su-backend
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/su_db
-      SPRING_DATASOURCE_USERNAME: su_user
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-      SPRING_REDIS_HOST: redis
-      SPRING_REDIS_PORT: 6379
-      THUMBOR_URL: http://thumbor:8888
-      JWT_SECRET: ${JWT_SECRET}
-    depends_on:
-      - postgres
-      - redis
-      - thumbor
-    volumes:
-      - ./backend/app.jar:/app.jar
-    command: java -jar /app.jar
-    restart: always
+#   backend:
+#     image: eclipse-temurin:17-jre-alpine
+#     container_name: su-backend
+#     ports:
+#       - "8080:8080"
+#     environment:
+#       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/su_db
+#       SPRING_DATASOURCE_USERNAME: su_user
+#       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+#       SPRING_REDIS_HOST: redis
+#       SPRING_REDIS_PORT: 6379
+#       THUMBOR_URL: http://thumbor:8888
+#       JWT_SECRET: ${JWT_SECRET}
+#     depends_on:
+#       - postgres
+#       - redis
+#       - thumbor
+#     volumes:
+#       - ./backend/app.jar:/app.jar
+#     command: java -jar /app.jar
+#     restart: always
 
-volumes:
-  postgres_data:
-  redis_data:
+# volumes:
+#   postgres_data:
+#   redis_data:

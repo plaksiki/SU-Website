@@ -52,10 +52,12 @@
 - **User Stories:**
   - [#45] US-05: Exporting questionnaire results
   - [#48] US-08: Applying for an internship
+  - 
 - **Supporting PBIs:**
-  - [#60] Setup Redis
-  - [#62] Swagger/OpenAPI Documentation
+  - [#60] Setup Thumbor(microservices, backend)
   - Light/Dark Theme Switch
+  - Extended events cards
+  - Events departments tags
 
 ---
 
