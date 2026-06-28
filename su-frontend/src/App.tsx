@@ -592,7 +592,7 @@ function App() {
         <Route path="/polls" element={<PollsPage t={t} lang={lang} />} />
         <Route path="/donations" element={<DonationsPage t={t} />} />
       </Routes>
-      <Footer t={t} />
+      <Footer/>
     </BrowserRouter>
   )
 }
