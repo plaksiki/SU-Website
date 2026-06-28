@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import './App.css'
 
-
 const API_URL = 'http://10.93.26.192:8080'
 
 const translations = {
@@ -39,6 +38,9 @@ const translations = {
     submit: "Submit",
     submitted: "Thank you! Response submitted.",
     required: "This field is required",
+    close: "Close",
+    location: "Location",
+    details: "Details →",
   },
   ru: {
     home: "Главная",
@@ -52,7 +54,6 @@ const translations = {
     org_desc: "СС поддерживает университетское сообщество.",
     events_title: "Мероприятия",
     events_desc: "Следите за всеми событиями СС",
-    
     all: "Все",
     upcoming: "Предстоящие",
     passed: "Прошедшие",
@@ -74,20 +75,50 @@ const translations = {
     submit: "Отправить",
     submitted: "Спасибо! Ответ отправлен.",
     required: "Это поле обязательно",
+    close: "Закрыть",
+    location: "Место",
+    details: "Подробнее →",
   }
 }
 
-const events = [
-  { name: "Minecraft Event", date: "2026-10-01" },
-  { name: "CS:GO Event", date: "2026-11-01" },
-  { name: "Hackathon", date: "2025-12-01" },
+interface Event {
+  name: string
+  date: string
+  image: string
+  location: string
+  description: string
+  isActive?: boolean
+}
+
+const events: Event[] = [
+  {
+    name: "Minecraft Event",
+    date: "2026-10-01",
+    image: "https://picsum.photos/600/300?random=1",
+    location: "IU Gaming Room",
+    description: "Join us for a fun Minecraft building competition! All skill levels welcome. Prizes for the best builds."
+  },
+  {
+    name: "CS:GO Event",
+    date: "2026-11-01",
+    image: "https://picsum.photos/600/300?random=2",
+    location: "IU Esports Arena",
+    description: "Competitive CS:GO tournament. Form your team and compete for the championship title and exclusive IU merchandise."
+  },
+  {
+    name: "Hackathon",
+    date: "2025-12-01",
+    image: "https://picsum.photos/600/300?random=3",
+    location: "IU Co-working Area",
+    description: "48-hour hackathon. Build innovative solutions for university life. Mentors available throughout the event."
+  },
 ]
 
 const getDepartments = (t: T) => [
-  { id: 1, name: "SU Core", description: t.dept_core_desc, members: ["Alice Johnson", "Bob Smith", "Carol White"] },
-  { id: 2, name: "SU IT", description: t.dept_it_desc, members: ["David Lee", "Emma Davis", "Frank Miller"] },
-  { id: 3, name: "SU Media", description: t.dept_media_desc, members: ["Grace Wilson", "Henry Brown", "Ivy Taylor"] },
-  { id: 4, name: "SU Sport", description: t.dept_sport_desc, members: ["Jack Anderson", "Kate Thomas", "Liam Jackson"] },
+  { id: 1, name: "SU Core", tag: "SU.CORE", icon: "🛡️", description: t.dept_core_desc, members: ["Alice Johnson", "Bob Smith", "Carol White"] },
+  { id: 2, name: "SU IT", tag: "SU.IT", icon: "⚙️", description: t.dept_it_desc, members: ["David Lee", "Emma Davis", "Frank Miller"] },
+  { id: 3, name: "SU Media", tag: "SU.MEDIA", icon: "📸", description: t.dept_media_desc, members: ["Grace Wilson", "Henry Brown", "Ivy Taylor"] },
+  { id: 4, name: "SU Sport", tag: "SU.SPORT", icon: "⚽", description: t.dept_sport_desc, members: ["Jack Anderson", "Kate Thomas", "Liam Jackson"] },
 ]
 
 const today = new Date()
@@ -95,6 +126,7 @@ const eventsWithStatus = events.map(event => ({
   ...event,
   isActive: new Date(event.date) >= today
 }))
+
 type QuestionType = 'single' | 'multiple' | 'text'
 
 interface Question {
@@ -135,11 +167,11 @@ const QUESTIONNAIRES: Questionnaire[] = [
       },
       {
         id: 'q1_2',
-        textEn: 'Which subjects feel most challenging? (select all that apply)',
-        textRu: 'Какие предметы даются сложнее всего? (выберите все подходящие)',
+        textEn: 'Which subjects feel most challenging?',
+        textRu: 'Какие предметы даются сложнее всего?',
         type: 'multiple',
-        optionsEn: ['Calculus', 'Linear Algebra', 'Algorithms & Data Structures', 'Physics', 'English'],
-        optionsRu: ['Математический анализ', 'Линейная алгебра', 'Алгоритмы и структуры данных', 'Физика', 'Английский'],
+        optionsEn: ['Calculus', 'Linear Algebra', 'Algorithms', 'Physics', 'English'],
+        optionsRu: ['Матанализ', 'Линейная алгебра', 'Алгоритмы', 'Физика', 'Английский'],
         required: false,
       },
       {
@@ -160,11 +192,11 @@ const QUESTIONNAIRES: Questionnaire[] = [
     questions: [
       {
         id: 'q2_1',
-        textEn: 'What is your experience level with frontend development?',
-        textRu: 'Каков ваш уровень опыта во фронтенд-разработке?',
+        textEn: 'Your frontend experience level?',
+        textRu: 'Ваш уровень опыта во фронтенде?',
         type: 'single',
-        optionsEn: ['Beginner (just learning)', 'Intermediate (built React apps before)', 'Advanced (production experience)'],
-        optionsRu: ['Начинающий (только учусь)', 'Средний (делал React-проекты)', 'Продвинутый (боевой опыт)'],
+        optionsEn: ['Beginner', 'Intermediate', 'Advanced'],
+        optionsRu: ['Начинающий', 'Средний', 'Продвинутый'],
         required: true,
       },
       {
@@ -172,8 +204,8 @@ const QUESTIONNAIRES: Questionnaire[] = [
         textEn: 'Which technologies do you know?',
         textRu: 'Какие технологии вы знаете?',
         type: 'multiple',
-        optionsEn: ['TypeScript / React', 'Tailwind CSS', 'Node.js Express', 'PostgreSQL', 'Docker'],
-        optionsRu: ['TypeScript / React', 'Tailwind CSS', 'Node.js Express', 'PostgreSQL', 'Docker'],
+        optionsEn: ['TypeScript / React', 'Tailwind CSS', 'Node.js', 'PostgreSQL', 'Docker'],
+        optionsRu: ['TypeScript / React', 'Tailwind CSS', 'Node.js', 'PostgreSQL', 'Docker'],
         required: false,
       },
       {
@@ -195,6 +227,26 @@ interface BackendQuestionnaire {
   finishedAt: string
 }
 
+// Модальное окно для ивента
+function EventModal({ event, t, onClose }: { event: Event; t: T; onClose: () => void }) {
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+        <img src={event.image} alt={event.name} className="modal-image" />
+        <div className="modal-body">
+          <span className={`badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
+            {event.isActive ? t.upcoming : t.passed}
+          </span>
+          <h2>{event.name}</h2>
+          <p className="modal-meta">📅 {event.date} &nbsp; 📍 {event.location}</p>
+          <p className="modal-desc">{event.description}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function PollsPage({ t, lang }: { t: T; lang: Lang }) {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({})
@@ -206,185 +258,120 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
 
   useEffect(() => {
     fetch(`${API_URL}/questionnaire/1`)
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch')
-        return res.json()
-      })
-      .then(data => {
-        setBackendPolls([data])
-        setLoading(false)
-      })
-      .catch(() => {
-        setFetchError(true)
-        setLoading(false)
-      })
+      .then(res => { if (!res.ok) throw new Error('Failed'); return res.json() })
+      .then(data => { setBackendPolls([data]); setLoading(false) })
+      .catch(() => { setFetchError(true); setLoading(false) })
   }, [])
 
   const selected = QUESTIONNAIRES.find(q => q.id === selectedId)
 
-  const handleSingle = (questionId: string, value: string) => {
-    setAnswers(prev => ({ ...prev, [questionId]: value }))
-    setErrors(prev => ({ ...prev, [questionId]: false }))
+  const handleSingle = (qid: string, val: string) => {
+    setAnswers(p => ({ ...p, [qid]: val }))
+    setErrors(p => ({ ...p, [qid]: false }))
   }
-
-  const handleMultiple = (questionId: string, option: string) => {
-    setAnswers(prev => {
-      const current = (prev[questionId] as string[]) || []
-      const updated = current.includes(option)
-        ? current.filter(o => o !== option)
-        : [...current, option]
-      return { ...prev, [questionId]: updated }
+  const handleMultiple = (qid: string, opt: string) => {
+    setAnswers(p => {
+      const cur = (p[qid] as string[]) || []
+      return { ...p, [qid]: cur.includes(opt) ? cur.filter(o => o !== opt) : [...cur, opt] }
     })
   }
-
-  const handleText = (questionId: string, value: string) => {
-    setAnswers(prev => ({ ...prev, [questionId]: value }))
-    setErrors(prev => ({ ...prev, [questionId]: false }))
+  const handleText = (qid: string, val: string) => {
+    setAnswers(p => ({ ...p, [qid]: val }))
+    setErrors(p => ({ ...p, [qid]: false }))
   }
-
   const handleSubmit = () => {
     if (!selected) return
-    const newErrors: Record<string, boolean> = {}
+    const errs: Record<string, boolean> = {}
     for (const q of selected.questions) {
       if (!q.required) continue
-      const val = answers[q.id]
-      if (!val || (Array.isArray(val) && val.length === 0) || val === '') {
-        newErrors[q.id] = true
-      }
+      const v = answers[q.id]
+      if (!v || (Array.isArray(v) && !v.length) || v === '') errs[q.id] = true
     }
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
-    }
-    console.log('Response:', { questionnaireId: selectedId, answers })
+    if (Object.keys(errs).length) { setErrors(errs); return }
     setSubmitted(true)
   }
+  const handleBack = () => { setSelectedId(null); setAnswers({}); setSubmitted(false); setErrors({}) }
 
-  const handleBack = () => {
-    setSelectedId(null)
-    setAnswers({})
-    setSubmitted(false)
-    setErrors({})
-  }
-
-  if (!selectedId) {
-    return (
-      <div className="container">
-        <div className="section-title">
-          <h2>{t.polls_title}</h2>
-          <p>{t.polls_desc}</p>
-        </div>
-
-        {/* Опросники с бэкенда */}
-        {loading && <p style={{ textAlign: 'center', color: '#64748b' }}>Loading...</p>}
-        {fetchError && <p style={{ textAlign: 'center', color: '#dc2626' }}>Could not connect to server.</p>}
-        
-        <div className="events-list">
-          {/* Показываем данные с бэкенда если загрузились */}
-          {!loading && !fetchError && backendPolls.map(poll => (
-            <div key={poll.id} className="event-card" style={{ cursor: 'pointer' }}
-              onClick={() => setSelectedId('q1')}>
-              <span className="badge badge-upcoming">Live</span>
-              <h2>{poll.title}</h2>
-              <p>{poll.description}</p>
-              <p style={{ fontSize: 12, color: '#94a3b8', marginTop: 8 }}>
-                📅 {new Date(poll.finishedAt).toLocaleDateString()}
-              </p>
-              <br />
-              <button className="btn" style={{ fontSize: 14 }}>
-                {lang === 'en' ? 'Open →' : 'Открыть →'}
-              </button>
-            </div>
-          ))}
-
-          {/* Моковые опросники всегда показываем */}
-          {QUESTIONNAIRES.map(q => (
-            <div key={q.id} className="event-card" style={{ cursor: 'pointer' }}
-              onClick={() => setSelectedId(q.id)}>
-              <span className="badge badge-upcoming">
-                {q.questions.length} {lang === 'en' ? 'questions' : 'вопросов'}
-              </span>
-              <h2>{lang === 'en' ? q.titleEn : q.titleRu}</h2>
-              <p>{lang === 'en' ? q.descriptionEn : q.descriptionRu}</p>
-              <br />
-              <button className="btn" style={{ fontSize: 14 }}>
-                {lang === 'en' ? 'Open →' : 'Открыть →'}
-              </button>
-            </div>
-          ))}
-        </div>
+  if (!selectedId) return (
+    <div className="container">
+      <div className="section-title">
+        <h2>{t.polls_title}</h2>
+        <p>{t.polls_desc}</p>
       </div>
-    )
-  }
-
-  if (submitted) {
-    return (
-      <div className="container">
-        <div className="donation-card" style={{ marginTop: 40 }}>
-          <h3 style={{ color: '#40ba21' }}>✓ {t.submitted}</h3>
-          <br />
-          <button className="btn" onClick={handleBack}>
-            {lang === 'en' ? '← Back to polls' : '← К опросникам'}
-          </button>
-        </div>
+      {loading && <p style={{ textAlign: 'center', color: '#64748b' }}>Loading...</p>}
+      {fetchError && <p style={{ textAlign: 'center', color: '#dc2626' }}>Could not connect to server.</p>}
+      <div className="events-list">
+        {!loading && !fetchError && backendPolls.map(poll => (
+          <div key={poll.id} className="event-card" style={{ cursor: 'pointer' }} onClick={() => setSelectedId('q1')}>
+            <span className="badge badge-upcoming">Live</span>
+            <h2>{poll.title}</h2>
+            <p>{poll.description}</p>
+            <p style={{ fontSize: 12, color: '#94a3b8', marginTop: 8 }}>📅 {new Date(poll.finishedAt).toLocaleDateString()}</p>
+            <br />
+            <button className="btn" style={{ fontSize: 14 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</button>
+          </div>
+        ))}
+        {QUESTIONNAIRES.map(q => (
+          <div key={q.id} className="event-card" style={{ cursor: 'pointer' }} onClick={() => setSelectedId(q.id)}>
+            <span className="badge badge-upcoming">{q.questions.length} {lang === 'en' ? 'questions' : 'вопросов'}</span>
+            <h2>{lang === 'en' ? q.titleEn : q.titleRu}</h2>
+            <p>{lang === 'en' ? q.descriptionEn : q.descriptionRu}</p>
+            <br />
+            <button className="btn" style={{ fontSize: 14 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</button>
+          </div>
+        ))}
       </div>
-    )
-  }
+    </div>
+  )
+
+  if (submitted) return (
+    <div className="container">
+      <div className="donation-card" style={{ marginTop: 40 }}>
+        <h3 style={{ color: '#40ba21' }}>✓ {t.submitted}</h3>
+        <br />
+        <button className="btn" onClick={handleBack}>{lang === 'en' ? '← Back to polls' : '← К опросникам'}</button>
+      </div>
+    </div>
+  )
 
   return (
     <div className="container">
-      <button onClick={handleBack}
-        style={{ background: 'none', border: 'none', color: '#40ba21', fontWeight: 'bold', cursor: 'pointer', marginBottom: 16 }}>
+      <button onClick={handleBack} style={{ background: 'none', border: 'none', color: '#40ba21', fontWeight: 'bold', cursor: 'pointer', marginBottom: 16 }}>
         ← {lang === 'en' ? 'Back' : 'Назад'}
       </button>
       <div className="hero" style={{ padding: 40 }}>
-        <h1 style={{ fontSize: 28, marginBottom: 8 }}>
-          {lang === 'en' ? selected!.titleEn : selected!.titleRu}
-        </h1>
-        <p style={{ marginBottom: 32 }}>
-          {lang === 'en' ? selected!.descriptionEn : selected!.descriptionRu}
-        </p>
-
+        <h1 style={{ fontSize: 28, marginBottom: 8 }}>{lang === 'en' ? selected!.titleEn : selected!.titleRu}</h1>
+        <p style={{ marginBottom: 32 }}>{lang === 'en' ? selected!.descriptionEn : selected!.descriptionRu}</p>
         {selected!.questions.map((q, idx) => {
-          const options = lang === 'en' ? q.optionsEn : q.optionsRu
-          const hasError = errors[q.id]
+          const opts = lang === 'en' ? q.optionsEn : q.optionsRu
+          const hasErr = errors[q.id]
           return (
             <div key={q.id} style={{ marginBottom: 28 }}>
-              <p style={{ fontWeight: 600, marginBottom: 10, color: hasError ? '#dc2626' : '#1e293b' }}>
+              <p style={{ fontWeight: 600, marginBottom: 10, color: hasErr ? '#dc2626' : '#1e293b' }}>
                 {idx + 1}. {lang === 'en' ? q.textEn : q.textRu}
                 {q.required && <span style={{ color: '#dc2626' }}> *</span>}
               </p>
-              {q.type === 'single' && options?.map(opt => (
+              {q.type === 'single' && opts?.map(opt => (
                 <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, cursor: 'pointer' }}>
-                  <input type="radio" name={q.id} value={opt}
-                    checked={answers[q.id] === opt}
-                    onChange={() => handleSingle(q.id, opt)}
-                    style={{ accentColor: '#40ba21' }} />
+                  <input type="radio" name={q.id} value={opt} checked={answers[q.id] === opt} onChange={() => handleSingle(q.id, opt)} style={{ accentColor: '#40ba21' }} />
                   {opt}
                 </label>
               ))}
-              {q.type === 'multiple' && options?.map(opt => {
-                const selected_opts = (answers[q.id] as string[]) || []
+              {q.type === 'multiple' && opts?.map(opt => {
+                const sel = (answers[q.id] as string[]) || []
                 return (
                   <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, cursor: 'pointer' }}>
-                    <input type="checkbox" value={opt}
-                      checked={selected_opts.includes(opt)}
-                      onChange={() => handleMultiple(q.id, opt)}
-                      style={{ accentColor: '#40ba21' }} />
+                    <input type="checkbox" value={opt} checked={sel.includes(opt)} onChange={() => handleMultiple(q.id, opt)} style={{ accentColor: '#40ba21' }} />
                     {opt}
                   </label>
                 )
               })}
               {q.type === 'text' && (
-                <textarea rows={3}
-                  value={(answers[q.id] as string) || ''}
-                  onChange={e => handleText(q.id, e.target.value)}
+                <textarea rows={3} value={(answers[q.id] as string) || ''} onChange={e => handleText(q.id, e.target.value)}
                   placeholder={lang === 'en' ? 'Your answer...' : 'Ваш ответ...'}
-                  style={{ width: '100%', padding: '10px 14px', borderRadius: 10,
-                    border: `1px solid ${hasError ? '#dc2626' : '#e2e8f0'}`,
-                    fontFamily: 'Arial, sans-serif', fontSize: 14, resize: 'vertical', outline: 'none' }} />
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1px solid ${hasErr ? '#dc2626' : '#e2e8f0'}`, fontFamily: 'Arial, sans-serif', fontSize: 14, resize: 'vertical', outline: 'none' }} />
               )}
-              {hasError && <p style={{ color: '#dc2626', fontSize: 13, marginTop: 4 }}>{t.required}</p>}
+              {hasErr && <p style={{ color: '#dc2626', fontSize: 13, marginTop: 4 }}>{t.required}</p>}
             </div>
           )
         })}
@@ -397,18 +384,18 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
 type Lang = 'en' | 'ru'
 type T = typeof translations.en
 
-function DepartmentCard(props: { name: string; description: string; members: string[]; t: T }) {
+function DepartmentCard(props: { name: string; tag: string; icon: string; description: string; members: string[]; t: T }) {
   const [isOpen, setIsOpen] = useState(false)
   return (
     <div className="dept-card" onClick={() => setIsOpen(!isOpen)}>
+      <div className="dept-icon">{props.icon}</div>
+      <span className="dept-tag">{props.tag}</span>
       <h3>{props.name}</h3>
       <p>{props.description}</p>
       {isOpen && (
         <div className="dept-members">
           <h4>{props.t.members}</h4>
-          {props.members.map((member, index) => (
-            <p key={index}>👤 {member}</p>
-          ))}
+          {props.members.map((m, i) => <p key={i}>👤 {m}</p>)}
         </div>
       )}
       <span className="dept-toggle">{isOpen ? props.t.hide : props.t.show_members}</span>
@@ -417,17 +404,19 @@ function DepartmentCard(props: { name: string; description: string; members: str
 }
 
 function Navbar({ lang, setLang, t }: { lang: Lang; setLang: (l: Lang) => void; t: T }) {
+  const [menuOpen, setMenuOpen] = useState(false)
   return (
     <nav className="navbar">
       <div className="nav-logo">
         <span className="logo-box">IU</span>
         <span className="logo-text">Student Union Portal</span>
       </div>
-      <div className="nav-links">
-        <Link to="/">{t.home}</Link>
-        <Link to="/events">{t.events}</Link>
-        <Link to="/polls">{t.polls}</Link>
-        <Link to="/donations">{t.support}</Link>
+      <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>☰</button>
+      <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
+        <Link to="/" onClick={() => setMenuOpen(false)}>{t.home}</Link>
+        <Link to="/events" onClick={() => setMenuOpen(false)}>{t.events}</Link>
+        <Link to="/polls" onClick={() => setMenuOpen(false)}>{t.polls}</Link>
+        <Link to="/donations" onClick={() => setMenuOpen(false)}>{t.support}</Link>
         <button className="lang-btn" onClick={() => setLang(lang === 'en' ? 'ru' : 'en')}>
           {lang === 'en' ? 'RU' : 'EN'}
         </button>
@@ -450,7 +439,7 @@ function HomePage({ t }: { t: T }) {
       </div>
       <div className="departments">
         {getDepartments(t).map(dept => (
-          <DepartmentCard key={dept.id} name={dept.name} description={dept.description} members={dept.members} t={t} />
+          <DepartmentCard key={dept.id} name={dept.name} tag={dept.tag} icon={dept.icon} description={dept.description} members={dept.members} t={t} />
         ))}
       </div>
     </div>
@@ -459,13 +448,17 @@ function HomePage({ t }: { t: T }) {
 
 function EventsPage({ t }: { t: T }) {
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'passed'>('all')
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+
   const visibleEvents = eventsWithStatus.filter(event => {
     if (filter === 'upcoming') return event.isActive
     if (filter === 'passed') return !event.isActive
     return true
   })
+
   return (
     <div className="container">
+      {selectedEvent && <EventModal event={selectedEvent} t={t} onClose={() => setSelectedEvent(null)} />}
       <div className="section-title">
         <h2>{t.events_title}</h2>
         <p>{t.events_desc}</p>
@@ -477,12 +470,18 @@ function EventsPage({ t }: { t: T }) {
       </div>
       <div className="events-list">
         {visibleEvents.map((event, index) => (
-          <div key={index} className="event-card">
-            <span className={`badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
-              {event.isActive ? t.upcoming : t.passed}
-            </span>
-            <h2>{event.name}</h2>
-            <p>📅 {event.date}</p>
+          <div key={index} className="event-card" onClick={() => setSelectedEvent(event)} style={{ cursor: 'pointer' }}>
+            <div className="event-image-wrapper">
+              <img src={event.image} alt={event.name} />
+              <span className={`event-badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
+                {event.isActive ? t.upcoming : t.passed}
+              </span>
+            </div>
+            <div className="event-card-body">
+              <h2>{event.name}</h2>
+              <p>📅 {event.date} &nbsp; 📍 {event.location}</p>
+              <span className="event-details-link">{t.details}</span>
+            </div>
           </div>
         ))}
       </div>
@@ -500,9 +499,7 @@ function DonationsPage({ t }: { t: T }) {
       <div className="donation-card">
         <h3>{t.qr_title}</h3>
         <p>{t.qr_desc}</p>
-        <div className="qr-placeholder">
-          <p>QR Code</p>
-        </div>
+        <div className="qr-placeholder"><p>QR Code</p></div>
         <p className="donation-note">{t.qr_note}</p>
       </div>
     </div>
@@ -512,7 +509,6 @@ function DonationsPage({ t }: { t: T }) {
 function App() {
   const [lang, setLang] = useState<Lang>('en')
   const t = translations[lang]
-
   return (
     <BrowserRouter>
       <Navbar lang={lang} setLang={setLang} t={t} />
