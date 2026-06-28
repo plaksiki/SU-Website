@@ -131,6 +131,7 @@ body {
 }
 
 .event-card {
+  max-width: 400px;
   background-color: white;
   border-radius: 16px;
   padding: 24px;
@@ -314,4 +315,220 @@ body {
 .lang-btn:hover {
   background-color: #40ba21;
   color: white;
+}
+
+.event-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  border-radius: 12px 12px 0 0;
+  margin: -24px -24px 16px -24px;
+  width: calc(100% + 48px);
+}
+
+.event-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.event-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.event-card-body h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #1e293b;
+}
+
+/* Модальное окно */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 20px;
+  max-width: 600px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 16px;
+  z-index: 1;
+}
+
+.modal-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.modal-body h2 {
+  font-size: 24px;
+  font-weight: 900;
+  margin: 12px 0 8px;
+  color: #1e293b;
+}
+
+.modal-meta {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.modal-desc {
+  color: #475569;
+  line-height: 1.6;
+}
+
+/* Карточка ивента */
+.event-image-wrapper {
+  position: relative;
+  width: calc(100% + 48px);
+  margin: -24px -24px 16px -24px;
+  height: 180px;
+  overflow: hidden;
+  border-radius: 16px 16px 0 0;
+}
+
+.event-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.event-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.event-card-body h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #1e293b;
+}
+
+.event-details-link {
+  display: inline-block;
+  margin-top: 12px;
+  color: #40ba21;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* Иконки департаментов */
+.dept-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.dept-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: bold;
+  color: #40ba21;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+/* Мобильный адаптив */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #1e293b;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: white;
+    flex-direction: column;
+    padding: 16px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    gap: 16px;
+    z-index: 100;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .navbar {
+    position: relative;
+  }
+
+  .hero {
+    padding: 32px 24px;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .events-list {
+    flex-direction: column;
+  }
+
+  .departments {
+    flex-direction: column;
+  }
+
+  .event-card {
+    max-width: 100%;
+  }
 }
