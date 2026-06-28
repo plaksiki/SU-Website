@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+
 @Entity
 @Table(name = "questionnaires")
 public class Questionnaire {
@@ -33,6 +34,7 @@ public class Questionnaire {
         this.startedAt = startedAt;
         this.finishedAt = finishedAt;
     }
+   
 
     public long getId() {
         return this.id;
@@ -73,4 +75,5 @@ public class Questionnaire {
     public void setFinishedAt(LocalDateTime finishedAt) {
         this.finishedAt = finishedAt;
     }
+    
 }
