@@ -41,6 +41,10 @@ const translations = {
     close: "Close",
     location: "Location",
     details: "Details →",
+    history: "History",
+    history_title: "Our History",
+    history_desc: "The story of Innopolis University Student Union",
+
   },
   ru: {
     home: "Главная",
@@ -78,6 +82,10 @@ const translations = {
     close: "Закрыть",
     location: "Место",
     details: "Подробнее →",
+    history: "История",
+    history_title: "Наша история",
+    history_desc: "История Студенческого Союза Университета Иннополис",
+
   }
 }
 
@@ -85,6 +93,7 @@ interface Event {
   name: string
   date: string
   image: string
+  color: string
   location: string
   description: string
   isActive?: boolean
@@ -94,21 +103,24 @@ const events: Event[] = [
   {
     name: "Minecraft Event",
     date: "2026-10-01",
-    image: "https://picsum.photos/600/300?random=1",
+    image: "",
+    color: "#16a34a",
     location: "IU Gaming Room",
     description: "Join us for a fun Minecraft building competition! All skill levels welcome. Prizes for the best builds."
   },
   {
     name: "CS:GO Event",
     date: "2026-11-01",
-    image: "https://picsum.photos/600/300?random=2",
+    image: "",
+    color: "#0891b2",
     location: "IU Esports Arena",
     description: "Competitive CS:GO tournament. Form your team and compete for the championship title and exclusive IU merchandise."
   },
   {
     name: "Hackathon",
     date: "2025-12-01",
-    image: "https://picsum.photos/600/300?random=3",
+    image: "",
+    color: "#7c3aed",
     location: "IU Co-working Area",
     description: "48-hour hackathon. Build innovative solutions for university life. Mentors available throughout the event."
   },
@@ -233,13 +245,14 @@ function EventModal({ event, t, onClose }: { event: Event; t: T; onClose: () => 
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}>✕</button>
-        <img src={event.image} alt={event.name} className="modal-image" />
+        <div className="modal-image-placeholder" style={{ background: `linear-gradient(135deg, ${event.color}, ${event.color}99)` }}>
+          <h2 style={{ color: 'white', fontSize: 28, fontWeight: 900 }}>{event.name}</h2>
+        </div>
         <div className="modal-body">
           <span className={`badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
             {event.isActive ? t.upcoming : t.passed}
           </span>
-          <h2>{event.name}</h2>
-          <p className="modal-meta">📅 {event.date} &nbsp; 📍 {event.location}</p>
+          <p className="modal-meta" style={{ marginTop: 12 }}>📅 {event.date} &nbsp; 📍 {event.location}</p>
           <p className="modal-desc">{event.description}</p>
         </div>
       </div>
@@ -414,6 +427,7 @@ function Navbar({ lang, setLang, t }: { lang: Lang; setLang: (l: Lang) => void; 
       <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>☰</button>
       <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
         <Link to="/" onClick={() => setMenuOpen(false)}>{t.home}</Link>
+        <Link to="/history" onClick={() => setMenuOpen(false)}>{t.history}</Link>
         <Link to="/events" onClick={() => setMenuOpen(false)}>{t.events}</Link>
         <Link to="/polls" onClick={() => setMenuOpen(false)}>{t.polls}</Link>
         <Link to="/donations" onClick={() => setMenuOpen(false)}>{t.support}</Link>
@@ -446,6 +460,40 @@ function HomePage({ t }: { t: T }) {
   )
 }
 
+const historyEvents = [
+  { year: "2013", titleEn: "University Founded", titleRu: "Основание университета", descEn: "Innopolis University was established as Russia's first IT-focused university.", descRu: "Университет Иннополис основан как первый в России IT-университет." },
+  { year: "2015", titleEn: "Student Union Created", titleRu: "Создание Студенческого Союза", descEn: "The Student Union was formed to represent student interests and organize campus life.", descRu: "Студенческий Союз создан для представления интересов студентов." },
+  { year: "2018", titleEn: "First Major Event", titleRu: "Первое крупное мероприятие", descEn: "SU organized the first university-wide hackathon with 200+ participants.", descRu: "СС организовал первый университетский хакатон с 200+ участниками." },
+  { year: "2020", titleEn: "Online Transition", titleRu: "Переход в онлайн", descEn: "During the pandemic, SU successfully moved all activities online.", descRu: "Во время пандемии СС успешно перевёл все активности в онлайн." },
+  { year: "2022", titleEn: "SU Portal Launch", titleRu: "Запуск портала СС", descEn: "Launch of the first digital platform for student governance and events.", descRu: "Запуск первой цифровой платформы для студенческого самоуправления." },
+  { year: "2024", titleEn: "New Departments", titleRu: "Новые департаменты", descEn: "SU expanded with new departments: IT, Media, Sport, and Culture.", descRu: "СС расширился новыми департаментами: IT, Media, Спорт и Культура." },
+  { year: "2026", titleEn: "Today", titleRu: "Сегодня", descEn: "SU continues to grow, now serving 1000+ students across all programs.", descRu: "СС продолжает развиваться, обслуживая 1000+ студентов всех программ." },
+]
+
+function HistoryPage({ t, lang }: { t: T; lang: Lang }) {
+  return (
+    <div className="history-page">
+      <div className="container">
+        <div className="section-title">
+          <h2>{t.history_title}</h2>
+          <p>{t.history_desc}</p>
+        </div>
+        <div className="timeline">
+          {historyEvents.map((event, index) => (
+            <div key={index} className={`timeline-item ${index % 2 === 0 ? 'left' : 'right'}`}>
+              <div className="timeline-year">{event.year}</div>
+              <div className="timeline-card">
+                <h3>{lang === 'en' ? event.titleEn : event.titleRu}</h3>
+                <p>{lang === 'en' ? event.descEn : event.descRu}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function EventsPage({ t }: { t: T }) {
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'passed'>('all')
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
@@ -470,20 +518,19 @@ function EventsPage({ t }: { t: T }) {
       </div>
       <div className="events-list">
         {visibleEvents.map((event, index) => (
-          <div key={index} className="event-card" onClick={() => setSelectedEvent(event)} style={{ cursor: 'pointer' }}>
-            <div className="event-image-wrapper">
-              <img src={event.image} alt={event.name} />
-              <span className={`event-badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
-                {event.isActive ? t.upcoming : t.passed}
-              </span>
-            </div>
-            <div className="event-card-body">
-              <h2>{event.name}</h2>
-              <p>📅 {event.date} &nbsp; 📍 {event.location}</p>
-              <span className="event-details-link">{t.details}</span>
-            </div>
-          </div>
-        ))}
+  <div key={index} className="event-card" onClick={() => setSelectedEvent(event)} style={{ cursor: 'pointer' }}>
+    <div className="event-image-wrapper" style={{ background: `linear-gradient(135deg, ${event.color}, ${event.color}99)` }}>
+      <h3 style={{ color: 'white', fontSize: 20, fontWeight: 900, padding: '0 16px' }}>{event.name}</h3>
+      <span className={`event-badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
+        {event.isActive ? t.upcoming : t.passed}
+      </span>
+    </div>
+    <div className="event-card-body">
+      <p>📅 {event.date} &nbsp; 📍 {event.location}</p>
+      <span className="event-details-link">{t.details}</span>
+    </div>
+  </div>
+))}
       </div>
     </div>
   )
@@ -506,6 +553,32 @@ function DonationsPage({ t }: { t: T }) {
   )
 }
 
+function Footer() {
+  return (
+    <footer className="footer">
+      <div className="footer-content">
+        <div className="footer-left">
+          <div className="footer-logo">
+            <span className="logo-box">IU</span>
+            <span style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>Student Union Portal</span>
+          </div>
+          <p className="footer-subtitle">INNOPOLIS UNIVERSITY STUDENT UNION</p>
+          <p className="footer-links-row">GOVERNANCE • ACTIVITY HUB • TRANSPARENCY</p>
+        </div>
+        <div className="footer-right">
+          <p>📧 su@innopolis.university</p>
+          <p>📍 Room 67 </p>
+          <p>🕐 Tue & Thu 18:00 - 20:00</p>
+        </div>
+      </div>
+      <div className="footer-bottom">
+        <span>© 2026 IU Student Union</span>
+        <span>Terms of Use · Privacy</span>
+      </div>
+    </footer>
+  )
+}
+
 function App() {
   const [lang, setLang] = useState<Lang>('en')
   const t = translations[lang]
@@ -513,11 +586,13 @@ function App() {
     <BrowserRouter>
       <Navbar lang={lang} setLang={setLang} t={t} />
       <Routes>
+        <Route path="/history" element={<HistoryPage t={t} lang={lang} />} />
         <Route path="/" element={<HomePage t={t} />} />
         <Route path="/events" element={<EventsPage t={t} />} />
         <Route path="/polls" element={<PollsPage t={t} lang={lang} />} />
         <Route path="/donations" element={<DonationsPage t={t} />} />
       </Routes>
+      <Footer/>
     </BrowserRouter>
   )
 }
