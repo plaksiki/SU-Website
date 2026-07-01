@@ -390,7 +390,7 @@ if (!selected) return (
 type Lang = 'en' | 'ru'
 type T = typeof translations.en
 
-function DepartmentPage({ t, lang }: { t: T; lang: Lang }) {
+function DepartmentPage({ t }: { t: T; lang: Lang }) {
   const { slug } = useParams()
   const dept = getDepartments(t).find(d => d.slug === slug)
 
