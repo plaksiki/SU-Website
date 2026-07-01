@@ -51,4 +51,3 @@ Website of the Innopolis University students union. This is the bussines card of
 ## 📌 **Version History**
 - **v1.0.0** - MVP v1 (Assignment 3) - React frontend with Docker deployment
 - **v0.1.0** - MVP v0 - Initial HTML/CSS prototype
-
