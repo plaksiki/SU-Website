@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Link, useParams } from 'react-router-dom'
 import './App.css'
 
 const API_URL = 'http://10.93.26.192:8080'
@@ -90,6 +90,7 @@ const translations = {
 }
 
 interface Event {
+  id: string
   name: string
   date: string
   image: string
@@ -101,6 +102,7 @@ interface Event {
 
 const events: Event[] = [
   {
+    id: "minecraft-event",
     name: "Minecraft Event",
     date: "2026-10-01",
     image: "",
@@ -109,6 +111,7 @@ const events: Event[] = [
     description: "Join us for a fun Minecraft building competition! All skill levels welcome. Prizes for the best builds."
   },
   {
+    id: "csgo-event",
     name: "CS:GO Event",
     date: "2026-11-01",
     image: "",
@@ -117,6 +120,7 @@ const events: Event[] = [
     description: "Competitive CS:GO tournament. Form your team and compete for the championship title and exclusive IU merchandise."
   },
   {
+    id: "hackathon-event",
     name: "Hackathon",
     date: "2025-12-01",
     image: "",
@@ -127,11 +131,10 @@ const events: Event[] = [
 ]
 
 const getDepartments = (t: T) => [
-  { id: 1, name: "SU Core", tag: "SU.CORE", icon: "🛡️", description: t.dept_core_desc, members: ["Alice Johnson", "Bob Smith", "Carol White"] },
-  { id: 2, name: "SU IT", tag: "SU.IT", icon: "⚙️", description: t.dept_it_desc, members: ["David Lee", "Emma Davis", "Frank Miller"] },
-  { id: 3, name: "SU Media", tag: "SU.MEDIA", icon: "📸", description: t.dept_media_desc, members: ["Grace Wilson", "Henry Brown", "Ivy Taylor"] },
-  { id: 4, name: "SU Sport", tag: "SU.SPORT", icon: "⚽", description: t.dept_sport_desc, members: ["Jack Anderson", "Kate Thomas", "Liam Jackson"] },
-]
+  { id: 1, slug: "su-core", name: "SU Core", tag: "SU.CORE", icon: "🛡️", description: t.dept_core_desc, members: ["Alice Johnson", "Bob Smith", "Carol White"] },
+  { id: 2, slug: "su-it", name: "SU IT", tag: "SU.IT", icon: "⚙️", description: t.dept_it_desc, members: ["David Lee", "Emma Davis", "Frank Miller"] },
+  { id: 3, slug: "su-media", name: "SU Media", tag: "SU.MEDIA", icon: "📸", description: t.dept_media_desc, members: ["Grace Wilson", "Henry Brown", "Ivy Taylor"] },
+  ]
 
 const today = new Date()
 const eventsWithStatus = events.map(event => ({
@@ -239,26 +242,6 @@ interface BackendQuestionnaire {
   finishedAt: string
 }
 
-// Модальное окно для ивента
-function EventModal({ event, t, onClose }: { event: Event; t: T; onClose: () => void }) {
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
-        <div className="modal-image-placeholder" style={{ background: `linear-gradient(135deg, ${event.color}, ${event.color}99)` }}>
-          <h2 style={{ color: 'white', fontSize: 28, fontWeight: 900 }}>{event.name}</h2>
-        </div>
-        <div className="modal-body">
-          <span className={`badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
-            {event.isActive ? t.upcoming : t.passed}
-          </span>
-          <p className="modal-meta" style={{ marginTop: 12 }}>📅 {event.date} &nbsp; 📍 {event.location}</p>
-          <p className="modal-desc">{event.description}</p>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 function PollsPage({ t, lang }: { t: T; lang: Lang }) {
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -305,37 +288,47 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
   }
   const handleBack = () => { setSelectedId(null); setAnswers({}); setSubmitted(false); setErrors({}) }
 
-  if (!selectedId) return (
-    <div className="container">
-      <div className="section-title">
-        <h2>{t.polls_title}</h2>
-        <p>{t.polls_desc}</p>
-      </div>
-      {loading && <p style={{ textAlign: 'center', color: '#64748b' }}>Loading...</p>}
-      {fetchError && <p style={{ textAlign: 'center', color: '#dc2626' }}>Could not connect to server.</p>}
-      <div className="events-list">
-        {!loading && !fetchError && backendPolls.map(poll => (
-          <div key={poll.id} className="event-card" style={{ cursor: 'pointer' }} onClick={() => setSelectedId('q1')}>
-            <span className="badge badge-upcoming">Live</span>
-            <h2>{poll.title}</h2>
-            <p>{poll.description}</p>
-            <p style={{ fontSize: 12, color: '#94a3b8', marginTop: 8 }}>📅 {new Date(poll.finishedAt).toLocaleDateString()}</p>
-            <br />
-            <button className="btn" style={{ fontSize: 14 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</button>
-          </div>
-        ))}
-        {QUESTIONNAIRES.map(q => (
-          <div key={q.id} className="event-card" style={{ cursor: 'pointer' }} onClick={() => setSelectedId(q.id)}>
-            <span className="badge badge-upcoming">{q.questions.length} {lang === 'en' ? 'questions' : 'вопросов'}</span>
-            <h2>{lang === 'en' ? q.titleEn : q.titleRu}</h2>
-            <p>{lang === 'en' ? q.descriptionEn : q.descriptionRu}</p>
-            <br />
-            <button className="btn" style={{ fontSize: 14 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</button>
-          </div>
-        ))}
-      </div>
+// СНАЧАЛА проверяем selectedId
+if (!selectedId) return (
+  <div className="container">
+    <div className="section-title">
+      <h2>{t.polls_title}</h2>
+      <p>{t.polls_desc}</p>
     </div>
-  )
+    {loading && <p style={{ textAlign: 'center', color: '#64748b' }}>Loading...</p>}
+    {fetchError && <p style={{ textAlign: 'center', color: '#dc2626' }}>Could not connect to server.</p>}
+    <div className="events-list">
+      {!loading && !fetchError && backendPolls.filter(poll => poll !== null).map(poll => (
+        <div key={poll.id} className="event-card" style={{ cursor: 'pointer' }} onClick={() => setSelectedId('q1')}>
+          <span className="badge badge-upcoming">Live</span>
+          <h2>{poll.title}</h2>
+          <p>{poll.description}</p>
+          <br />
+          <button className="btn" style={{ fontSize: 14 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</button>
+        </div>
+      ))}
+      {QUESTIONNAIRES.map(q => (
+        <div key={q.id} className="event-card" style={{ cursor: 'pointer' }} onClick={() => setSelectedId(q.id)}>
+          <span className="badge badge-upcoming">{q.questions.length} {lang === 'en' ? 'questions' : 'вопросов'}</span>
+          <h2>{lang === 'en' ? q.titleEn : q.titleRu}</h2>
+          <p>{lang === 'en' ? q.descriptionEn : q.descriptionRu}</p>
+          <br />
+          <button className="btn" style={{ fontSize: 14 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</button>
+        </div>
+      ))}
+    </div>
+  </div>
+)
+
+// ПОТОМ проверяем selected
+if (!selected) return (
+  <div className="container">
+    <button onClick={handleBack} style={{ background: 'none', border: 'none', color: '#40ba21', fontWeight: 'bold', cursor: 'pointer', marginBottom: 16 }}>
+      ← {lang === 'en' ? 'Back' : 'Назад'}
+    </button>
+    <p>Questionnaire not found</p>
+  </div>
+)
 
   if (submitted) return (
     <div className="container">
@@ -397,22 +390,58 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
 type Lang = 'en' | 'ru'
 type T = typeof translations.en
 
-function DepartmentCard(props: { name: string; tag: string; icon: string; description: string; members: string[]; t: T }) {
-  const [isOpen, setIsOpen] = useState(false)
-  return (
-    <div className="dept-card" onClick={() => setIsOpen(!isOpen)}>
-      <div className="dept-icon">{props.icon}</div>
-      <span className="dept-tag">{props.tag}</span>
-      <h3>{props.name}</h3>
-      <p>{props.description}</p>
-      {isOpen && (
-        <div className="dept-members">
-          <h4>{props.t.members}</h4>
-          {props.members.map((m, i) => <p key={i}>👤 {m}</p>)}
-        </div>
-      )}
-      <span className="dept-toggle">{isOpen ? props.t.hide : props.t.show_members}</span>
+function DepartmentPage({ t, lang }: { t: T; lang: Lang }) {
+  const { slug } = useParams()
+  const dept = getDepartments(t).find(d => d.slug === slug)
+
+  if (!dept) return (
+    <div className="container">
+      <h2>Department not found</h2>
+      <Link to="/" className="btn">← Back</Link>
     </div>
+  )
+
+  return (
+    <div className="container">
+      <Link to="/" style={{ color: '#40ba21', fontWeight: 'bold', textDecoration: 'none' }}>
+        ← {t.home}
+      </Link>
+      <div className="event-full-page" style={{ marginTop: 20 }}>
+        <div className="event-full-header" style={{ background: 'linear-gradient(135deg, #40ba21, #166534)' }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>{dept.icon}</div>
+          <span className="dept-tag" style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13 }}>{dept.tag}</span>
+          <h1 style={{ color: 'white', fontSize: 36, fontWeight: 900, margin: '8px 0' }}>{dept.name}</h1>
+          <p style={{ color: 'rgba(255,255,255,0.9)' }}>{dept.description}</p>
+        </div>
+        <div className="event-full-body">
+          <h3 style={{ marginBottom: 16, color: '#1e293b' }}>{t.members}</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {dept.members.map((member, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: '#f8fafc', borderRadius: 12, border: '1px solid #e2e8f0' }}>
+                <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#40ba21', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>
+                  {member[0]}
+                </div>
+                <span style={{ fontWeight: 500, color: '#1e293b' }}>{member}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function DepartmentCard(props: { slug: string; name: string; tag: string; icon: string; description: string; t: T }) {
+  return (
+    <Link to={`/departments/${props.slug}`} style={{ textDecoration: 'none', flex: 1, minWidth: 220 }}>
+      <div className="dept-card">
+        <div className="dept-icon">{props.icon}</div>
+        <span className="dept-tag">{props.tag}</span>
+        <h3>{props.name}</h3>
+        <p>{props.description}</p>
+        <span className="dept-toggle">View department →</span>
+      </div>
+    </Link>
   )
 }
 
@@ -453,7 +482,7 @@ function HomePage({ t }: { t: T }) {
       </div>
       <div className="departments">
         {getDepartments(t).map(dept => (
-          <DepartmentCard key={dept.id} name={dept.name} tag={dept.tag} icon={dept.icon} description={dept.description} members={dept.members} t={t} />
+          <DepartmentCard key={dept.id} slug={dept.slug} name={dept.name} tag={dept.tag} icon={dept.icon} description={dept.description} t={t} />
         ))}
       </div>
     </div>
@@ -494,9 +523,40 @@ function HistoryPage({ t, lang }: { t: T; lang: Lang }) {
   )
 }
 
+function EventPage({ t }: { t: T }) {
+  const { id } = useParams()
+  const event = eventsWithStatus.find(e => e.id === id)
+
+  if (!event) return (
+    <div className="container">
+      <h2>Event not found</h2>
+      <Link to="/events" className="btn">← Back to Events</Link>
+    </div>
+  )
+
+  return (
+    <div className="container">
+      <Link to="/events" style={{ color: '#40ba21', fontWeight: 'bold', textDecoration: 'none' }}>
+        ← {t.events}
+      </Link>
+      <div className="event-full-page">
+        <div className="event-full-header" style={{ background: `linear-gradient(135deg, ${event.color}, ${event.color}99)` }}>
+          <span className={`badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
+            {event.isActive ? t.upcoming : t.passed}
+          </span>
+          <h1>{event.name}</h1>
+          <p>📅 {event.date} &nbsp; 📍 {event.location}</p>
+        </div>
+        <div className="event-full-body">
+          <p>{event.description}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function EventsPage({ t }: { t: T }) {
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'passed'>('all')
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
 
   const visibleEvents = eventsWithStatus.filter(event => {
     if (filter === 'upcoming') return event.isActive
@@ -506,7 +566,6 @@ function EventsPage({ t }: { t: T }) {
 
   return (
     <div className="container">
-      {selectedEvent && <EventModal event={selectedEvent} t={t} onClose={() => setSelectedEvent(null)} />}
       <div className="section-title">
         <h2>{t.events_title}</h2>
         <p>{t.events_desc}</p>
@@ -518,19 +577,21 @@ function EventsPage({ t }: { t: T }) {
       </div>
       <div className="events-list">
         {visibleEvents.map((event, index) => (
-  <div key={index} className="event-card" onClick={() => setSelectedEvent(event)} style={{ cursor: 'pointer' }}>
-    <div className="event-image-wrapper" style={{ background: `linear-gradient(135deg, ${event.color}, ${event.color}99)` }}>
-      <h3 style={{ color: 'white', fontSize: 20, fontWeight: 900, padding: '0 16px' }}>{event.name}</h3>
-      <span className={`event-badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
-        {event.isActive ? t.upcoming : t.passed}
-      </span>
-    </div>
-    <div className="event-card-body">
-      <p>📅 {event.date} &nbsp; 📍 {event.location}</p>
-      <span className="event-details-link">{t.details}</span>
-    </div>
-  </div>
-))}
+        <Link key={index} to={`/events/${event.id}`} style={{ textDecoration: 'none' }}>
+            <div className="event-card" style={{ cursor: 'pointer', height: '100%' }}>
+              <div className="event-image-wrapper" style={{ background: `linear-gradient(135deg, ${event.color}, ${event.color}99)` }}>
+                <h3 style={{ color: 'white', fontSize: 20, fontWeight: 900, padding: '0 16px' }}>{event.name}</h3>
+                <span className={`event-badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
+                  {event.isActive ? t.upcoming : t.passed}
+                </span>
+              </div>
+              <div className="event-card-body">
+                <p>📅 {event.date} &nbsp; 📍 {event.location}</p>
+                <span className="event-details-link">{t.details}</span>
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   )
@@ -586,6 +647,8 @@ function App() {
     <BrowserRouter>
       <Navbar lang={lang} setLang={setLang} t={t} />
       <Routes>
+        <Route path="/departments/:slug" element={<DepartmentPage t={t} lang={lang} />} />
+        <Route path="/events/:id" element={<EventPage t={t} />} />
         <Route path="/history" element={<HistoryPage t={t} lang={lang} />} />
         <Route path="/" element={<HomePage t={t} />} />
         <Route path="/events" element={<EventsPage t={t} />} />
