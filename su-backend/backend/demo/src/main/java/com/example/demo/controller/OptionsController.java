@@ -14,7 +14,7 @@ public class OptionsController {
         this.repository = repository;
     }
     @GetMapping("/options/{id}")
-    public Optional<Options> getMethodName(@PathVariable Long id) {
+    public Optional<Options> getOptions(@PathVariable Long id) {
         return repository.findById(id);
     }
 
