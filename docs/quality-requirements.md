@@ -59,3 +59,63 @@ Build stability must be verified automatically on every change.
 **Rationale:** Students may access the portal from university Wi-Fi or mobile networks.
 Keeping the bundle size reasonable ensures the page loads quickly
 and discourages adding unnecessary dependencies to the project.
+
+---
+
+## QR-4: Usability – Mobile Responsiveness
+ 
+| Field              | Details                                                       |
+| ------------------ | ---------------------------------------------------------------- |
+| **ISO/IEC 25010**  | Usability / Operability                                          |
+| **Verified by**    | QRT-4                                                             |
+| **Related ADR(s)** | [ADR-001](./architecture/adr/ADR-004-mobile-first-layout.md) |
+ 
+**Scenario:**
+ 
+- **Stimulus:** A student opens the portal on a mobile device
+- **Environment:** Browser at 375px screen width (iPhone SE)
+- **Response:** All pages render correctly
+- **Measure:** No horizontal scroll; all buttons and text are reachable — verified by a
+  Playwright/Cypress test
+**Rationale:** The customer explicitly requested a "fully responsive design." Students frequently
+access the site from their phones.
+ 
+---
+ 
+## QR-5: Usability – Language Switching
+ 
+| Field              | Details                                                       |
+| ------------------ | ---------------------------------------------------------------- |
+| **ISO/IEC 25010**  | Usability / Accessibility                                        |
+| **Verified by**    | QRT-5                                                             |
+| **Related ADR(s)** | [ADR-002](./architecture/adr/ADR-002-one-translations-object-for-EN&RU.md) |
+ 
+**Scenario:**
+ 
+- **Stimulus:** A user clicks the language-switch control
+- **Environment:** Any page on the site
+- **Response:** All text on the page switches to the selected language
+- **Measure:** 100% of text elements are translated — verified by a unit test against the
+  translations object
+**Rationale:** The customer requested "at minimum English, ideally with switching to Russian."
+Both languages must be complete.
+ 
+---
+ 
+## QR-6: Functional Suitability – Questionnaire Submission
+ 
+| Field              | Details                                                       |
+| ------------------ | ---------------------------------------------------------------- |
+| **ISO/IEC 25010**  | Functional Suitability / Functional Correctness                  |
+| **Verified by**    | QRT-6                                                             |
+| **Related ADR(s)** | [ADR-003](./architecture/adr/ADR-003-validate-questionnaires-on-both-frontend-and-backend.md) |
+ 
+**Scenario:**
+ 
+- **Stimulus:** A student fills out and submits a questionnaire
+- **Environment:** `/polls` page, all question types (single-choice, multiple-choice, text)
+- **Response:** Answers are sent to the backend; the user sees a confirmation
+- **Measure:** All required fields are validated and the POST request carries the correct
+  payload — verified by a Vitest test
+**Rationale:** The customer identified questionnaires as the most important feature. They must
+work correctly for every question type.
