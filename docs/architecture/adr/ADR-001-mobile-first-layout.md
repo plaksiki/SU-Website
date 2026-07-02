@@ -1,4 +1,4 @@
-# ADR-004: Mobile-First Layout
+# ADR-001: Mobile-First Layout
 
 **Status:** Accepted
 
