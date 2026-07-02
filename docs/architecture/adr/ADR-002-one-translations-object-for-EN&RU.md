@@ -1,4 +1,4 @@
-# ADR-005: One Translations Object for EN/RU
+# ADR-002: One Translations Object for EN/RU
 
 **Status:** Accepted
 
