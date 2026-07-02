@@ -1,4 +1,4 @@
-# ADR-004: Mobile-First Responsive Layout Strategy
+# ADR-001: Mobile-First Responsive Layout Strategy
 
 **Status:** Accepted
  
