@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Link, useParams } from 'react-router-dom'
 import './App.css'
+import AdminPage from './AdminPage'
+import { useNavigate } from 'react-router-dom'
 
 const API_URL = 'http://10.93.26.192:8080'
 
@@ -447,9 +449,20 @@ function DepartmentCard(props: { slug: string; name: string; tag: string; icon: 
 
 function Navbar({ lang, setLang, t }: { lang: Lang; setLang: (l: Lang) => void; t: T }) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [logoClicks, setLogoClicks] = useState(0)
+  const navigate = useNavigate()
+
+  const handleLogoClick = () => {
+    const newCount = logoClicks + 1
+    setLogoClicks(newCount)
+    if (newCount === 3) {
+      navigate('/admin')
+      setLogoClicks(0)
+    }
+  }
   return (
     <nav className="navbar">
-      <div className="nav-logo">
+      <div className="nav-logo" style={{ textDecoration: 'none' }} onClick={handleLogoClick}>
         <span className="logo-box">IU</span>
         <span className="logo-text">Student Union Portal</span>
       </div>
@@ -654,6 +667,7 @@ function App() {
         <Route path="/events" element={<EventsPage t={t} />} />
         <Route path="/polls" element={<PollsPage t={t} lang={lang} />} />
         <Route path="/donations" element={<DonationsPage t={t} />} />
+        <Route path="/admin" element={<AdminPage />} />
       </Routes>
       <Footer/>
     </BrowserRouter>
