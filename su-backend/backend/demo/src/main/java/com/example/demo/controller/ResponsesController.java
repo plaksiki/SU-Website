@@ -14,7 +14,7 @@ public class ResponsesController {
         this.repository = repository;
     }
     @GetMapping("/responses/{id}")
-    public Optional<Responses> getMethodName(@PathVariable Long id) {
+    public Optional<Responses> getResponses(@PathVariable Long id) {
         return repository.findById(id);
     }
 
