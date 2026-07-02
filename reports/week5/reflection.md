@@ -6,10 +6,14 @@
 
 
 ### Documenting architecture:
-- The team formally documented the system architecture for the first time, in `docs/architecture/README.md`. Writing the document forced us to make explicit a number of decisions that had previously only existed implicitly. We learned that architecture documentation is useful less as a formality and more as a way to surface gaps between what the repository contains and what is actually deployed — a gap that had gone unnoticed until we tried to write it down.
+- We wrote up the 3 architecture of 3 QRs to turn into ADRs:
+mobile responsiveness (ADR-001), language switching (ADR-002), questionnaire submission (ADR-003).
+Writing them forced us to actually decide stuff we'd left vague — like a real breakpoint for mobile,
+one shared object for translations, and checking questionnaires on the backend too, not just
+frontend.
 
 ### Recording ADRs:
-- We created three Architecture Decision Records, one per quality requirement (QR-1, QR-2, QR-3): the CI gate enforcing TypeScript and ESLint, the containerized deployment via Docker Compose, and the frontend bundle-size budget. Requiring every ADR to name the exact quality requirement it addresses made it immediately clear which decisions had been made deliberately and which had simply been unexamined defaults — all three mapped cleanly to a QR, with no leftover "decisions" that didn't actually trace to anything. The mandatory "Consequences and tradeoffs" section was also useful on its own: it forced us to write down risks that had previously only been assumed, such as the fact that deferring Redis means the backend currently has no caching layer.
+- Linking each ADR to its exact QR made it obvious these were real, thought-through decisions and not just "however we happened to build it." Writing the consequences/tradeoffs part also made us admit stuff we hadn't said out loud — like one big translations file getting messy as the site grows, or that we now have the same validation logic in two places (frontend and backend) that we have to keep in sync.
 
 ### Refining the workflow:
 - We have now tried to organize all the documentation since the beginning of the week and distribute it to everyone according to their abilities and capabilities, taking into account the presence of unforeseen situations.
@@ -23,7 +27,7 @@
 ## 2. Validated Assumptions
 
 ### Architecture and ADRs:
-- Each of the three quality requirements (QR-1, QR-2, QR-3) can be traced to exactly one architectural decision — confirmed: the QR ↔ ADR mapping came out 1-to-1, with no gaps and no orphan ADRs.
+- Each of the three quality requirements (QR-4, QR-5, QR-6) can be traced to exactly one architectural decision — confirmed: the QR ↔ ADR mapping came out 1-to-1, with no gaps and no orphan ADRs.
 
 ### CI and configuration:
 - [ADD: which assumptions about CI/configuration were confirmed or rejected this week — e.g. was the `-DskipTests` workaround replaced with a real test database in CI, as planned in Week 4?]
