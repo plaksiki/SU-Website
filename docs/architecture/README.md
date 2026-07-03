@@ -40,6 +40,9 @@ This document describes the architecture of the Student Union Website, including
 - QR-5: Text on page does not slide when user change the language during the survey
 - QR-6: A student fills out and submits a questionnaire, then answers are given to backend, user sees confirmation.
 
+<img width="1882" height="2447" alt="user-survey-sequence-diagram" src="https://github.com/user-attachments/assets/431aa8f8-37c6-479f-924d-97a7dd13e7cb" />
+
+
 ```plantuml
 @startuml Dynamic view 1
 title Sequence Diagram - User Completing a Survey
