@@ -69,3 +69,58 @@ in a later sprint.
 
 **Evidence:** CI run logs in GitHub Actions → CI workflow → `Type check & Build` step,
 Vite bundle size table printed at the end of build output
+
+---
+
+## QRT-4: Mobile Responsiveness Check
+| Field | Details |
+|-------|---------|
+| **Verifies** | QR-4 (Usability – Mobile Responsiveness) |
+| **Type** | Unit test |
+| **CI step** | `Run tests` in `.github/workflows/ci.yml` |
+| **Command** | `npm run test` |
+| **Pass condition** | All pages render without horizontal overflow at 375px width |
+| **Fail condition** | Any page causes horizontal scroll at mobile viewport |
+
+**What it checks:**
+- Home page, Events page, Polls page, Donations page, History page render at 375px
+- No element causes `scrollWidth > clientWidth`
+
+**Evidence:** Vitest test output in GitHub Actions → CI workflow → `Run tests` step
+
+---
+
+## QRT-5: Language Switching Check
+| Field | Details |
+|-------|---------|
+| **Verifies** | QR-5 (Usability – Language Switching) |
+| **Type** | Unit test |
+| **CI step** | `Run tests` in `.github/workflows/ci.yml` |
+| **Command** | `npm run test` |
+| **Pass condition** | All keys present in both `en` and `ru` translations objects |
+| **Fail condition** | Any key missing in either language |
+
+**What it checks:**
+- `translations.en` and `translations.ru` have identical keys
+- No key returns undefined in either language
+
+**Evidence:** Vitest test output in GitHub Actions → CI workflow → `Run tests` step
+
+---
+
+## QRT-6: Questionnaire Validation Check
+| Field | Details |
+|-------|---------|
+| **Verifies** | QR-6 (Functional Suitability – Questionnaire Submission) |
+| **Type** | Unit test |
+| **CI step** | `Run tests` in `.github/workflows/ci.yml` |
+| **Command** | `npm run test` |
+| **Pass condition** | Required fields are validated before submission |
+| **Fail condition** | Form submits with empty required fields |
+
+**What it checks:**
+- Submit button triggers validation
+- Empty required fields produce error state
+- Only valid form proceeds to submission
+
+**Evidence:** Vitest test output in GitHub Actions → CI workflow → `Run tests` step
