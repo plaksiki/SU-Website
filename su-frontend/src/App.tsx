@@ -256,14 +256,6 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
   const [loading, setLoading] = useState(true)
   const [fetchError, setFetchError] = useState(false)
 
-  const location = useLocation()
-
-  useEffect(() => {
-  setSelectedId(null)
-  setAnswers({})
-  setSubmitted(false)
-  setErrors({})
-}, [location.key])
 
   useEffect(() => {
     fetch(`${API_URL}/questionnaire/1`)
