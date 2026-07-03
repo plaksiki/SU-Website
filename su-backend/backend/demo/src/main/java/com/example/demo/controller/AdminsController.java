@@ -13,7 +13,7 @@ public class AdminsController {
     public AdminsController (AdminsRepository repository) {
         this.repository = repository;
     }
-    @GetMapping("/options/{id}")
+    @GetMapping("/admins/{id}")
     public Optional<Admins> getOptions(@PathVariable Long id) {
         return repository.findById(id);
     }
