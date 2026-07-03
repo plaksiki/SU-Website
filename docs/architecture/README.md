@@ -42,6 +42,8 @@ This document describes the architecture of the Student Union Website, including
 
 #### Sequence Digram
 
+[Dynamic View diagram-as-code](https://github.com/plaksiki/SU-Website/blob/main/docs/architecture/dynamic-view/user-survey-sequence.puml)
+
 <img width="1882" height="2447" alt="user-survey-sequence-diagram" src="https://github.com/user-attachments/assets/431aa8f8-37c6-479f-924d-97a7dd13e7cb" />
 
 **Diagram helps to understand** what system of Polls page approximately looks like inside, how it handles situation where user did not fill the form fully (ignored 'prepared choice questions'), how it saves the given answers.
