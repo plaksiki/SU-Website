@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.entity.Admins;
-import com.example.demo.entity.Answers;
 import com.example.demo.repository.AdminsRepository;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;

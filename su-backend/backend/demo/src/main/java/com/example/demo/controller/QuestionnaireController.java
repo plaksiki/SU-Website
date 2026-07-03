@@ -1,7 +1,5 @@
 package com.example.demo.controller;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.example.demo.entity.Admins;
 import com.example.demo.entity.Questionnaire;
 import com.example.demo.repository.QuestionnaireRepository;
 import java.util.Optional;
