@@ -5,6 +5,8 @@ import com.example.demo.repository.AnswersRepository;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 public class AnswersController {
@@ -17,5 +19,8 @@ public class AnswersController {
     public Optional<Answers> getOptions(@PathVariable Long id) {
         return repository.findById(id);
     }
-
+    @PostMapping("/answers")
+    public Answers createAnswer(@RequestBody Answers entity) {
+        return repository.save(entity);
+    }
 }
