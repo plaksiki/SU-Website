@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Link, useParams, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link, useParams } from 'react-router-dom'
 import './App.css'
 import AdminPage from './AdminPage'
 import { useNavigate } from 'react-router-dom'
