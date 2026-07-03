@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 
 const ADMIN_USERNAME = 'admin'
 const ADMIN_PASSWORD = 'admin123'
@@ -112,21 +112,22 @@ function AdminPage({ lang }: { lang: Lang }) {
   const [error, setError] = useState('')
 
 
-  useEffect(() => {
+  const handleLogin = () => {
+  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    setIsLoggedIn(true)
+    setError('')
+  } else {
+    setError(t.error)
+  }
+}
+
+useEffect(() => {
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Enter' && !isLoggedIn) handleLogin()
   }
   window.addEventListener('keydown', handleKeyDown)
   return () => window.removeEventListener('keydown', handleKeyDown)
 }, [username, password, isLoggedIn])
-  const handleLogin = useCallback(() => {
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-      setIsLoggedIn(true)
-      setError('')
-    } else {
-      setError(t.error)
-    }
-  }, [username, password, t.error])
 
   if (!isLoggedIn) {
     return (
