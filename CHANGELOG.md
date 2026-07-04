@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "Polls" page
 - Questionnaires with single/multiple choice questions and individual answer questions
+- Creating events with a title, date, description, and venue.
 - SU "History" page
 - Admin Panel
 - csv export from admin panel
