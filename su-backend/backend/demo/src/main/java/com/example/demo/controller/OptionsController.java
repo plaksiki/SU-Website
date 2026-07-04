@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.demo.entity.Questionnaire;
-import com.example.demo.repository.QuestionnaireRepository;
+import com.example.demo.entity.Options;
+import com.example.demo.repository.OptionsRepository;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-public class QuestionnaireController {
-    private final QuestionnaireRepository repository;
+public class OptionsController {
+    private final OptionsRepository repository;
 
-    public QuestionnaireController(QuestionnaireRepository repository) {
+    public OptionsController (OptionsRepository repository) {
         this.repository = repository;
     }
-    @GetMapping("/questionnaire/{id}")
-    public Optional<Questionnaire> getQuestionnaire(@PathVariable Long id) {
+    @GetMapping("/options/{id}")
+    public Optional<Options> getOptions(@PathVariable Long id) {
         return repository.findById(id);
     }
-    @PostMapping("/questionnaire")
-    public Questionnaire createQuestionnaire(@RequestBody Questionnaire entity) {
+    @PostMapping("/options")
+    public Options createOption(@RequestBody Options entity) {
         return repository.save(entity);
     }
 }

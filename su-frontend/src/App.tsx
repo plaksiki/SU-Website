@@ -46,6 +46,7 @@ const translations = {
     history: "History",
     history_title: "Our History",
     history_desc: "The story of Innopolis University Student Union",
+    dep_core:"View department →",
 
   },
   ru: {
@@ -87,6 +88,7 @@ const translations = {
     history: "История",
     history_title: "Наша история",
     history_desc: "История Студенческого Союза Университета Иннополис",
+    dep_core:"Перейти в департамент →",
 
   }
 }
@@ -253,6 +255,7 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
   const [backendPolls, setBackendPolls] = useState<BackendQuestionnaire[]>([])
   const [loading, setLoading] = useState(true)
   const [fetchError, setFetchError] = useState(false)
+
 
   useEffect(() => {
     fetch(`${API_URL}/questionnaire/1`)
@@ -441,7 +444,7 @@ function DepartmentCard(props: { slug: string; name: string; tag: string; icon: 
         <span className="dept-tag">{props.tag}</span>
         <h3>{props.name}</h3>
         <p>{props.description}</p>
-        <span className="dept-toggle">View department →</span>
+        <span className="dept-toggle">{props.t.dep_core}</span>
       </div>
     </Link>
   )
@@ -667,7 +670,7 @@ function App() {
         <Route path="/events" element={<EventsPage t={t} />} />
         <Route path="/polls" element={<PollsPage t={t} lang={lang} />} />
         <Route path="/donations" element={<DonationsPage t={t} />} />
-        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/admin" element={<AdminPage lang={lang} />} />
       </Routes>
       <Footer/>
     </BrowserRouter>
