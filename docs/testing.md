@@ -1,4 +1,5 @@
 # Testing Strategy
+
 **Last Updated:** 2026-06-25
 
 This document describes the testing approach for the SU Website frontend.
@@ -22,16 +23,19 @@ This document describes the testing approach for the SU Website frontend.
 All checks run on every pull request to `main` via `.github/workflows/ci.yml`.
 
 ### 1. TypeScript Type Checking
+
 - **Command:** `tsc -b` (part of `npm run build`)
 - **What it catches:** type mismatches, missing properties, incorrect function arguments
 - **Config:** `su-frontend/tsconfig.json`
 
 ### 2. ESLint
+
 - **Command:** `npm run lint`
 - **What it catches:** unused variables, React Hooks violations, code style issues
 - **Config:** `su-frontend/eslint.config.js`
 
 ### 3. Production Build
+
 - **Command:** `vite build` (part of `npm run build`)
 - **What it catches:** unresolved imports, bundling errors, missing dependencies
 - **Output:** `su-frontend/dist/`
