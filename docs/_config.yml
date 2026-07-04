@@ -3,7 +3,7 @@ plugins:
   - jekyll-remote-theme
 
 title: SU Website Documentation
-description: Comprehensive documentation for the SU Website project — architecture, development process, quality standards, testing, and deployment.
+# description: Comprehensive documentation for the SU Website project — architecture, development process, quality standards, testing, and deployment.
 
 show_downloads: true
 google_analytics: false

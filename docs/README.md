@@ -1,6 +1,6 @@
-# SU-Website documentation
+# Welcome to SU-Website Documentation Page
 
-Welcome to SU-Website Documentation Page
+
 
 This site provides documentation covering the project's architecture, development process, quality standards, testing strategies, and deployment procedures.
 
