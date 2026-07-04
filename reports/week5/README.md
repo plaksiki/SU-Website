@@ -8,11 +8,14 @@
 ---
 
 ## Backlog & Sprint Managment
+
 ### Product Backlog
+
 - **[Product Backlog Board](https://github.com/orgs/plaksiki/projects/2)**
 - **Total Size:**  Story Points
 
 ### Current Sprint
+
 - **[Sprint-3 Backlog Board](https://github.com/orgs/plaksiki/projects/12)**
 - **[Sprint-3 Milestone](https://github.com/plaksiki/SU-Website/milestone/3)**
 - **Sprint-3 Goal:** Implement Admins authorization and .xlsx export of questionnaires data
@@ -20,26 +23,31 @@
 - **Total Sprint-3 Size:** 33 Story Points
 
 ### Selected Scope for Current Sprint
-The selected scope includes:
+
 - Admin panel
 - Export .xlsx data of questionnaires
 - History page
 - Update UI (Detailed events and department cards, donate link placeholder)
 
 ## Delivered MVP v2 Changes
+
 - ✅ Questionnire participation flow
 - ✅ Support for three question types: single choice, multiple choice, text input
-- ✅ Navigation between survey list and question form
-- ✅ Architecture documentation with ADRs
+- ✅ "History" page
+- ✅ Admin Login page and Admin Panel
+- ✅ Export of csv tables
+- ✅ Updated (opening) events and departments cards
 
 ---
 
 ## Product Access Artifact
-[su-portal](https://10.93.26.192)
+
+[su-portal](https://10.93.26.192/)
 
 ---
 
 ## Access / Run Instructions
+
 [DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md)
 
 ---
@@ -49,9 +57,9 @@ The selected scope includes:
 | Feedback point | Resulting PBI or issue | Status | Response |
 |---|---|---|---|
 | Simplified Donation page | [#47](https://github.com/plaksiki/SU-Website/issues/47) | Done | Left only QR-code and link |
-| Backlog for admins | - | Deffered | Deferred because MVP v2 prioritized creating an admin panel with ability to create questionnaires |
-| Support for .xlsx import of data| [#45](https://github.com/plaksiki/SU-Website/issues/45) | ✅ Done |  |
-| Dark Theme | [#162](https://github.com/plaksiki/SU-Website/issues/162) | ✅ Done | Deffered to next sprint |
+| Backlog for admins | - | Rejected | Rejected because creating an admin panel with ability to create questionnaires is prioritized |
+| Support for .xlsx import of data | [#45](https://github.com/plaksiki/SU-Website/issues/45) | ✅ Done | Export button in admin panel |
+| Dark Theme | [#162](https://github.com/plaksiki/SU-Website/issues/162) | Deffered | Deffered to sprint 5 |
 
 ---
 
@@ -90,28 +98,15 @@ The system follows a **microservices-oriented architecture** with clear separati
 - **Database (PostgreSQL)**: Stores surveys, questions, and student responses.
 - **Supporting Services**: Nginx serves the React frontend, acting as a single entry point for all users. Docker contaibers are essential for our project to package the frontend, backend, and database into isolated but network-connected "boxes" that work identically on any server, communicating with each other.
 
-**How Architecture Supports the Product:**
-- **Scalability**: Microservices can be scaled independently based on load.
-- **Maintainability**: Clear separation between frontend, business logic, and data storage.
-- **Reliability**: Transaction-based persistence ensures data consistency for survey responses.
-- **Extensibility**: New question types or survey features can be added without major refactoring.
-
 ---
 
-## Quality Requirements → Architecture Mapping
+## Quality Requirements → ADRs
 
-| Quality Requirement | How Architecture Addresses It |
+| Quality Requirement | Related ADRs |
 |---------------------|-------------------------------|
-| **Data Integrity (QR-003)** | Transaction management (BEGIN/COMMIT/ROLLBACK) ensures atomic save operations |
-| **Security (QR-004)** | Server-side validation protects against malicious input; separated validation layer |
-| **Usability (QR-005)** | Clear feedback on success/error; intuitive navigation with "Back" button |
-| **Performance (QR-001)** | Independent services allow horizontal scaling; caching layer (Redis) available |
-| **Reliability (QR-002)** | Health checks, graceful error handling, and container orchestration via Docker Compose |
-
-**Related ADRs:**
-- [ADR-001: Database Choice (PostgreSQL)](../../docs/architecture/adr/ADR-001-database-choice.md)
-- [ADR-002: Transaction Management Strategy](../../docs/architecture/adr/ADR-002-transaction-management.md)
-- [ADR-003: API Design Approach](../../docs/architecture/adr/ADR-003-api-design.md)
+| **Usability – Mobile Responsiveness (QR-004)** | [ADR-001: Mobile-First Layout](https://github.com/plaksiki/SU-Website/blob/main/docs/architecture/adr/ADR-001-mobile-first-layout.md) |
+| **Usability – Language Switching (QR-005)** | [ADR-002: One Translations Object for EN/RU](https://github.com/plaksiki/SU-Website/blob/main/docs/architecture/adr/ADR-002-one-translations-object-for-EN%26RU.md) |
+| **Usability (QR-006)** | [ADR-003: Validate Questionnaires on Both Frontend and Backend](https://github.com/plaksiki/SU-Website/blob/main/docs/architecture/adr/ADR-003-validate-questionnaires-on-both-frontend-and-backend.md) |
 
 ---
 
@@ -119,11 +114,8 @@ The system follows a **microservices-oriented architecture** with clear separati
 
 | Aspect | Status |
 |--------|--------|
-| **Unit Tests** | [ВСТАВИТЬ статус, например: 85% coverage, all passing] |
-| **Integration Tests** | [ВСТАВИТЬ статус, например: 5/5 passing] |
-| **UAT Tests** | [ВСТАВИТЬ статус, например: 8/10 passing, 2 pending] |
-| **CI Pipeline** | ✅ Passing (latest build: #123) |
-| **Protected Branch** | ✅ All checks passed |
+| **User Acceptance Tests** | [UAT History](https://github.com/plaksiki/SU-Website/blob/main/docs/user-acceptance-tests.md#execution-history) |
+| **CI Pipeline** | ✅ Passing ([latest CI run on main](https://github.com/plaksiki/SU-Website/actions/runs/28614112933)) |
 
 ---
 
@@ -131,9 +123,9 @@ The system follows a **microservices-oriented architecture** with clear separati
 
 | Link | URL |
 |------|-----|
-| CI Pipeline Configuration | [ВСТАВИТЬ ссылку на .gitlab-ci.yml или .github/workflows] |
-| Latest CI Run (Protected Branch) | [ВСТАВИТЬ ссылку на последний успешный CI ран] |
-| Latest CI Run (Main Branch) | [ВСТАВИТЬ ссылку] |
+
+| CI Pipeline Configuration | [.github/workflows/ci.yml](https://github.com/plaksiki/SU-Website/blob/main/.github/workflows/ci.yml) |
+| Latest CI Run (Protected Branch) | [Latest CI Run on 'main' branch](https://github.com/plaksiki/SU-Website/actions/runs/28659266179) |
 
 ---
 
@@ -149,24 +141,28 @@ The system follows a **microservices-oriented architecture** with clear separati
 ## Demo Video
 
 📹 **Public Sanitized Demo Video ( < 2 minutes )**
-[Demo video]
+[Demo video]()
 
 ---
 
 ## UAT Results Summary
 
-**Public Sanitized UAT Results Summary:**
-
+[Public Sanitized UAT Results Summary]()
 
 **Key Findings:**
+
+- ✅ Admin Login page is developed and hidden
+- ✅ User can log in admin panel with valid login and password
+- ✅ Admins can export csv tables from the panel
 - ✅ All question types render correctly
-- ✅ Validation prevents empty submissions
-- ✅ Transaction-based saving successfully maintains data integrity
+- ✅ Events cards opens and show detailed info
+- ✅ Polls page is presented and user can participate in surveys
 
 ---
 
-##  Hosted Documentation Site
-[](https://plaksiki.github.io/SU-Website/)
+## Hosted Documentation Site
+
+[Documentation Page](https://plaksiki.github.io/SU-Website/)
 
 ---
 
@@ -184,8 +180,7 @@ The system follows a **microservices-oriented architecture** with clear separati
 
 ## Product Status Summary
 
-**Current Status: MVP v2 - Stable**
-
+**Current Status: MVP v2 - Stable**:
 
 - Main page with departments info
 - SU History page
@@ -196,6 +191,7 @@ The system follows a **microservices-oriented architecture** with clear separati
 - Donation page with QR-code
 
 **Known Issues:**
+
 - In surveys only single choice questions being checked for given answer
 - Backlog for admins is not presented
 - Thumbor was not implemented
@@ -207,10 +203,11 @@ The system follows a **microservices-oriented architecture** with clear separati
 ## Next Steps
 
 | Action | Target Sprint |
-|--------|---------------||
-| Light/Dark Mode Switch | Sprint 4 |
-| Admins' Backlog | Sprint 4 |
-| Upload real SU photos/info | Sprint 4 OR 5 |
+| ------ | ------------- |
+| Creating Questionnaires as an admin | Sprint 4 |
+| Light/Dark Mode Switch | POSSIBLY Sprint 5 |
+| Upload real SU photos/info into frontend part | Sprint 4 OR 5 |
+| Creating Events as an admin | Sprint 4-5 |
 
 ---
 
@@ -219,7 +216,7 @@ The system follows a **microservices-oriented architecture** with clear separati
 | Team Member | Issues | PRs/MRs | Reviews | Testing | Quality | Automation | Architecture | Documentation |
 |-------------|--------|---------|---------|---------|---------|------------|--------------|---------------|
 | **Alina P.** | #148, #149, #155 | #,# | 5 reviews | Unit tests | ✅ | - | ADR creation | README update |
-| **Bulat S.** | [#150, #157,] | [!47] | 3 reviews | Integration tests | ✅ | CI config | Dynamic view | Reflection |
+| **Bulat S.** | #150, #157 | [!47] | 3 reviews | Integration tests | ✅ | CI config | Dynamic view | Reflection |
 | **Emil G.** | [#156, #153] | #145 | 6 reviews | - | ✅ | - | - | Sprint summary |
 | **Daria S.** | #139, #140 | # | 4 reviews | UAT tests | ✅ | - | Static view | Retrospective |
 | **Kristina B.** | #152, #158 | #160, #166 | 6 reviews | - | ✅ | - | - | Sprint summary |
@@ -230,21 +227,21 @@ The system follows a **microservices-oriented architecture** with clear separati
 ## Screenshots
 
 ### Sprint 3 Milestone
-![Sprint Milestone](images/sprint-milestone.png)
+![Sprint Milestone](https://github.com/plaksiki/SU-Website/blob/main/reports/week5/images/sprint-milestone.png)
 
 ### Board / Workflow View
-![Board View](images/board-view.png)
+![Board View](https://github.com/plaksiki/SU-Website/blob/main/reports/week5/images/board-view.png)
 
 ### Latest CI Run (Protected Branch)
-![CI Run](images/ci-run.png)
+![CI Run](https://github.com/plaksiki/SU-Website/blob/main/reports/week5/images/ci-run.png)
 
 ### SemVer Release (MVP v2)
-![SemVer Release](images/semver-release.png)
+![SemVer Release](https://github.com/plaksiki/SU-Website/blob/main/reports/week5/images/semver-release.png)
 
 ### Example Reviewed PR/MR
 ![Reviewed PR](https://github.com/plaksiki/SU-Website/blob/main/reports/week5/images/reviewed-pr.png)
 
 ### Hosted Documentation Site
-![Docs Site](images/docs-site.png)
+![Docs Site](https://github.com/plaksiki/SU-Website/blob/main/reports/week5/images/docs-site.png)
 
 ---

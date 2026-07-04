@@ -122,3 +122,7 @@ Scenarios are executed with the customer during Sprint Review.
 | UAT-1: Viewing events | Not tested | ✅ Pass | Not tested |
 | UAT-2: Submitting questionnaire | Not tested | ✅ Pass | Not tested |
 | UAT-3: Language switching | Not tested | ✅ Pass | Not tested |
+| UAT-4: Admin Login page | Not tested | Not tested | ✅ Pass |
+| UAT-5: Log in Admin Panel and log out | Not tested | Not tested | ✅ Pass |
+| UAT-6: csv Export from the Admin Panel | Not tested | Not tested | ✅ Pass |
+| UAT-7: Events Details | Not tested | Not tested | ✅ Pass |

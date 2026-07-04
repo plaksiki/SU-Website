@@ -46,7 +46,7 @@
 - Complete all Must Have user stories
 - Integrate frontend with backend
 - Conduct customer review
-- Prepare MVP v2 release
+- Prepare for MVP v2 release
 
 ### Planned Items
 - **User Stories:**
@@ -55,30 +55,29 @@
   - 
 - **Supporting PBIs:**
   - [#60] Setup Thumbor(microservices, backend)
-  - Light/Dark Theme Switch
   - Extended events cards
   - Events departments tags
 
 ---
-
+lo    
 ## Sprint 3
 
 | Item | Details |
 |------|---------|
 | **Sprint** | Sprint 3 |
 | **Milestone** | [Sprint 3](https://github.com/plaksiki/SU-Website/milestone/3) |
-| **Dates** | Start: 2026-06-29 / Finish: 2026-07-12 |
-| **Sprint Goal** | - |
+| **Dates** | Start: 2026-06-29 / Finish: 2026-07-03 |
+| **Sprint Goal** | Admin Panel and csv export of tables |
 
 ### Focus & Outcomes
-- Address customer feedback from MVP v1
+
 - Implement Should Have priority features
-- Improve documentation
-- Prepare for next release
+- Add architecture documentation
+- 
 
 ### Planned Items
 - **User Stories:**
-  - [] 
+  - [#45] US-05: Exporting questionnaire results
   - [] 
 - **Supporting PBIs:**
   - [#] 
