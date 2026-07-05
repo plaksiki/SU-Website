@@ -41,6 +41,37 @@ The team uses [GitHub Projects](https://github.com/plaksiki/SU-Website/projects)
 
 ### GitGraph Diagram
 
+```mermaid
+gitGraph
+    commit id: ".gitignore"
+
+    branch dev
+    checkout dev
+    commit id: "setup"
+
+    branch events-departments-pages
+    checkout events-departments-pages
+    commit id: "Add dev branch to CI workflow triggers"
+    commit id: "Remove lang prop from DepartmentPage component"
+    commit id: "ci: retrigger CI checks"
+
+    checkout dev
+    merge events-departments-pages id: "PR-159"
+
+    branch fix-Dockerfile-su-backend
+    checkout fix-Dockerfile-su-backend
+    commit id: "Update Dockerfile"
+
+    checkout main
+    merge fix-Dockerfile-su-backend id: "PR-165"
+
+    checkout dev
+    commit id: "MVP v2 upload"
+
+    checkout main
+    merge dev id: "PR-172"
+```
+
 ### Creating Issues
 
 Issues contain:
