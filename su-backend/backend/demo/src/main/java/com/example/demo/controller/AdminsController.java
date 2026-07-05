@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.demo.entity.Options;
-import com.example.demo.repository.OptionsRepository;
+import com.example.demo.entity.Admins;
+import com.example.demo.repository.AdminsRepository;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-public class OptionsController {
-    private final OptionsRepository repository;
+public class AdminsController {
+    private final AdminsRepository repository;
 
-    public OptionsController (OptionsRepository repository) {
+    public AdminsController (AdminsRepository repository) {
         this.repository = repository;
     }
-    @GetMapping("/options/{id}")
-    public Optional<Options> getOptions(@PathVariable Long id) {
+    @GetMapping("/admins/{id}")
+    public Optional<Admins> getOptions(@PathVariable Long id) {
         return repository.findById(id);
     }
-    @PostMapping("/options")
-    public Options createOption(@RequestBody Options entity) {
+    @PostMapping("/admins")
+    public Admins createAdmin(@RequestBody Admins entity) {
         return repository.save(entity);
     }
 }
