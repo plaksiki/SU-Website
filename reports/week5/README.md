@@ -12,7 +12,7 @@
 ### Product Backlog
 
 - **[Product Backlog Board](https://github.com/orgs/plaksiki/projects/2)**
-- **Total Size:**  Story Points
+- **Total Size:**  Story Points 63
 
 ### Current Sprint
 
@@ -20,7 +20,7 @@
 - **[Sprint-3 Milestone](https://github.com/plaksiki/SU-Website/milestone/3)**
 - **Sprint-3 Goal:** Implement Admins authorization and .xlsx export of questionnaires data
 - **Sprint-3 Dates:** 2026-06-30 – 2026-07-05
-- **Total Sprint-3 Size:** 33 Story Points
+- **Total Sprint-3 Size:** 39 Story Points
 
 ### Selected Scope for Current Sprint
 
