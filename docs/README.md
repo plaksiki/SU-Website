@@ -14,8 +14,8 @@ This site provides documentation covering the project's architecture, developmen
 | [Development Process](development-process.md) | Workflow |
 | [Quality Standards](quality-requirement-tests.md) | Code quality, best practices |
 | [Testing](testing.md) | Testing strategy, test coverage |
-| [Deployment](/DEPLOY.md) | Production deployment instructions |
-| [Changelog](/CHANGELOG.md) | Version history and release notes |
+| [Deployment](https://github.com/plaksiki/SU-Website/blob/architecture-documentation/DEPLOY.md) | Production deployment instructions |
+| [Changelog](https://github.com/plaksiki/SU-Website/blob/architecture-documentation/CHANGELOG.md) | Version history and release notes |
 
 ---
 
