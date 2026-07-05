@@ -12,7 +12,7 @@
 ### Product Backlog
 
 - **[Product Backlog Board](https://github.com/orgs/plaksiki/projects/2)**
-- **Total Size:**  Story Points 
+- **Total Size:**  Story Points 102
 
 ### Current Sprint
 
