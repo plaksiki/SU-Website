@@ -11,11 +11,11 @@ This site provides documentation covering the project's architecture, developmen
 | Section | Description |
 |---------|-------------|
 | [Architecture](/docs/architecture/) | System design, microservices structure |
-| [Development Process](/docs/process/) | Workflow |
-| [Quality Standards](/docs/quality/) | Code quality, best practices |
-| [Testing](/docs/testing) | Testing strategy, test coverage |
-| [Deployment](/DEPLOY) | Production deployment instructions |
-| [Changelog](/CHANGELOG) | Version history and release notes |
+| [Development Process](/docs/development-process.md) | Workflow |
+| [Quality Standards](/docs/quality-requirement-tests.md) | Code quality, best practices |
+| [Testing](/docs/testing.md) | Testing strategy, test coverage |
+| [Deployment](/DEPLOY.md) | Production deployment instructions |
+| [Changelog](/CHANGELOG.md) | Version history and release notes |
 
 ---
 
