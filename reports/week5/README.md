@@ -214,8 +214,8 @@ The system follows a **microservices-oriented architecture** with clear separati
 | Team Member | Issues | PRs/MRs | Reviews | Testing | Quality | Automation | Architecture | Documentation |
 |-------------|--------|---------|---------|---------|---------|------------|--------------|---------------|
 | **Alina P.** | #148, #149, #155 | #,# | - | Unit tests | - | - | Dynamic view documentation | README.md, UAT, US, docs/README.md, DEPLOY.md update |
-| **Bulat S.** | #150, #157 | [!47] | - | Integration tests | ✅ | CI config | Dynamic view | Sprint LLM report |
-| **Emil G.** | #156, #153 | #145 | 6 reviews | - | - | - | - | Sprint reflection |
+| **Bulat S.** | #150, #157 |  | - | Integration tests | ✅ | CI config | Dynamic view | Sprint LLM report |
+| **Emil G.** | #156, #153 | #145 |  | - | - | - | - | Sprint reflection |
 | **Daria S.** | #139, #140 | # | - | - | ✅ | - | Static view documentation | - |
 | **Kristina B.** | #152, #158 | #160, #166 | - | - | ✅ | - | - | Sprint retrospective |
 | **Svetlana L.** | #151, #158 | - | - | - | - | - | - | Sprint review summary/transcript |
