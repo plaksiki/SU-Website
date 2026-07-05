@@ -52,18 +52,61 @@ This document describes the architecture of the Student Union Website, including
 
 ### Deployment Diagram
 
+[Deployment View diagram-as-code](https://github.com/plaksiki/SU-Website/blob/architecture-documentation/docs/architecture/deployment-view/deployment-diagram.puml)
+
+![Deployment Diagram](deployment-view/deployment-diagram.puml)
+
+### What the Diagram Shows
+
+The deployment diagram illustrates the runtime structure of the IU Student Union Portal. The system runs on a single Innopolis University virtual machine (10.93.26.192) using Docker containers connected through an internal Docker network:
+
+- **su-frontend** - nginx serving the static React + TypeScript build on port 80. This is the customer-facing entry point for both students and admins.
+- **su-backend** - Spring Boot REST API running on port 8080. Handles business logic, JWT authentication, and questionnaire management.
+- **su-db** - PostgreSQL database on port 5432 (internal only, not exposed to the outside). Stores questionnaires, questions, options, responses, and admin accounts.
+- **GitHub Actions** - external CI/CD pipeline that automatically builds and validates the code on every push to main.
+
+### Why the Selected Deployment Model Was Chosen
+
+Docker Compose on a single VM was chosen because:
+- The team is small (6 people, first-year students) and a single VM is sufficient for the current load
+- Docker Compose allows running all services with one command which simplifies deployment for the whole team
+- The university provides a VM which removes the need to manage cloud infrastructure
+- Containerization ensures the same environment on all team members' machines and on the server
+
+### How the Current Deployment Supports or Constrains the Product
+
+**Supports:**
+- Fast iteration - any team member can deploy a new version by running `docker compose -f docker-compose.prod.yml up -d --build`
+- Isolation - frontend, backend, and database run in separate containers and do not interfere with each other
+- CI/CD - GitHub Actions automatically checks code quality before it reaches production
+
+**Constrains:**
+- Single point of failure - if the VM goes down, the entire portal is unavailable
+- No horizontal scaling - a single VM cannot handle very high traffic
+- Redis and Thumbor (image optimizer) are planned but not yet deployed — image optimization is not available in the current version
+
+### What Must Be Considered When Deploying or Operating for the Customer
+
+- Environment variables (DB credentials, JWT secret) must be set in a `.env` file on the VM - never committed to the repository
+- PostgreSQL data is stored in a Docker volume - before any VM maintenance, the database must be backed up
+- The frontend proxies API calls to the backend - if the backend container is down, the polls and admin panel will not work
+- After deploying a new version, run `docker compose -f docker-compose.prod.yml up -d --build` on the VM to apply changes
 
 ### Infrastructure Overview
-
-[Explain deployment nodes and environments]
+The portal runs on a single Innopolis University VM (Ubuntu, 10.93.26.192).
+All services are containerized using Docker and managed via Docker Compose.
+CI/CD is handled by GitHub Actions which runs linting, tests, and build
+checks on every pull request.
 
 ### Environment Configuration
-- **Development**: [Configured for local testing]
-- **Staging**: [Mirrors production]
-- **Production**: [Live deployment]
+- **Development**: Local machine - `npm run dev` for frontend, backend runs locally
+- **Production**: Innopolis University VM — `docker-compose.prod.yml`
 
 ### Scaling Considerations
-[Discuss scaling approach and limitations]
+The current single-VM deployment is sufficient for the IU student audience
+(approximately 1000 students). Horizontal scaling is not planned for the
+current semester. Redis caching and Thumbor image optimization are planned
+for future sprints to improve performance under higher load.
 
 ## Architecture Decisions
 For detailed decisions, see the Architecture Decision Records (ADRs) in `docs/architecture/adr/`.
