@@ -1,22 +1,35 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
 ### Added
-- (none yet)
+
+- "Polls" page
+- Questionnaires with single/multiple choice questions and individual answer questions
+- Creating questionnaires with single/multiple choice questions and individual answer questions
+- Creating events with a title, date, description, and venue.
+- SU "History" page
+- Admin Panel
+- csv export from admin panel
 
 ### Changed
-- (none yet)
+
+- Events and departments cards now can be opened (detailed info presents)
 
 ### Fixed
-- (none yet)
+
+- Translation does not slide the text
 
 ---
 
 ## [1.0.0] - 2026-06-21
+
 ### Added
+
 - Department members display
 - Donations page
 - Event page with filters
@@ -25,18 +38,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Docker Compose configuration for production deployment
 - Deployment to Virtual Machine
 
-
 ### Changed
+
 - Migrated codebase from HTML/CSS to React
 
 ### Fixed
+
 - Incorrect arrow rendering
 - Automatic transition of events to past
 
 ---
 
 ## [0.1.0] - MVP v0 - 2026-06-14
+
 ### Added
+
 - Initial repository structure
 - Basic HTML/CSS prototype
 - Static pages for testing

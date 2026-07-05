@@ -1,0 +1,67 @@
+@startuml
+title SU Website - Static View Component Diagram
+
+left to right direction
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam packageStyle rectangle
+
+actor Student
+actor Administrator
+
+package "Frontend\n(TypeScript, CSS)" {
+
+    component "Home" as Home
+    component "History" as History
+    component "Events" as Events
+    component "Support Us" as Support
+    component "Polls" as Polls
+    component "Admin Panel" as AdminPanel
+}
+
+package "Backend\n(Spring Boot)" {
+
+    component "Questionnaire Module" as Questionnaire
+    component "Authorization Module" as Authorization
+    component "Response Module" as Responses
+}
+
+database "PostgreSQL" as DB {
+    component "questionnaires"
+    component "questions"
+    component "options"
+    component "responses"
+    component "admins"
+    component "authorization"
+}
+
+node "Docker Container" as Docker
+node "Virtual Machine" as VM
+component "GitHub Actions\n(CI/CD)" as GHA
+
+Student --> Home
+Student --> History
+Student --> Events
+Student --> Support
+Student --> Polls
+
+Administrator --> AdminPanel
+
+Polls --> Questionnaire : REST API\n(JSON/HTTPS)
+Polls --> Responses : Submit Answers\n(JSON/HTTPS)
+
+AdminPanel --> Authorization : Login
+AdminPanel --> Questionnaire : Create / Edit Polls
+
+Questionnaire --> DB : JDBC / SQL
+Authorization --> DB : JDBC / SQL
+Responses --> DB : JDBC / SQL
+
+VM --> Docker : Hosts
+Docker --> Questionnaire
+Docker --> Authorization
+Docker --> Responses
+
+GHA --> Docker : Build & Deploy
+
+@enduml
