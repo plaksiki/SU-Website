@@ -1,139 +1,138 @@
-# Sprint 3 Review Summary
-**Project:** SU-Website  
-**Date:** 2026-07-03 
-**Sprint Period:** 2026-06-30 – 2026-07-05
+
+**Date:** July 3, 2026
+
+**Participants:**
+- Speaker 1 – Alina (Team Lead)
+- Speaker 2 – Valery (Client)
+- Speaker 3 – Emil (Developer)
+- Speaker 4 – Anna (Client)
+- Speaker 5 – Bulat (Developer)
+
+**Sprint Goal:** Admin Panel and CSV export of tables
 
 ---
 
-## Participants
+## Artifacts Demonstrated
 
-### Meeting Roles
-
-| Role | Name |
-|------|------|
-| Interviewer / Facilitator | Dasha Sevostianova (Participant A) |
-| Notes | Svetlana Levagina (Participant B) |
-| Notes & Recording | Emil Gilfanov (Participant C) |
-| Customer / Product Owner | Valerii (Participant D) |
-| Customer / Product Owner | Anna (Participant E) |
-
-
+- Frontend interface with department cards and interactive elements
+- Admin panel access (via logo click or /admin route)
+- Questionnaire display
+- Mobile-responsive design improvements
+- CSV export foundation
+- GitHub repository structure (SU-Website)
 
 ---
 
-## Sprint Goal
+## Sprint Achievements
+
+- Implemented department information display with clickable cards
+- Added admin panel entry point (hidden access via triple logo click)
+- Created questionnaire view
+- Significantly improved mobile responsiveness (fixed broken layouts)
+- Added hover effects on interactive elements
+- Started table export functionality foundation
 
 ---
 
-## Selected Scope (Sprint 2)
+## Backend Status and Bottlenecks
 
-| # | Item | Type | Size |
-|---|------|------|------|
-| SU-Website #43 | US-01: Viewing event details | User Story | 2 |
-| SU-Website #45 | US-05: Exporting questionnaire results | User Story | 5 |
-| SU-Website #48 | US-08: Applying for an internship | User Story | 2 |
-| SU-Website #49 | Create questionnaires table | Task | — |
-| SU-Website #51 | Create questions table | Task | 2 |
-| SU-Website #52 | Create options table | Task | 1 |
-| SU-Website #53 | Create responses table | Task | 1 |
-| SU-Website #54 | Create answers table | Task | 2 |
-| SU-Website #55 | Create database schema for Questionnaires | Task | 3 |
-| SU-Website #63 | Create the base for backend, survey entity and controller | Task | 5 |
-| SU-Website #105 | Backend connection with Docker and database | Task | — |
-| SU-Website #107 | Update DB | Task | — |
-| SU-Website #111 | Backend integration | Task | 20 |
-| SU-Website #122 | Front-end questionnaires | Task | 13 |
-| SU-Website #124 | Setup CI pipeline for frontend and backend | Task | — |
+- Backend development is significantly behind schedule
+- Only one backend developer was allocated, which proved insufficient for the scope
+- Issues with database connectivity and container stability
+- API endpoints for data transfer not fully implemented
+- Team spent excessive time debating data transfer structure (arrays vs. ID lookups)
+- Current integration: only questionnaire responses are synchronized with the database
+- Events and other features remain as mock data only
 
-**Sprint 3:** N Story Points  
-*(Reference: Sprint 2 Total — 33 Story Points)*
+**Client feedback:** "Everything looks good on the frontend, but there is absolutely nothing connecting it on the backend."
 
 ---
 
-## Delivered Increment
+## Customer Feedback and Requests
+
+**Design and Frontend:**
+- Valery: "The design is very cool. Everything looks beautiful."
+- Anna: "I really liked both the design and overall execution."
+- Anna: "Most components are solid. It looks excellent on the frontend."
+
+**Content:**
+- Logo and brand book materials expected from client within the week
+- Department information and member photos to be provided gradually
+
+**Features Requested:**
+- Focus on questionnaires as the top priority
+- Admin panel must support both event and questionnaire creation
+- CSV export: first row contains questions separated by standard delimiter, subsequent rows contain answers
+
+**Theme:**
+- Dark/light themes are low priority
+- Should only be worked on if frontend developers have no other tasks
 
 ---
 
-## UAT Results
+## Decisions Made
 
-
-### UAT-1: Viewing Upcoming and Past Events
-
-
----
-
-### UAT-2: Submitting an Anonymous Questionnaire
+- Backlog feature is deprioritized to the very end of the project
+- Focus shifted to questionnaire functionality and backend integration
+- Team will reallocate a frontend developer to assist with backend development
+- Dark/light themes postponed to low priority
+- CSV format confirmed: tabular data with questions in first row and answers in subsequent rows
 
 ---
 
-### UAT-3: Switching Interface Language
+## Risks and Issues
+
+- Critical bottleneck: backend development is understaffed and behind schedule
+- Database container stability issues on server side
+- Integration between frontend and backend is minimal (only questionnaire responses work)
+- Risk of not delivering fully functional product by deadline
+- Architecture is described as "basic" and lacking maturity for rapid admin panel development
+- Deployed production site differs from design mockups
 
 ---
 
-### Execution History
+## Action Points (Next Sprint)
 
----
-
-## Quality Evidence
-
----
-
-## Feedback
-
----
-
-## Approvals & Decisions
-
-| Decision | Status |
-|----------|--------|
-
----
-
-## Risks
-
-| Risk | Likelihood | Impact | Mitigation |
-|------|-----------|--------|------------|
-| Brand assets (photos, copy) not yet delivered | High | Medium | Continue with placeholders; unblock department and event pages once assets arrive |
-| 3 productive weeks remaining (week 4 of project, week 7 is presentation) | High | High | Prioritise admin panel + survey/
-
----
-
-## Action Points
-
-| # | Action | Owner | Due |
-|---|--------|-------|-----|
-| 1 | Finish survey questions loading from DB (complete `/questionnaire/{id}` with full question set) | Dev team | Sprint 3 |
-| 2 | Implement event card → full detail page navigation | Dev team | Sprint 3 |
-| 3 | Add link field to events (supports photos, survey links, etc.) | Dev team | Sprint 3 |
-| 4 | Build admin panel: login (multi-account, DB records via PGAdmin), event creation, survey creation & publishing | Dev team | Sprint 3 |
-| 5 | Implement survey result statistics with CSV export (admin-only) | Dev team | Sprint 3 |
-
+1. Complete backend integration for questionnaires
+2. Implement admin panel for questionnaire creation
+3. Finish CSV export functionality for questionnaires
+4. Complete event page integration with backend
+5. Integrate provided logo and branding materials
 
 ---
 
 ## Product Backlog Changes
 
-### Moved to Ready / Prioritised for Sprint 4
+| Change | Reason |
+|--------|--------|
+| Admin panel moved to top priority | Client request |
+| Questionnaires prioritized | Client request |
+| Backlog feature deprioritized | Valery: "Forget the backlog for now" |
+| Dark/light themes moved to low priority | Anna: "Highly non-prioritized" |
+| CSV export confirmed as required | Client request for data export |
+| Additional backend developer needed | Addressing critical bottleneck |
 
-| Item | Notes |
-|------|-------|
-| SU-Website #61 — Thumbor Integration for Image Optimization | Already in Ready |
-| SU-Website #45 — US-05: Exporting questionnaire results | Already in Ready |
+---
 
+## Approval Status
 
-### New Scope Identified (to be created/estimated)
+**Valery (Client):** "Everything is cool, guys. I approve."
 
-| Item | Source |
-|------|--------|
-| Admin login + multi-account auth (DB-based, no registration) | Anna feedback |
-| Admin panel: create/publish events and surveys | Anna feedback |
+**Condition:** Final approval is contingent on successful backend integration and functional questionnaires in the next sprint.
 
+---
 
-### Remaining in Backlog
+## Recording and Publication Status
 
-| Item | Status |
-|------|--------|
-| SU-Website #112 — Write README.md for week 4 | Backlog |
-| SU-Website #113 — Interview week 4 transcript/summary | Backlog |
+- Meeting was recorded with client consent
+- Transcript documented for internal use
+- Repository publication limited to educational project scope
+- Instructor sharing permitted for quality assurance purposes
+
+---
+
+## Related Resources
+
+- Repository: `SU-Website` on GitHub
 
 ---
