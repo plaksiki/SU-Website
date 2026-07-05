@@ -12,6 +12,7 @@
 | **Sprint Goal** | Establish project infrastructure and core UI foundation |
 
 ### Focus & Outcomes
+
 - Set up Docker containerization for consistent development environment
 - Deploy application to Virtual Machine(VM)
 - Implement GitHub Actions for automatic deployment on push
@@ -20,6 +21,7 @@
 - Add donation page (Frontend)
 
 ### Planned Items
+
 - **User Stories:**
   - [#43] US-01: Viewing event details
   - [#46] US-06: Language switch
@@ -43,12 +45,14 @@
 | **Sprint Goal** | Deliver MVP v2 with more detailed event pages and integrated backend |
 
 ### Focus & Outcomes
+
 - Complete all Must Have user stories
 - Integrate frontend with backend
 - Conduct customer review
 - Prepare for MVP v2 release
 
 ### Planned Items
+
 - **User Stories:**
   - [#45] US-05: Exporting questionnaire results
   - [#48] US-08: Applying for an internship
@@ -59,7 +63,7 @@
   - Events departments tags
 
 ---
-lo    
+
 ## Sprint 3
 
 | Item | Details |
@@ -73,15 +77,16 @@ lo
 
 - Implement Should Have priority features
 - Add architecture documentation
-- 
 
 ### Planned Items
+
 - **User Stories:**
   - [#45] US-05: Exporting questionnaire results
-  - [] 
+  - [#48] US-08: Applying for an internship
+
 - **Supporting PBIs:**
-  - [#] 
-  - [#] 
-  - [#] 
+  - [#147] Architecture documentation
+  - [#142] Authorization
+  - [#157] feat: events and departments as separate pages + grid layout fix
 
 ---

@@ -123,7 +123,6 @@ The system follows a **microservices-oriented architecture** with clear separati
 
 | Link | URL |
 |------|-----|
-
 | CI Pipeline Configuration | [.github/workflows/ci.yml](https://github.com/plaksiki/SU-Website/blob/main/.github/workflows/ci.yml) |
 | Latest CI Run (Protected Branch) | [Latest CI Run on 'main' branch](https://github.com/plaksiki/SU-Website/actions/runs/28659266179) |
 
@@ -140,23 +139,22 @@ The system follows a **microservices-oriented architecture** with clear separati
 
 ## Demo Video
 
-📹 **Public Sanitized Demo Video ( < 2 minutes )**
-[Demo video]()
+📹 **Public Sanitized Demo Video**
+[Demo video](https://drive.google.com/file/d/1PS55YtFoy9vcffSBwMiFZKob6eziSQN4/view?usp=sharing)
 
 ---
 
 ## UAT Results Summary
 
-[Public Sanitized UAT Results Summary]()
-
 **Key Findings:**
 
-- ✅ Admin Login page is developed and hidden
+- ✅ Admin Login page is hidden and working
 - ✅ User can log in admin panel with valid login and password
 - ✅ Admins can export csv tables from the panel
 - ✅ All question types render correctly
-- ✅ Events cards opens and show detailed info
-- ✅ Polls page is presented and user can participate in surveys
+- ✅ Events cards are opening and showing detailed info
+- ✅ Users can participate in surveys
+- ✅ Customers liked the design of the web page
 
 ---
 
@@ -215,33 +213,37 @@ The system follows a **microservices-oriented architecture** with clear separati
 
 | Team Member | Issues | PRs/MRs | Reviews | Testing | Quality | Automation | Architecture | Documentation |
 |-------------|--------|---------|---------|---------|---------|------------|--------------|---------------|
-| **Alina P.** | #148, #149, #155 | #,# | 5 reviews | Unit tests | ✅ | - | ADR creation | README update |
-| **Bulat S.** | #150, #157 | [!47] | 3 reviews | Integration tests | ✅ | CI config | Dynamic view | Reflection |
-| **Emil G.** | [#156, #153] | #145 | 6 reviews | - | ✅ | - | - | Sprint summary |
-| **Daria S.** | #139, #140 | # | 4 reviews | UAT tests | ✅ | - | Static view | Retrospective |
-| **Kristina B.** | #152, #158 | #160, #166 | 6 reviews | - | ✅ | - | - | Sprint summary |
-| **Svetlana L.** | [#151, #158, ] | [!49, !50] | 6 reviews | - | ✅ | - | - | Sprint summary |
+| **Alina P.** | #148, #149, #155 | #,# | - | Unit tests | - | - | Dynamic view documentation | README.md, UAT, US, docs/README.md, DEPLOY.md update |
+| **Bulat S.** | #150, #157 | [!47] | - | Integration tests | ✅ | CI config | Dynamic view | Sprint LLM report |
+| **Emil G.** | #156, #153 | #145 | 6 reviews | - | - | - | - | Sprint reflection |
+| **Daria S.** | #139, #140 | # | - | - | ✅ | - | Static view documentation | - |
+| **Kristina B.** | #152, #158 | #160, #166 | - | - | ✅ | - | - | Sprint retrospective |
+| **Svetlana L.** | #151, #158 | - | - | - | - | - | - | Sprint review summary/transcript |
 
 ---
 
 ## Screenshots
 
 ### Sprint 3 Milestone
+
 ![Sprint Milestone](https://github.com/plaksiki/SU-Website/blob/main/reports/week5/images/sprint-milestone.png)
 
 ### Board / Workflow View
+
 ![Board View](https://github.com/plaksiki/SU-Website/blob/main/reports/week5/images/board-view.png)
 
 ### Latest CI Run (Protected Branch)
+
 ![CI Run](https://github.com/plaksiki/SU-Website/blob/main/reports/week5/images/ci-run.png)
 
 ### SemVer Release (MVP v2)
+
 ![SemVer Release](https://github.com/plaksiki/SU-Website/blob/main/reports/week5/images/semver-release.png)
 
 ### Example Reviewed PR/MR
+
 ![Reviewed PR](https://github.com/plaksiki/SU-Website/blob/main/reports/week5/images/reviewed-pr.png)
 
-### Hosted Documentation Site
-![Docs Site](https://github.com/plaksiki/SU-Website/blob/main/reports/week5/images/docs-site.png)
+### Hosted Documentation Page
 
----
+![Docs Site](https://github.com/plaksiki/SU-Website/blob/main/reports/week5/images/docs-site.png)
