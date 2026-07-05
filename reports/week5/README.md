@@ -211,13 +211,13 @@ The system follows a **microservices-oriented architecture** with clear separati
 
 ## Contribution Traceability
 
-| Team Member | Issues | PRs/MRs | Reviews | Testing | Quality | Automation | Architecture | Documentation |
+| Team Member | Issues | PRs/MRs | Reviews | Testing | Quality | Automation | Architecture Doc. | Documentation |
 |-------------|--------|---------|---------|---------|---------|------------|--------------|---------------|
-| **Alina P.** | #148, #149, #155 | #,# | - | Unit tests | - | - | Dynamic view documentation | README.md, UAT, US, docs/README.md, DEPLOY.md update |
-| **Bulat S.** | #150, #157 |  | - | Integration tests | ✅ | CI config | Dynamic view | Sprint LLM report |
-| **Emil G.** | #156, #153 | #145 |  | - | - | - | - | Sprint reflection |
-| **Daria S.** | #139, #140, #141, #142, #143 | #154, #161, #163, #164, #168, #169 | - | - | ✅ | - | Static view documentation | docs/architecture/static-view |
-| **Kristina B.** | #152, #158 | #160, #166 | - | - | ✅ | - | - | Sprint retrospective |
+| **Alina P.** | #148, #149, #155, #171 | #,# | - | Unit tests | - | - | Dynamic view documentation | README.md, UAT, US, docs/README.md, DEPLOY.md update |
+| **Bulat S.** | #149, #150, #157 | #159 | - | Integration tests | ✅ | CI config | Deployment view doc., QRs tests | Sprint LLM report |
+| **Emil G.** | #156, #153 | #145, #174 | - | - | - | - | - | Sprint reflection, quality requirements |
+| **Daria S.** | #139, #140, #141, #142, #143 | #154, #161, #163, #164, #168, #169 | - | - | ✅ | - | Static view documentation | - |
+| **Kristina B.** | #152, #158 | #160, #166, #170 | - | - | ✅ | - | - | Sprint retrospective |
 | **Svetlana L.** | #151, #158 | - | - | - | - | - | - | Sprint review summary/transcript |
 
 ---
