@@ -27,6 +27,7 @@
 - Connecting backend with Docker, VM, and databases
 - Minor backend fixes and adjustments
 - Decoding assignment tasks
+- Writing plantUML code for static view
 
 **How AI was used:**
 - Daria used ChatGPT to figure out necessary commands and concepts for connecting the backend to Docker, databases, and a VM. AI was also used to decipher assignment tasks and resolve minor backend issues.
