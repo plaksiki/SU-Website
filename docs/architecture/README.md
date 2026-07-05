@@ -54,7 +54,8 @@ This document describes the architecture of the Student Union Website, including
 
 [Deployment View diagram-as-code](https://github.com/plaksiki/SU-Website/blob/architecture-documentation/docs/architecture/deployment-view/deployment-diagram.puml)
 
-![Deployment Diagram](deployment-view/deployment-diagram.puml)
+<img width="843" height="1048" alt="deployment_view" src="https://github.com/user-attachments/assets/872d01bd-1e9b-493f-bade-b3ad3c9c5221" />
+
 
 ### What the Diagram Shows
 
