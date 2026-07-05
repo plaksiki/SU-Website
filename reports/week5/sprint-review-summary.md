@@ -1,4 +1,3 @@
-# Sprint Review Summary – Student Council Website
 
 **Date:** July 3, 2026
 
