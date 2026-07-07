@@ -16,7 +16,7 @@ Scenarios are executed with the customer during Sprint Review.
 | **Priority** | Must Have |
 | **Status** | ✅ Pass (Sprint 2 Review – 2026-06-25) |
 
-**Given** a student opens the Events page on the SU Website
+**Given** a user opens the Events page on the SU Website
 **When** the page loads
 **Then** events with a future date are shown under "Upcoming Events"
 **And** events with a past date are shown under "Past Events"
@@ -32,8 +32,8 @@ Scenarios are executed with the customer during Sprint Review.
 | **Priority** | Could Have |
 | **Status** | ✅ Pass (Sprint 2 Review – 2026-06-25) |
 
-**Given** a student opens the Questionnaires page
-**When** the student selects an open questionnaire and fills in all required fields
+**Given** a user opens the Questionnaires page
+**When** the user selects an open questionnaire and fills in all required fields
 **And** clicks the Submit button
 **Then** a success message is displayed
 **And** no personal information is stored or displayed to other users
@@ -48,17 +48,81 @@ Scenarios are executed with the customer during Sprint Review.
 | **Priority** | Should Have |
 | **Status** | ✅ Pass (Sprint 2 Review – 2026-06-25) |
 
-**Given** a student is on any page of the SU Website
-**When** the student clicks the language toggle in the navigation bar
+**Given** a user is on any page of the SU Website
+**When** the user clicks the language toggle in the navigation bar
 **Then** all visible text on the page switches to the selected language (EN or RU)
 **And** the selected language is remembered when navigating to another page
 
 ---
 
+### UAT-4: Admin Login page
+
+| Field | Details |
+|-------|---------|
+| **Related User Story** | US-05 - Exporting questionnaire results |
+| **Priority** | Should Have |
+| **Status** | ✅ Pass (Sprint 3 Review – 2026-07-03) |
+
+**Given** a user is on any page of the SU Website
+**When** the user clicks 3 times on IU logo at the left top of the page
+**Then** user sees Admin login page asking for login and password and "Login" button
+**And** when password was put in user can check it by click on eye logo (password that was put there will appear)
+
+---
+
+### UAT-5: Log in Admin Panel and log out
+
+| Field | Details |
+|-------|---------|
+| **Related User Story** | US-05 - Exporting questionnaire results |
+| **Priority** | Should Have |
+| **Status** | ✅ Pass (Sprint 3 Review – 2026-07-03) |
+
+**Given** a user is on Admin login page
+**When** the user input valid login and password and press "Login"
+**Then** user sees Admin panel greeting and can logout by click on "Logout"
+**And** if user clicked "Logout" button, he sees Admin login page again
+
+---
+
+### UAT-6: csv Export from the Admin Panel
+
+| Field | Details |
+|-------|---------|
+| **Related User Story** | US-05 - Exporting questionnaire results |
+| **Priority** | Should Have |
+| **Status** | ✅ Pass (Sprint 3 Review – 2026-07-03) |
+
+**Given** a user logged in Admin panel
+**When** the user clicks on "Export Questionnaires to CSV" button
+**Then** downloading of the file starting
+**And** user can find the file in downloadings in the browser
+
+---
+
+### UAT-7: Events Details
+
+| Field | Details |
+|-------|---------|
+| **Related User Story** | US-01 - Viewing event details |
+| **Priority** | Must Have |
+| **Status** | ✅ Pass (Sprint 3 Review – 2026-07-03) |
+
+**Given** a user is on "Events" page
+**When** the user clicks on any Event card
+**Then** picked event page opens
+**And** detailed info about the event is pressented on this page
+
+---
+
 ## Execution History
 
-| Scenario | Sprint 1 | Sprint 2 |
-|----------|----------|----------|
-| UAT-1: Viewing events | Not tested | ✅ Pass |
-| UAT-2: Submitting questionnaire | Not tested | ✅ Pass |
-| UAT-3: Language switching | Not tested | ✅ Pass |
+| Scenario | Sprint 1 | Sprint 2 | Sprint 3 |
+|----------|----------|----------|----------|
+| UAT-1: Viewing events | Not tested | ✅ Pass | Not tested |
+| UAT-2: Submitting questionnaire | Not tested | ✅ Pass | Not tested |
+| UAT-3: Language switching | Not tested | ✅ Pass | Not tested |
+| UAT-4: Admin Login page | Not tested | Not tested | ✅ Pass |
+| UAT-5: Log in Admin Panel and log out | Not tested | Not tested | ✅ Pass |
+| UAT-6: csv Export from the Admin Panel | Not tested | Not tested | ✅ Pass |
+| UAT-7: Events Details | Not tested | Not tested | ✅ Pass |

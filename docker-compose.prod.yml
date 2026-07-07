@@ -44,31 +44,6 @@ services:
       - db_data:/var/lib/postgresql/data
       - ./su-backend/migrations:/docker-entrypoint-initdb.d
     restart: unless-stopped
-  # redis:
-  #   image: redis:7-alpine
-  #   command: redis-server --appendonly yes
-  #   volumes:
-  #     - redis_data:/data
-  #   ports:
-  #     - "6379:6379"
-  #   restart: unless-stopped
-  #   healthcheck:
-  #     test: ["CMD", "redis-cli", "ping"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
-  # thumbor:
-  #   image: mvhirsch/thumbor-fundamentals
-  #   environment:
-  #     SECURITY_KEY: ${THUMBOR_SECURITY_KEY}
-  #     ALLOW_UNSAFE_URL: "False"
-  #     LOADER: thumbor.loaders.file_loader
-  #     FILE_LOADER_ROOT_PATH: /data/images
-  #   ports:
-  #     - "8888:8888"
-  #   volumes:
-  #     - ./uploads:/data/images
-  #   restart: unless-stopped
+  
 volumes:
   db_data:
-  # redis_data:

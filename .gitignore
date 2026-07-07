@@ -43,3 +43,6 @@ webhook-secret.txt
 
 # Old configs (если есть)
 docker-compose.old.yml
+
+# Backend
+su-backend\backend\demo\src\main\resources\application.properties
