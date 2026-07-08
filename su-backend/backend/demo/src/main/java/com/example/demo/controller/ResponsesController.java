@@ -2,6 +2,9 @@ package com.example.demo.controller;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.entity.Responses;
 import com.example.demo.repository.ResponsesRepository;
+
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +24,11 @@ public class ResponsesController {
     }
     @PostMapping("/responses")
     public Responses createResponse(@RequestBody Responses entity) {
+        entity.setSubmittedAt(LocalDateTime.now());
         return repository.save(entity);
+    }
+    @GetMapping("/responses")
+    public List<Responses> getAllResponses() {
+        return repository.findAll();
     }
 }

@@ -1,16 +1,19 @@
 package com.example.demo.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "options")
 public class Options {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-    @Column(name = "questions_id")
-    private Long questionsId;
+    @Column(name = "question_id")
+    private Long questionId;
     private String text;
     @Column(name = "order_index")
     private Long orderIndex;
@@ -21,7 +24,7 @@ public class Options {
 
     public Options(Long id, Long questionsId, String text, Long orderIndex) {
         this.id = id;
-        this.questionsId = questionsId;
+        this.questionId = questionsId;
         this.text = text;
         this.orderIndex = orderIndex;
     }
@@ -34,12 +37,12 @@ public class Options {
         this.id = id;
     }
 
-    public Long getQuestionsId() {
-        return this.questionsId;
+    public Long getQuestionId() {
+        return questionId;
     }
 
-    public void setQuestionsId(Long questionsId) {
-        this.questionsId = questionsId;
+    public void setQuestionId(Long questionId) {
+        this.questionId = questionId;
     }
 
     public String getText() {

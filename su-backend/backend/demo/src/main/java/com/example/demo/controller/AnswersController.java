@@ -2,6 +2,8 @@ package com.example.demo.controller;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.entity.Answers;
 import com.example.demo.repository.AnswersRepository;
+
+import java.util.List;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,5 +24,9 @@ public class AnswersController {
     @PostMapping("/answers")
     public Answers createAnswer(@RequestBody Answers entity) {
         return repository.save(entity);
+    }
+    @GetMapping("/answers")
+    public List<Answers> getAllAnswers() {
+        return repository.findAll();
     }
 }
