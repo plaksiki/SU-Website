@@ -44,9 +44,9 @@ cd su-backend/backend/demo
 ./mvnw spring-boot:run   # starts at http://localhost:8080
 ```
 
-### With Docker
+### With Docker (production)
 ```bash
-docker-compose up
+docker-compose -f docker-compose.prod.yml up -d
 ```
 
 ## Backend API
