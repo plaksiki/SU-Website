@@ -1,0 +1,61 @@
+@startuml Deployment View
+title Deployment View - IU Student Union Portal
+
+skinparam node {
+  BackgroundColor #f1f5f9
+  BorderColor #1e293b
+}
+skinparam component {
+  BackgroundColor #dcfce7
+  BorderColor #40ba21
+}
+skinparam database {
+  BackgroundColor #dcfce7
+  BorderColor #40ba21
+}
+
+actor "Student\n(Browser)" as Student
+actor "Admin\n(Browser)" as Admin
+
+node "GitHub" {
+  component "GitHub Actions\n(CI/CD Pipeline)" as CI
+}
+
+node "Innopolis University VM\n10.93.26.192" {
+  node "Docker Network" {
+    component "su-frontend\nnginx : 80\n(React + TypeScript SPA)" as Frontend
+    component "su-backend\nSpring Boot : 8080\n(REST API + JWT)" as Backend
+    database "su-db\nPostgreSQL : 5432" as DB
+  }
+}
+
+Student --> Frontend : "HTTP :80\n(browse portal)"
+Admin --> Frontend : "HTTP :80\n(admin panel)"
+Frontend --> Backend : "HTTP :8080\n(REST API calls)"
+Backend --> DB : "JDBC :5432\n(SQL queries)"
+CI --> Frontend : "build & deploy\n(on push to main)"
+
+note right of Frontend
+  Serves static React build
+  Routes: /, /events, /polls,
+  /donations, /history, /admin
+end note
+
+note right of Backend
+  JWT authentication
+  REST endpoints:
+  /questionnaire
+  /questionnaire/:id
+  /questionnaire/:id/response
+  Spring Data JPA
+end note
+
+note bottom of DB
+  Tables: questionnaires,
+  questions, options,
+  responses, admins, answers
+  Redis + Thumbor planned
+  but not yet deployed
+end note
+
+@enduml
