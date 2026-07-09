@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+---
+
+## [2.0.0] - 2026-07-05
+
+### Added
+
 - "Polls" page
 - Questionnaires with single/multiple choice questions and individual answer questions
 - Creating questionnaires with single/multiple choice questions and individual answer questions
