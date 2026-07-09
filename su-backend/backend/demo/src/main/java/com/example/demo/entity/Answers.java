@@ -16,18 +16,19 @@ public class Answers {
     private Long responseId;
     @Column(name = "question_id")
     private Long questionId;
-    private String text_answer;
+    @Column(name = "text_answer")
+    private String textAnswer;
     @Column(name = "option_id")
     private Long optionId;
 
     public Answers() {
     }
 
-    public Answers(Long id, Long responseId, Long questionId, String text_answer, Long optionId) {
+    public Answers(Long id, Long responseId, Long questionId, String textAnswer, Long optionId) {
         this.id = id;
         this.responseId = responseId;
         this.questionId = questionId;
-        this.text_answer = text_answer;
+        this.textAnswer = textAnswer;
         this.optionId = optionId;
     }
 
@@ -55,12 +56,12 @@ public class Answers {
         this.questionId = questionId;
     }
 
-    public String getText_answer() {
-        return this.text_answer;
+    public String getTextAnswer() {
+        return this.textAnswer;
     }
 
-    public void setText_answer(String text_answer) {
-        this.text_answer = text_answer;
+    public void setTextAnswer(String textAnswer) {
+        this.textAnswer = textAnswer;
     }
 
     public Long getOptionId() {

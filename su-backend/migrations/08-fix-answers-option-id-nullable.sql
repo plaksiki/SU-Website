@@ -1,0 +1,2 @@
+ALTER TABLE answers ALTER COLUMN option_id DROP NOT NULL;
+ALTER TABLE answers DROP CONSTRAINT IF EXISTS answer_type_check;
