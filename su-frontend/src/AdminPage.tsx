@@ -34,7 +34,6 @@ const adminTranslations = {
   en: {
     title: 'Admin Panel',
     subtitle: 'Manage events, questionnaires and applications',
-    logout: 'Logout',
     login_title: 'Admin Login',
     login_desc: 'Enter your credentials to access the panel',
     username_placeholder: 'Username',
@@ -42,14 +41,38 @@ const adminTranslations = {
     login_btn: 'Login',
     logout_btn: 'Logout',
     error: 'Invalid username or password',
-    placeholder: 'Event and questionnaire management coming soon.',
     admin_panel_desc: 'Manage events and questionnaires',
-    exprt_btn: "Export Questionnaires to CSV",
+    exprt_btn: 'Export Questionnaires to CSV',
+    logged_in_as: 'Logged in as:',
+    create_event: 'Create Event',
+    event_title_placeholder: 'Event title',
+    event_location_placeholder: 'Location',
+    event_description_placeholder: 'Event description',
+    event_list: 'Events',
+    create_questionnaire: 'Create Questionnaire',
+    q_title_placeholder: 'Questionnaire title (RU | EN)',
+    q_desc_placeholder: 'Questionnaire description (RU | EN)',
+    bilingual_hint: 'For bilingual support use format: Русский текст | English text',
+    add_question_label: 'Add question',
+    question_text_placeholder: 'Question text (RU | EN)',
+    type_open: 'Open answer',
+    type_single: 'Single choice',
+    type_multiple: 'Multiple choice',
+    options_placeholder: 'Options (RU | EN) separated by commas: Да | Yes, Нет | No',
+    add_question_btn: '+ Add question',
+    questions_in_draft: 'Questions in draft',
+    delete: 'Delete',
+    create_q_btn: 'Create questionnaire',
+    questionnaires_list: 'Questionnaires',
+    confirm_delete: 'Delete this questionnaire?',
+    form_error_fields: 'Please fill in all required fields',
+    form_error_questions: 'Add at least one question',
+    form_error_q_fields: 'Fill in questionnaire title and description',
+    fetch_error: 'Failed to load data from server',
   },
   ru: {
     title: 'Панель администратора',
     subtitle: 'Управление событиями, анкетами и заявками',
-    logout: 'Выйти',
     login_title: 'Вход для администратора',
     login_desc: 'Введите логин и пароль для доступа к панели',
     username_placeholder: 'Логин',
@@ -57,14 +80,39 @@ const adminTranslations = {
     login_btn: 'Войти',
     logout_btn: 'Выйти',
     error: 'Неверный логин или пароль',
-    placeholder: 'Тут появится управление событиями и анкетами.',
     admin_panel_desc: 'Управление событиями и анкетами',
-    exprt_btn: "Экспорт анкет в CSV",
+    exprt_btn: 'Экспорт анкет в CSV',
+    logged_in_as: 'Вы вошли как:',
+    create_event: 'Создать событие',
+    event_title_placeholder: 'Название события',
+    event_location_placeholder: 'Место проведения',
+    event_description_placeholder: 'Описание события',
+    event_list: 'Список событий',
+    create_questionnaire: 'Создать опросник',
+    q_title_placeholder: 'Название опросника (РУ | EN)',
+    q_desc_placeholder: 'Описание опросника (РУ | EN)',
+    bilingual_hint: 'Для двуязычности используйте формат: Русский текст | English text',
+    add_question_label: 'Добавить вопрос',
+    question_text_placeholder: 'Текст вопроса (РУ | EN)',
+    type_open: 'Развёрнутый ответ',
+    type_single: 'Один вариант',
+    type_multiple: 'Несколько вариантов',
+    options_placeholder: 'Варианты (РУ | EN) через запятую: Да | Yes, Нет | No',
+    add_question_btn: '+ Добавить вопрос',
+    questions_in_draft: 'Вопросы в опроснике',
+    delete: 'Удалить',
+    create_q_btn: 'Создать опросник',
+    questionnaires_list: 'Опросники',
+    confirm_delete: 'Удалить опросник?',
+    form_error_fields: 'Пожалуйста, заполните все обязательные поля',
+    form_error_questions: 'Добавьте хотя бы один вопрос',
+    form_error_q_fields: 'Заполните название и описание опросника',
+    fetch_error: 'Не удалось загрузить данные с сервера',
   }
 }
 
 
-const exportToCSV = async () => {
+const exportToCSV = async (fetchErrorMsg: string) => {
   try {
     const [questionnaires, answers, responses] = await Promise.all([
       fetch(`${API_URL}/questionnaires`).then(r => r.json()),
@@ -125,7 +173,7 @@ const exportToCSV = async () => {
     link.click()
     URL.revokeObjectURL(url)
   } catch {
-    alert('\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044C \u0434\u0430\u043D\u043D\u044B\u0435 \u0441 \u0441\u0435\u0440\u0432\u0435\u0440\u0430')
+    alert(fetchErrorMsg)
   }
 }
 
@@ -166,7 +214,7 @@ function AdminPage({ lang }: { lang: Lang }) {
   }, [isLoggedIn])
 
   const handleDeleteQuestionnaire = async (id: string) => {
-    if (!confirm('Удалить опросник?')) return
+    if (!confirm(t.confirm_delete)) return
     try {
       await fetch(`${API_URL}/questionnaire/${id}`, { method: 'DELETE' })
       setQuestionnaires(prev => prev.filter(q => q.id !== id))
@@ -198,18 +246,18 @@ const handleRemoveQuestion = (id: string) => {
 }
 const handleCreateQuestionnaire = async () => {
   if (!qTitle || !qDescription) {
-    setQFormError('Заполните название и описание опросника')
+    setQFormError(t.form_error_q_fields)
     return
   }
   if (draftQuestions.length === 0) {
-    setQFormError('Добавьте хотя бы один вопрос')
+    setQFormError(t.form_error_questions)
     return
   }
 
   setQFormError('')
 
   try {
-    // 1. Создаём опросник на бэкенде
+    // Создаём опросник на бэкенде
     const res = await fetch(`${API_URL}/questionnaire`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -224,7 +272,7 @@ const handleCreateQuestionnaire = async () => {
     if (!res.ok) throw new Error('Failed to create questionnaire')
     const created = await res.json()
 
-    // 2. Создаём вопросы на бэкенде
+    // Создаём вопросы на бэкенде
     const typeMap: Record<string, string> = {
       text: 'open_text',
       single: 'single_choice',
@@ -246,7 +294,7 @@ const handleCreateQuestionnaire = async () => {
       )
     )
 
-    // 3. Создаём варианты ответа
+    // Создаём варианты ответа
     await Promise.all(
       createdQuestions.flatMap((createdQ, index) => {
         const q = draftQuestions[index]
@@ -265,7 +313,7 @@ const handleCreateQuestionnaire = async () => {
       })
     )
 
-    // 4. Сохраняем локально
+    // Сохраняем локально
     const questionnaire: Questionnaire = {
       id: created.id.toString(),
       title: qTitle,
@@ -390,7 +438,7 @@ useEffect(() => {
 
   const handleAddEvent = () => {
     if (!newTitle || !newDate || !newLocation || !newDescription) {
-      setFormError('Пожалуйста, заполните все обязательные поля')
+      setFormError(t.form_error_fields)
       return
     }
     setFormError('')
@@ -429,8 +477,8 @@ useEffect(() => {
         <p style={{ color: '#475569', fontSize: 13, margin: '4px 0 0' }}>
           {t.subtitle}
         </p>
-          <p style = {{color: '#475569', fontSize: 12, margin: '4px 0 0' }}>
-            Вы вошли как: <strong style={{color: '#40ba21'}}>{username}</strong>
+          <p style={{ color: '#475569', fontSize: 12, margin: '4px 0 0' }}>
+            {t.logged_in_as} <strong style={{ color: '#40ba21' }}>{username}</strong>
           </p>
         </div>
         <button
@@ -456,12 +504,12 @@ useEffect(() => {
       </div>
 
       <div className="donation-card">
-<h3 style={{ marginBottom: 16 }}>Создать событие</h3>
+        <h3 style={{ marginBottom: 16 }}>{t.create_event}</h3>
         <input
           type="text"
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
-          placeholder="Название события"
+          placeholder={t.event_title_placeholder}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
         />
         <input
@@ -474,19 +522,19 @@ useEffect(() => {
           type="text"
           value={newLocation}
           onChange={(e) => setNewLocation(e.target.value)}
-          placeholder="Место проведения"
+          placeholder={t.event_location_placeholder}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
         />
         <textarea
           value={newDescription}
           onChange={(e) => setNewDescription(e.target.value)}
-          placeholder="Описание события"
+          placeholder={t.event_description_placeholder}
           rows={3}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box', resize: 'vertical' }}
         />
 
         <button className="btn" onClick={handleAddEvent} style={{ width: '100%' }}>
-          Создать событие
+          {t.create_event}
         </button>
 
         {formError && (
@@ -495,7 +543,7 @@ useEffect(() => {
 
         {events.length > 0 && (
           <div style={{ marginTop: 32 }}>
-            <h3 style={{ marginBottom: 16 }}>Список событий ({events.length})</h3>
+            <h3 style={{ marginBottom: 16 }}>{t.event_list} ({events.length})</h3>
             {events.map((event) => (
               <div key={event.id} style={{ padding: 16, border: '1px solid #e2e8f0', borderRadius: 12, marginBottom: 12 }}>
                 <strong>{event.title}</strong>
@@ -510,32 +558,35 @@ useEffect(() => {
       </div>
 
       <div className="donation-card" style={{ marginTop: 32 }}>
-        <h3 style={{ marginBottom: 16 }}>Создать опросник</h3>
+        <h3 style={{ marginBottom: 8 }}>{t.create_questionnaire}</h3>
+        <p style={{ fontSize: 12, color: '#64748b', marginBottom: 16, padding: '8px 12px', background: '#f1f5f9', borderRadius: 8 }}>
+          💡 {t.bilingual_hint}
+        </p>
 
         <input
           type="text"
           value={qTitle}
           onChange={(e) => setQTitle(e.target.value)}
-          placeholder="Название опросника"
+          placeholder={t.q_title_placeholder}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
         />
 
         <textarea
           value={qDescription}
           onChange={(e) => setQDescription(e.target.value)}
-          placeholder="Описание опросника"
+          placeholder={t.q_desc_placeholder}
           rows={2}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 20, outline: 'none', boxSizing: 'border-box', resize: 'vertical' }}
         />
 
         <div style={{ padding: 16, background: '#f8fafc', borderRadius: 12, marginBottom: 16 }}>
-          <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 12 }}>Добавить вопрос</p>
+          <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 12 }}>{t.add_question_label}</p>
 
           <input
             type="text"
             value={questionText}
             onChange={(e) => setQuestionText(e.target.value)}
-            placeholder="Текст вопроса"
+            placeholder={t.question_text_placeholder}
             style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
           />
 
@@ -544,9 +595,9 @@ useEffect(() => {
             onChange={(e) => setQuestionType(e.target.value as QuestionType)}
             style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
           >
-            <option value="open_text">Развёрнутый ответ</option>
-            <option value="single_choice">Один вариант</option>
-            <option value="multiple_choice">Несколько вариантов</option>
+            <option value="open_text">{t.type_open}</option>
+            <option value="single_choice">{t.type_single}</option>
+            <option value="multiple_choice">{t.type_multiple}</option>
           </select>
 
           {questionType !== 'open_text' && (
@@ -554,7 +605,7 @@ useEffect(() => {
               type="text"
               value={optionsInput}
               onChange={(e) => setOptionsInput(e.target.value)}
-              placeholder="Варианты ответа через запятую: Да, Нет, Не знаю"
+              placeholder={t.options_placeholder}
               style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
             />
           )}
@@ -563,14 +614,14 @@ useEffect(() => {
             onClick={handleAddQuestion}
             style={{ padding: '10px 20px', borderRadius: 12, border: '1px solid rgba(64,186,33,0.3)', background: 'white', color: '#40ba21', fontWeight: 600, fontSize: 13, cursor: 'pointer' }}
           >
-            + Добавить вопрос
+            {t.add_question_btn}
           </button>
         </div>
 
         {draftQuestions.length > 0 && (
           <div style={{ marginBottom: 16 }}>
             <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>
-              Вопросы в опроснике ({draftQuestions.length})
+              {t.questions_in_draft} ({draftQuestions.length})
             </p>
             {draftQuestions.map((q, index) => (
               <div key={q.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 12, border: '1px solid #e2e8f0', borderRadius: 12, marginBottom: 8 }}>
@@ -579,7 +630,7 @@ useEffect(() => {
                   onClick={() => handleRemoveQuestion(q.id)}
                   style={{ border: 'none', background: 'none', color: '#dc2626', cursor: 'pointer', fontSize: 13 }}
                 >
-                  Удалить
+                  {t.delete}
                 </button>
               </div>
             ))}
@@ -587,7 +638,7 @@ useEffect(() => {
         )}
 
         <button className="btn" onClick={handleCreateQuestionnaire} style={{ width: '100%' }}>
-          Создать опросник
+          {t.create_q_btn}
         </button>
 
         {qFormError && (
@@ -598,7 +649,7 @@ useEffect(() => {
 
         {questionnaires.length > 0 && (
           <div style={{ marginTop: 32 }}>
-            <h3 style={{ marginBottom: 16 }}>Опросники ({questionnaires.length})</h3>
+            <h3 style={{ marginBottom: 16 }}>{t.questionnaires_list} ({questionnaires.length})</h3>
             {questionnaires.map((qn) => (
               <div key={qn.id} style={{ padding: 16, border: '1px solid #e2e8f0', borderRadius: 12, marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
@@ -609,7 +660,7 @@ useEffect(() => {
                   onClick={() => handleDeleteQuestionnaire(qn.id)}
                   style={{ border: 'none', background: 'none', color: '#dc2626', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}
                 >
-                  Удалить
+                  {t.delete}
                 </button>
               </div>
             ))}
@@ -618,7 +669,7 @@ useEffect(() => {
 
         <p>{t.admin_panel_desc}</p>
         <br />
-        <button className="btn" onClick={exportToCSV}>
+        <button className="btn" onClick={() => exportToCSV(t.fetch_error)}>
           📄 {t.exprt_btn}
         </button>
       </div>

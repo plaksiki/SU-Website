@@ -4,6 +4,9 @@ import './App.css'
 import AdminPage from './AdminPage'
 import { useNavigate } from 'react-router-dom'
 
+const deptImages = import.meta.glob('./assets/**/*', { eager: true, query: '?url', import: 'default' }) as Record<string, string>
+function getPhoto(path: string): string | undefined { return deptImages[path] }
+
 const API_URL = 'http://10.93.26.192:8080'
 
 const translations = {
@@ -31,9 +34,8 @@ const translations = {
     qr_desc: "Every contribution helps us organize better events.",
     qr_note: "Scan the QR code with your phone camera or banking app",
     dept_core_desc: "Managing strategic objectives and administration.",
-    dept_it_desc: "Engineering digital solutions for students.",
+    dept_active_desc: "Organizing events, sports activities, and campus life.",
     dept_media_desc: "Designing merchandise and running social networks.",
-    dept_sport_desc: "Organizing sports events and activities.",
     polls: "Polls",
     polls_title: "Questionnaires",
     polls_desc: "Share your opinion — all responses are anonymous",
@@ -47,6 +49,9 @@ const translations = {
     history_title: "Our History",
     history_desc: "The story of Innopolis University Student Union",
     dep_core: "View department →",
+    ceo_title: "Student Union Leadership",
+    ceo_role_ceo: "SU President",
+    ceo_role_assistant: "Assistant to the President",
   },
   ru: {
     home: "Главная",
@@ -72,9 +77,8 @@ const translations = {
     qr_desc: "Каждый вклад помогает организовать лучшие мероприятия.",
     qr_note: "Отсканируйте QR код камерой телефона или банковским приложением",
     dept_core_desc: "Управление стратегическими целями и администрацией.",
-    dept_it_desc: "Разработка цифровых решений для студентов.",
+    dept_active_desc: "Организация мероприятий, спортивных активностей и студенческой жизни.",
     dept_media_desc: "Дизайн мерча и ведение социальных сетей.",
-    dept_sport_desc: "Организация спортивных мероприятий и активностей.",
     polls: "Опросники",
     polls_title: "Опросники",
     polls_desc: "Поделитесь мнением — все ответы анонимны",
@@ -88,6 +92,9 @@ const translations = {
     history_title: "Наша история",
     history_desc: "История Студенческого Союза Университета Иннополис",
     dep_core: "Перейти в департамент →",
+    ceo_title: "Руководство Студенческого Союза",
+    ceo_role_ceo: "Президент СС",
+    ceo_role_assistant: "Помощник президента",
   }
 }
 
@@ -132,10 +139,62 @@ const events: Event[] = [
   },
 ]
 
+interface Member {
+  name: string
+  role?: string
+  photo?: string
+}
+
 const getDepartments = (t: T) => [
-  { id: 1, slug: "su-core", name: "SU Core", tag: "SU.CORE", icon: "🛡️", description: t.dept_core_desc, members: ["Alice Johnson", "Bob Smith", "Carol White"] },
-  { id: 2, slug: "su-it", name: "SU IT", tag: "SU.IT", icon: "⚙️", description: t.dept_it_desc, members: ["David Lee", "Emma Davis", "Frank Miller"] },
-  { id: 3, slug: "su-media", name: "SU Media", tag: "SU.MEDIA", icon: "📸", description: t.dept_media_desc, members: ["Grace Wilson", "Henry Brown", "Ivy Taylor"] },
+  {
+    id: 1, slug: "su-core", name: "SU Core", tag: "SU.CORE", icon: "🛡️", description: t.dept_core_desc,
+    members: [
+      { name: "Andrew Gekhtin", role: "COO", photo: "./assets/Core/Andrew.png" },
+      { name: "Amelia Gizatullina", role: "Assistant", photo: "./assets/Core/Amelia.jpeg" },
+      { name: "Timur Bikmetov", photo: "./assets/Core/Timur.jpg" },
+      { name: "Egor Shvetsov", photo: "./assets/Core/Egor.jpeg" },
+      { name: "Anna Zyrianova", photo: "./assets/Core/Anna.jpg" },
+      { name: "Valerii Tiniakov", photo: "./assets/Core/Valerii.jpg" },
+      { name: "Yaroslav Moskvin", photo: "./assets/Core/Yaroslav.jpg" },
+      { name: "Albert Khechoyan", photo: "./assets/Core/Albert.jpeg" },
+      { name: "Takhir Salikhov", photo: "./assets/Core/Takhir.jpg" },
+      { name: "Dmitrii Malofeev", photo: "./assets/Core/Dmitrii.jpeg" },
+      { name: "Esdras Diffouo Fopa", photo: "./assets/Core/Esdras.JPG" },
+      { name: "Telman Nuruzov", photo: "./assets/Core/Telman.jpg" },
+    ] as Member[]
+  },
+  {
+    id: 2, slug: "su-active", name: "SU Active", tag: "SU.ACTIVE", icon: "⚡", description: t.dept_active_desc,
+    members: [
+      { name: "Maria Martianova", role: "COO", photo: "./assets/Active/Maria.JPG" },
+      { name: "Irina Perekrestova", role: "Assistant", photo: "./assets/Active/Irina.JPG" },
+      { name: "Albina Fadeeva", photo: "./assets/Active/Albina.jpg" },
+      { name: "Aliya Khadeeva", photo: "./assets/Active/Aliya.JPG" },
+      { name: "Georgy Pyanov", photo: "./assets/Active/Georgii.jpg" },
+      { name: "Kristina Ushakova", photo: "./assets/Active/Kristina.JPG" },
+      { name: "Marina Alexandrova", photo: "./assets/Active/Marina.JPG" },
+      { name: "Darina Luchinina", role: "Intern", photo: "./assets/Active/Darina.JPG" },
+      { name: "Askar Aitov", role: "Intern", photo: "./assets/Active/Askar.JPG" },
+      { name: "Svetlana Yakusheva", role: "Intern", photo: "./assets/Active/Svetlana.JPG" },
+      { name: "Amaliya Kharisova", role: "Intern", photo: "./assets/Active/Amalia.JPG" },
+      { name: "Roman Titov", role: "Intern", photo: "./assets/Active/Roman.jpg" },
+      { name: "Maria Karpova", role: "Intern", photo: "./assets/Active/Maria2.jpg" },
+      { name: "Ekaterina Efremova", role: "Intern", photo: "./assets/Active/Ekaterina.JPG" },
+      { name: "Arsenii Shchekin", role: "Intern", photo: "./assets/Active/Arsenii.JPG" },
+      { name: "Anastasiya Kalashnikova", role: "Intern", photo: "./assets/Active/Anastasia.JPG" },
+      { name: "Maximilian Mifsud Bonici", role: "Intern", photo: "./assets/Active/Maximilian.JPG" },
+    ] as Member[]
+  },
+  {
+    id: 3, slug: "su-media", name: "SU Media", tag: "SU.MEDIA", icon: "📸", description: t.dept_media_desc,
+    members: [
+      { name: "Silvia Fedorovskaya", role: "COO", photo: "./assets/Media/Silvia.jpg" },
+      { name: "Egor Lesnykh", role: "Assistant", photo: "./assets/Media/Egor(1).jpg" },
+      { name: "Ksenia Minaeva", photo: "./assets/Media/Ksenia.jpeg" },
+      { name: "Daniyar Fairushin", photo: "./assets/Media/Daniyar.jpg" },
+      { name: "Yana Birkina", photo: "./assets/Media/Yana.jpg" },
+    ] as Member[]
+  },
 ]
 
 const today = new Date()
@@ -170,6 +229,12 @@ interface BackendOption {
 
 type Lang = 'en' | 'ru'
 type T = typeof translations.en
+
+function localize(text: string, lang: Lang): string {
+  const parts = text.split(' | ')
+  if (parts.length === 1) return text
+  return lang === 'ru' ? (parts[0] || text) : (parts[1] || parts[0] || text)
+}
 
 function PollsPage({ t, lang }: { t: T; lang: Lang }) {
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -295,7 +360,7 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
 
   const selectedPoll = backendPolls.find(p => String(p.id) === selectedId)
 
-  // 1. Нет выбранного опросника — показываем список
+  // Нет выбранного опросника - показываем список
   if (!selectedId) return (
     <div className="container">
       <div className="section-title">
@@ -308,8 +373,8 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
         {!loading && !fetchError && backendPolls.map(poll => (
           <div key={poll.id} className="event-card" style={{ cursor: 'pointer' }} onClick={() => loadQuestionnaire(String(poll.id))}>
             <span className="badge badge-upcoming">Live</span>
-            <h2>{poll.title}</h2>
-            <p>{poll.description}</p>
+            <h2>{localize(poll.title, lang)}</h2>
+            <p>{localize(poll.description, lang)}</p>
             <br />
             <button className="btn" style={{ fontSize: 14 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</button>
           </div>
@@ -318,14 +383,14 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
     </div>
   )
 
-  // 2. Загружаются вопросы
+  // Загружаются вопросы
   if (questionsLoading) return (
     <div className="container">
       <p style={{ textAlign: 'center', color: '#64748b', marginTop: 40 }}>Loading...</p>
     </div>
   )
 
-  // 3. Отправлено
+  // Отправлено
   if (submitted) return (
     <div className="container">
       <div className="donation-card" style={{ marginTop: 40 }}>
@@ -336,27 +401,27 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
     </div>
   )
 
-  // 4. Форма опросника
+  // Форма опросника
   return (
     <div className="container">
       <button onClick={handleBack} style={{ background: 'none', border: 'none', color: '#40ba21', fontWeight: 'bold', cursor: 'pointer', marginBottom: 16 }}>
         ← {lang === 'en' ? 'Back' : 'Назад'}
       </button>
       <div className="hero" style={{ padding: 40 }}>
-        <h1 style={{ fontSize: 28, marginBottom: 8 }}>{selectedPoll?.title}</h1>
-        <p style={{ marginBottom: 32 }}>{selectedPoll?.description}</p>
+        <h1 style={{ fontSize: 28, marginBottom: 8 }}>{selectedPoll ? localize(selectedPoll.title, lang) : ''}</h1>
+        <p style={{ marginBottom: 32 }}>{selectedPoll ? localize(selectedPoll.description, lang) : ''}</p>
         {questions.map((q, idx) => {
           const opts = options[q.id] || []
           const hasErr = errors[q.id]
           return (
             <div key={q.id} style={{ marginBottom: 28 }}>
               <p style={{ fontWeight: 600, marginBottom: 10, color: hasErr ? '#dc2626' : '#1e293b' }}>
-                {idx + 1}. {q.text}
+                {idx + 1}. {localize(q.text, lang)}
               </p>
               {q.questionType === 'single_choice' && opts.map(opt => (
                 <label key={opt.id} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, cursor: 'pointer' }}>
                   <input type="radio" name={String(q.id)} checked={answers[q.id] === opt.id} onChange={() => handleSingle(q.id, opt.id)} style={{ accentColor: '#40ba21' }} />
-                  {opt.text}
+                  {localize(opt.text, lang)}
                 </label>
               ))}
               {q.questionType === 'multiple_choice' && opts.map(opt => {
@@ -364,7 +429,7 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
                 return (
                   <label key={opt.id} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, cursor: 'pointer' }}>
                     <input type="checkbox" checked={sel.includes(opt.id)} onChange={() => handleMultiple(q.id, opt.id)} style={{ accentColor: '#40ba21' }} />
-                    {opt.text}
+                    {localize(opt.text, lang)}
                   </label>
                 )
               })}
@@ -383,7 +448,7 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
   )
 }
 
-function DepartmentPage({ t }: { t: T; lang: Lang }) {
+function DepartmentPage({ t }: { t: T; lang?: Lang }) {
   const { slug } = useParams()
   const dept = getDepartments(t).find(d => d.slug === slug)
 
@@ -411,10 +476,14 @@ function DepartmentPage({ t }: { t: T; lang: Lang }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {dept.members.map((member, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: '#f8fafc', borderRadius: 12, border: '1px solid #e2e8f0' }}>
-                <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#40ba21', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>
-                  {member[0]}
+                {member.photo && getPhoto(member.photo)
+                  ? <img src={getPhoto(member.photo)} alt={member.name} style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                  : <div style={{ width: 40, height: 40, borderRadius: '50%', background: member.role === 'Intern' ? '#94a3b8' : '#40ba21', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', flexShrink: 0 }}>{member.name[0]}</div>
+                }
+                <div>
+                  <span style={{ fontWeight: 500, color: '#1e293b', display: 'block' }}>{member.name}</span>
+                  {member.role && <span style={{ fontSize: 12, color: member.role === 'Intern' ? '#94a3b8' : '#40ba21', fontWeight: 600 }}>{member.role}</span>}
                 </div>
-                <span style={{ fontWeight: 500, color: '#1e293b' }}>{member}</span>
               </div>
             ))}
           </div>
@@ -473,6 +542,11 @@ function Navbar({ lang, setLang, t }: { lang: Lang; setLang: (l: Lang) => void; 
   )
 }
 
+const ceoMembers: Member[] = [
+  { name: "Alena Petrenko", role: "SU:CEO", photo: "./assets/Alena.jpg" },
+  { name: "Ilya Kachalin", role: "Assistant", photo: "./assets/Ilia.jpg" },
+]
+
 function HomePage({ t }: { t: T }) {
   return (
     <div className="container">
@@ -480,6 +554,24 @@ function HomePage({ t }: { t: T }) {
         <h1>{t.hero_title} <span className="green">{t.hero_subtitle}</span></h1>
         <p>{t.hero_desc}</p>
         <Link to="/events" className="btn">{t.view_events}</Link>
+      </div>
+      <div className="section-title">
+        <h2>{t.ceo_title}</h2>
+      </div>
+      <div style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 48 }}>
+        {ceoMembers.map((m, i) => {
+          const photo = m.photo ? getPhoto(m.photo) : undefined
+          return (
+            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+              {photo
+                ? <img src={photo} alt={m.name} style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', border: '3px solid #40ba21' }} />
+                : <div style={{ width: 100, height: 100, borderRadius: '50%', background: '#40ba21', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 36, fontWeight: 'bold' }}>{m.name[0]}</div>
+              }
+              <span style={{ fontWeight: 700, color: '#1e293b', fontSize: 15 }}>{m.name}</span>
+              <span style={{ fontSize: 12, color: '#40ba21', fontWeight: 600 }}>{m.role}</span>
+            </div>
+          )
+        })}
       </div>
       <div className="section-title">
         <h2>{t.org_title}</h2>
