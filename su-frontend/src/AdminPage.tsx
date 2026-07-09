@@ -139,29 +139,45 @@ const exportToCSV = async (fetchErrorMsg: string) => {
     )
 
     const rows: string[] = []
-    rows.push(['Questionnaire', 'Question', 'Answer'].join(';'))
 
     for (const questionnaire of questionnaires) {
       const questionnaireResponses = responses.filter((r: {questionnaireId: number}) => r.questionnaireId === questionnaire.id)
-      const questionnaireQuestions = questionsMap[questionnaire.id] || []
+      const questionnaireQuestions = (questionsMap[questionnaire.id] || []) as {id: number, text: string}[]
+      if (questionnaireResponses.length === 0) continue
 
-      for (const response of questionnaireResponses) {
+      // Заголовок секции: название опросника
+      rows.push('')
+      rows.push(`"${questionnaire.title}"`)
+
+      // Шапка колонок: Ответ # | вопрос1 | вопрос2 | ...
+      const header = ['Ответ #', ...questionnaireQuestions.map((q: {text: string}) => `"${q.text}"`)].join(';')
+      rows.push(header)
+
+      // Одна строка = один пользователь
+      questionnaireResponses.forEach((response: {id: number}, idx: number) => {
         const responseAnswers = answers.filter((a: {responseId: number}) => a.responseId === response.id)
-        for (const answer of responseAnswers) {
-          const question = questionnaireQuestions.find((q: {id: number}) => q.id === answer.questionId)
-          let answerText = answer.text_answer || ''
-          if (answer.optionId) {
-            const opts = optionsMap[answer.questionId] || []
-            const option = opts.find((o: {id: number, text: string}) => o.id === answer.optionId)
-            answerText = option ? option.text : String(answer.optionId)
+        const rowCells = [`${idx + 1}`, ...questionnaireQuestions.map((q: {id: number}) => {
+          const ans = responseAnswers.find((a: {questionId: number}) => a.questionId === q.id)
+          if (!ans) return '""'
+          if (ans.optionId) {
+            const opts = optionsMap[q.id] || []
+            const option = opts.find((o: {id: number, text: string}) => o.id === ans.optionId)
+            return `"${option ? option.text : ans.optionId}"`
           }
-          rows.push([
-            `"${questionnaire.title}"`,
-            `"${question?.text || ''}"`,
-            `"${answerText}"`
-          ].join(';'))
-        }
-      }
+          // multiple choice: может быть несколько ответов на один вопрос
+          const allAnswersForQ = responseAnswers.filter((a: {questionId: number, optionId: number | null}) => a.questionId === q.id && a.optionId)
+          if (allAnswersForQ.length > 1) {
+            const opts = optionsMap[q.id] || []
+            const texts = allAnswersForQ.map((a: {optionId: number}) => {
+              const o = opts.find((opt: {id: number, text: string}) => opt.id === a.optionId)
+              return o ? o.text : a.optionId
+            })
+            return `"${texts.join(', ')}"`
+          }
+          return `"${ans.textAnswer || ''}"`
+        })]
+        rows.push(rowCells.join(';'))
+      })
     }
 
     const csv = rows.join('\n')

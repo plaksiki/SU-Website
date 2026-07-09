@@ -324,21 +324,21 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
             return fetch(`${API_URL}/answers`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ responseId, questionId: q.id, text_answer: value as string, optionId: null })
+              body: JSON.stringify({ responseId, questionId: q.id, textAnswer: value as string, optionId: null })
             })
           } else if (q.questionType === 'multiple_choice') {
             return Promise.all((value as number[]).map(optionId =>
               fetch(`${API_URL}/answers`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ responseId, questionId: q.id, text_answer: null, optionId })
+                body: JSON.stringify({ responseId, questionId: q.id, textAnswer: null, optionId })
               })
             ))
           } else {
             return fetch(`${API_URL}/answers`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ responseId, questionId: q.id, text_answer: null, optionId: value as number })
+              body: JSON.stringify({ responseId, questionId: q.id, textAnswer: null, optionId: value as number })
             })
           }
         })
