@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 public class Questionnaire {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
+    private Long id;
     private String title;
     private String description;
     @Column(name = "started_at")
@@ -29,7 +29,7 @@ public class Questionnaire {
         description = "no description";
     }
 
-    public Questionnaire (long id, String title, String description,
+    public Questionnaire (Long id, String title, String description,
         LocalDateTime startedAt, LocalDateTime finishedAt) {
         this.id = id;
         this.title = title;
@@ -39,11 +39,11 @@ public class Questionnaire {
     }
 
 
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

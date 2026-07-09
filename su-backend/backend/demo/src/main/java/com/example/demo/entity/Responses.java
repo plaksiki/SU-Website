@@ -12,34 +12,34 @@ import jakarta.persistence.Table;
 public class Responses {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
+    private Long id;
     @Column(name = "questionnaire_id")
-    private long questionnaireId;
+    private Long questionnaireId;
     @Column(name = "submitted_at")
     private LocalDateTime submittedAt;
 
     public Responses () {
     }
 
-    public Responses (long id, long questionnaireId, LocalDateTime submittedAt) {
+    public Responses (Long id, Long questionnaireId, LocalDateTime submittedAt) {
         this.id = id;
         this.questionnaireId = questionnaireId;
         this.submittedAt = submittedAt;
     }
 
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getQuestionnaireId() {
+    public Long getQuestionnaireId() {
         return this.questionnaireId;
     }
 
-    public void setQuestionnaireId(long questionnaireId) {
+    public void setQuestionnaireId(Long questionnaireId) {
         this.questionnaireId = questionnaireId;
     }
 
