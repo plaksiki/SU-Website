@@ -110,7 +110,7 @@ Development team support is still required for at least: (a) initially clarifyin
 
 | Date | Change | Author |
 |---|---|---|
-| 2026-06-21 | Release v1.0.0 (MVP v1, Assignment 3) | dev team |
-| 2026-07-08 | First version of customer-handover.md drafted based on the public repository | [Emil Gilfanov] |
-| [date] | Week 6: [fill in with actual changes] | [name] |
-| [date] | Week 7: [fill in with actual changes] | [name] |
+| 2026-06-21 | Release v1.0.0 (MVP v1) | dev team |
+| 2026-07-08 | First version of customer-handover.md | dev team |
+| [date] | Week 6: Prefinal version of the product, fixed customer-handover.md | dev team |
+| [date] | Week 7: Final version of the product (MVP v3) and customer-handover.md  | dev team |
