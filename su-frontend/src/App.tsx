@@ -46,8 +46,7 @@ const translations = {
     history: "History",
     history_title: "Our History",
     history_desc: "The story of Innopolis University Student Union",
-    dep_core:"View department →",
-
+    dep_core: "View department →",
   },
   ru: {
     home: "Главная",
@@ -88,8 +87,7 @@ const translations = {
     history: "История",
     history_title: "Наша история",
     history_desc: "История Студенческого Союза Университета Иннополис",
-    dep_core:"Перейти в департамент →",
-
+    dep_core: "Перейти в департамент →",
   }
 }
 
@@ -138,7 +136,7 @@ const getDepartments = (t: T) => [
   { id: 1, slug: "su-core", name: "SU Core", tag: "SU.CORE", icon: "🛡️", description: t.dept_core_desc, members: ["Alice Johnson", "Bob Smith", "Carol White"] },
   { id: 2, slug: "su-it", name: "SU IT", tag: "SU.IT", icon: "⚙️", description: t.dept_it_desc, members: ["David Lee", "Emma Davis", "Frank Miller"] },
   { id: 3, slug: "su-media", name: "SU Media", tag: "SU.MEDIA", icon: "📸", description: t.dept_media_desc, members: ["Grace Wilson", "Henry Brown", "Ivy Taylor"] },
-  ]
+]
 
 const today = new Date()
 const eventsWithStatus = events.map(event => ({
@@ -146,97 +144,6 @@ const eventsWithStatus = events.map(event => ({
   isActive: new Date(event.date) >= today
 }))
 
-type QuestionType = 'single' | 'multiple' | 'text'
-
-interface Question {
-  id: string
-  textEn: string
-  textRu: string
-  type: QuestionType
-  optionsEn?: string[]
-  optionsRu?: string[]
-  required: boolean
-}
-
-interface Questionnaire {
-  id: string
-  titleEn: string
-  titleRu: string
-  descriptionEn: string
-  descriptionRu: string
-  questions: Question[]
-}
-
-const QUESTIONNAIRES: Questionnaire[] = [
-  {
-    id: 'q1',
-    titleEn: 'Academic Experience Survey',
-    titleRu: 'Опрос об учёбе',
-    descriptionEn: 'Help us understand how studies are going this semester.',
-    descriptionRu: 'Помогите нам понять, как проходит учёба в этом семестре.',
-    questions: [
-      {
-        id: 'q1_1',
-        textEn: 'How would you rate the overall quality of teaching?',
-        textRu: 'Как вы оцениваете качество преподавания в целом?',
-        type: 'single',
-        optionsEn: ['Excellent', 'Good', 'Average', 'Poor'],
-        optionsRu: ['Отлично', 'Хорошо', 'Удовлетворительно', 'Плохо'],
-        required: true,
-      },
-      {
-        id: 'q1_2',
-        textEn: 'Which subjects feel most challenging?',
-        textRu: 'Какие предметы даются сложнее всего?',
-        type: 'multiple',
-        optionsEn: ['Calculus', 'Linear Algebra', 'Algorithms', 'Physics', 'English'],
-        optionsRu: ['Матанализ', 'Линейная алгебра', 'Алгоритмы', 'Физика', 'Английский'],
-        required: false,
-      },
-      {
-        id: 'q1_3',
-        textEn: 'Any suggestions for the Student Union?',
-        textRu: 'Есть ли пожелания студенческому совету?',
-        type: 'text',
-        required: false,
-      },
-    ],
-  },
-  {
-    id: 'q2',
-    titleEn: 'SU IT Internship Application',
-    titleRu: 'Заявка на стажировку в SU IT',
-    descriptionEn: 'Apply to join the IT department of the Student Union.',
-    descriptionRu: 'Подайте заявку в IT-отдел студенческого совета.',
-    questions: [
-      {
-        id: 'q2_1',
-        textEn: 'Your frontend experience level?',
-        textRu: 'Ваш уровень опыта во фронтенде?',
-        type: 'single',
-        optionsEn: ['Beginner', 'Intermediate', 'Advanced'],
-        optionsRu: ['Начинающий', 'Средний', 'Продвинутый'],
-        required: true,
-      },
-      {
-        id: 'q2_2',
-        textEn: 'Which technologies do you know?',
-        textRu: 'Какие технологии вы знаете?',
-        type: 'multiple',
-        optionsEn: ['TypeScript / React', 'Tailwind CSS', 'Node.js', 'PostgreSQL', 'Docker'],
-        optionsRu: ['TypeScript / React', 'Tailwind CSS', 'Node.js', 'PostgreSQL', 'Docker'],
-        required: false,
-      },
-      {
-        id: 'q2_3',
-        textEn: 'Link to your GitHub or portfolio',
-        textRu: 'Ссылка на ваш GitHub или портфолио',
-        type: 'text',
-        required: true,
-      },
-    ],
-  },
-]
 
 interface BackendQuestionnaire {
   id: number
@@ -246,95 +153,179 @@ interface BackendQuestionnaire {
   finishedAt: string
 }
 
+interface BackendQuestion {
+  id: number
+  questionnaireId: number
+  text: string
+  questionType: 'single_choice' | 'multiple_choice' | 'open_text'
+  orderIndex: number
+}
+
+interface BackendOption {
+  id: number
+  questionId: number
+  text: string
+  orderIndex: number
+}
+
+type Lang = 'en' | 'ru'
+type T = typeof translations.en
 
 function PollsPage({ t, lang }: { t: T; lang: Lang }) {
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [answers, setAnswers] = useState<Record<string, string | string[]>>({})
+  const [answers, setAnswers] = useState<Record<string, string | number | number[]>>({})
   const [submitted, setSubmitted] = useState(false)
   const [errors, setErrors] = useState<Record<string, boolean>>({})
   const [backendPolls, setBackendPolls] = useState<BackendQuestionnaire[]>([])
+  const [questions, setQuestions] = useState<BackendQuestion[]>([])
+  const [options, setOptions] = useState<Record<number, BackendOption[]>>({})
   const [loading, setLoading] = useState(true)
+  const [questionsLoading, setQuestionsLoading] = useState(false)
   const [fetchError, setFetchError] = useState(false)
 
-
   useEffect(() => {
-    fetch(`${API_URL}/questionnaire/1`)
-      .then(res => { if (!res.ok) throw new Error('Failed'); return res.json() })
-      .then(data => { setBackendPolls([data]); setLoading(false) })
+    fetch(`${API_URL}/questionnaires`)
+      .then(res => res.ok ? res.json() : [])
+      .then(data => {
+        setBackendPolls(data)
+        setLoading(false)
+      })
       .catch(() => { setFetchError(true); setLoading(false) })
   }, [])
 
-  const selected = QUESTIONNAIRES.find(q => q.id === selectedId)
+  const loadQuestionnaire = async (id: string) => {
+    setQuestionsLoading(true)
+    setQuestions([])
+    setOptions({})
+    setSelectedId(id)
+    try {
+      const qs: BackendQuestion[] = await fetch(`${API_URL}/question/by-questionnaire/${id}`).then(r => r.json())
+      setQuestions(qs.sort((a, b) => a.orderIndex - b.orderIndex))
 
-  const handleSingle = (qid: string, val: string) => {
-    setAnswers(p => ({ ...p, [qid]: val }))
+      const optsByQuestion: Record<number, BackendOption[]> = {}
+      await Promise.all(
+        qs.filter(q => q.questionType !== 'open_text').map(async q => {
+          const opts: BackendOption[] = await fetch(`${API_URL}/options/by-question/${q.id}`).then(r => r.json())
+          optsByQuestion[q.id] = opts.sort((a, b) => a.orderIndex - b.orderIndex)
+        })
+      )
+      setOptions(optsByQuestion)
+    } catch {
+      // вопросы не загрузились
+    }
+    setQuestionsLoading(false)
+  }
+
+  const handleSingle = (qid: number, optionId: number) => {
+    setAnswers(p => ({ ...p, [qid]: optionId }))
     setErrors(p => ({ ...p, [qid]: false }))
   }
-  const handleMultiple = (qid: string, opt: string) => {
+
+  const handleMultiple = (qid: number, optionId: number) => {
     setAnswers(p => {
-      const cur = (p[qid] as string[]) || []
-      return { ...p, [qid]: cur.includes(opt) ? cur.filter(o => o !== opt) : [...cur, opt] }
+      const cur = (p[qid] as number[]) || []
+      return { ...p, [qid]: cur.includes(optionId) ? cur.filter(o => o !== optionId) : [...cur, optionId] }
     })
   }
-  const handleText = (qid: string, val: string) => {
+
+  const handleText = (qid: number, val: string) => {
     setAnswers(p => ({ ...p, [qid]: val }))
     setErrors(p => ({ ...p, [qid]: false }))
   }
-  const handleSubmit = () => {
-    if (!selected) return
+
+  const handleSubmit = async () => {
+    if (!selectedId || questions.length === 0) return
     const errs: Record<string, boolean> = {}
-    for (const q of selected.questions) {
-      if (!q.required) continue
+    for (const q of questions) {
       const v = answers[q.id]
       if (!v || (Array.isArray(v) && !v.length) || v === '') errs[q.id] = true
     }
     if (Object.keys(errs).length) { setErrors(errs); return }
-    setSubmitted(true)
+
+    try {
+      const responseRes = await fetch(`${API_URL}/responses`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questionnaireId: Number(selectedId) })
+      })
+      if (!responseRes.ok) throw new Error('Failed to create response')
+      const responseData = await responseRes.json()
+      const responseId = responseData.id
+
+      await Promise.all(
+        questions.map(q => {
+          const value = answers[q.id]
+          if (q.questionType === 'open_text') {
+            return fetch(`${API_URL}/answers`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ responseId, questionId: q.id, text_answer: value as string, optionId: null })
+            })
+          } else if (q.questionType === 'multiple_choice') {
+            return Promise.all((value as number[]).map(optionId =>
+              fetch(`${API_URL}/answers`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ responseId, questionId: q.id, text_answer: null, optionId })
+              })
+            ))
+          } else {
+            return fetch(`${API_URL}/answers`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ responseId, questionId: q.id, text_answer: null, optionId: value as number })
+            })
+          }
+        })
+      )
+      setSubmitted(true)
+    } catch {
+      setSubmitted(true)
+    }
   }
-  const handleBack = () => { setSelectedId(null); setAnswers({}); setSubmitted(false); setErrors({}) }
 
-// СНАЧАЛА проверяем selectedId
-if (!selectedId) return (
-  <div className="container">
-    <div className="section-title">
-      <h2>{t.polls_title}</h2>
-      <p>{t.polls_desc}</p>
+  const handleBack = () => {
+    setSelectedId(null)
+    setAnswers({})
+    setSubmitted(false)
+    setErrors({})
+    setQuestions([])
+    setOptions({})
+  }
+
+  const selectedPoll = backendPolls.find(p => String(p.id) === selectedId)
+
+  // 1. Нет выбранного опросника — показываем список
+  if (!selectedId) return (
+    <div className="container">
+      <div className="section-title">
+        <h2>{t.polls_title}</h2>
+        <p>{t.polls_desc}</p>
+      </div>
+      {loading && <p style={{ textAlign: 'center', color: '#64748b' }}>Loading...</p>}
+      {fetchError && <p style={{ textAlign: 'center', color: '#dc2626' }}>Could not connect to server.</p>}
+      <div className="events-list">
+        {!loading && !fetchError && backendPolls.map(poll => (
+          <div key={poll.id} className="event-card" style={{ cursor: 'pointer' }} onClick={() => loadQuestionnaire(String(poll.id))}>
+            <span className="badge badge-upcoming">Live</span>
+            <h2>{poll.title}</h2>
+            <p>{poll.description}</p>
+            <br />
+            <button className="btn" style={{ fontSize: 14 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</button>
+          </div>
+        ))}
+      </div>
     </div>
-    {loading && <p style={{ textAlign: 'center', color: '#64748b' }}>Loading...</p>}
-    {fetchError && <p style={{ textAlign: 'center', color: '#dc2626' }}>Could not connect to server.</p>}
-    <div className="events-list">
-      {!loading && !fetchError && backendPolls.filter(poll => poll !== null).map(poll => (
-        <div key={poll.id} className="event-card" style={{ cursor: 'pointer' }} onClick={() => setSelectedId('q1')}>
-          <span className="badge badge-upcoming">Live</span>
-          <h2>{poll.title}</h2>
-          <p>{poll.description}</p>
-          <br />
-          <button className="btn" style={{ fontSize: 14 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</button>
-        </div>
-      ))}
-      {QUESTIONNAIRES.map(q => (
-        <div key={q.id} className="event-card" style={{ cursor: 'pointer' }} onClick={() => setSelectedId(q.id)}>
-          <span className="badge badge-upcoming">{q.questions.length} {lang === 'en' ? 'questions' : 'вопросов'}</span>
-          <h2>{lang === 'en' ? q.titleEn : q.titleRu}</h2>
-          <p>{lang === 'en' ? q.descriptionEn : q.descriptionRu}</p>
-          <br />
-          <button className="btn" style={{ fontSize: 14 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</button>
-        </div>
-      ))}
+  )
+
+  // 2. Загружаются вопросы
+  if (questionsLoading) return (
+    <div className="container">
+      <p style={{ textAlign: 'center', color: '#64748b', marginTop: 40 }}>Loading...</p>
     </div>
-  </div>
-)
+  )
 
-// ПОТОМ проверяем selected
-if (!selected) return (
-  <div className="container">
-    <button onClick={handleBack} style={{ background: 'none', border: 'none', color: '#40ba21', fontWeight: 'bold', cursor: 'pointer', marginBottom: 16 }}>
-      ← {lang === 'en' ? 'Back' : 'Назад'}
-    </button>
-    <p>Questionnaire not found</p>
-  </div>
-)
-
+  // 3. Отправлено
   if (submitted) return (
     <div className="container">
       <div className="donation-card" style={{ marginTop: 40 }}>
@@ -345,39 +336,39 @@ if (!selected) return (
     </div>
   )
 
+  // 4. Форма опросника
   return (
     <div className="container">
       <button onClick={handleBack} style={{ background: 'none', border: 'none', color: '#40ba21', fontWeight: 'bold', cursor: 'pointer', marginBottom: 16 }}>
         ← {lang === 'en' ? 'Back' : 'Назад'}
       </button>
       <div className="hero" style={{ padding: 40 }}>
-        <h1 style={{ fontSize: 28, marginBottom: 8 }}>{lang === 'en' ? selected!.titleEn : selected!.titleRu}</h1>
-        <p style={{ marginBottom: 32 }}>{lang === 'en' ? selected!.descriptionEn : selected!.descriptionRu}</p>
-        {selected!.questions.map((q, idx) => {
-          const opts = lang === 'en' ? q.optionsEn : q.optionsRu
+        <h1 style={{ fontSize: 28, marginBottom: 8 }}>{selectedPoll?.title}</h1>
+        <p style={{ marginBottom: 32 }}>{selectedPoll?.description}</p>
+        {questions.map((q, idx) => {
+          const opts = options[q.id] || []
           const hasErr = errors[q.id]
           return (
             <div key={q.id} style={{ marginBottom: 28 }}>
               <p style={{ fontWeight: 600, marginBottom: 10, color: hasErr ? '#dc2626' : '#1e293b' }}>
-                {idx + 1}. {lang === 'en' ? q.textEn : q.textRu}
-                {q.required && <span style={{ color: '#dc2626' }}> *</span>}
+                {idx + 1}. {q.text}
               </p>
-              {q.type === 'single' && opts?.map(opt => (
-                <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, cursor: 'pointer' }}>
-                  <input type="radio" name={q.id} value={opt} checked={answers[q.id] === opt} onChange={() => handleSingle(q.id, opt)} style={{ accentColor: '#40ba21' }} />
-                  {opt}
+              {q.questionType === 'single_choice' && opts.map(opt => (
+                <label key={opt.id} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, cursor: 'pointer' }}>
+                  <input type="radio" name={String(q.id)} checked={answers[q.id] === opt.id} onChange={() => handleSingle(q.id, opt.id)} style={{ accentColor: '#40ba21' }} />
+                  {opt.text}
                 </label>
               ))}
-              {q.type === 'multiple' && opts?.map(opt => {
-                const sel = (answers[q.id] as string[]) || []
+              {q.questionType === 'multiple_choice' && opts.map(opt => {
+                const sel = (answers[q.id] as number[]) || []
                 return (
-                  <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, cursor: 'pointer' }}>
-                    <input type="checkbox" value={opt} checked={sel.includes(opt)} onChange={() => handleMultiple(q.id, opt)} style={{ accentColor: '#40ba21' }} />
-                    {opt}
+                  <label key={opt.id} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, cursor: 'pointer' }}>
+                    <input type="checkbox" checked={sel.includes(opt.id)} onChange={() => handleMultiple(q.id, opt.id)} style={{ accentColor: '#40ba21' }} />
+                    {opt.text}
                   </label>
                 )
               })}
-              {q.type === 'text' && (
+              {q.questionType === 'open_text' && (
                 <textarea rows={3} value={(answers[q.id] as string) || ''} onChange={e => handleText(q.id, e.target.value)}
                   placeholder={lang === 'en' ? 'Your answer...' : 'Ваш ответ...'}
                   style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1px solid ${hasErr ? '#dc2626' : '#e2e8f0'}`, fontFamily: 'Arial, sans-serif', fontSize: 14, resize: 'vertical', outline: 'none' }} />
@@ -391,9 +382,6 @@ if (!selected) return (
     </div>
   )
 }
-
-type Lang = 'en' | 'ru'
-type T = typeof translations.en
 
 function DepartmentPage({ t }: { t: T; lang: Lang }) {
   const { slug } = useParams()
@@ -463,6 +451,7 @@ function Navbar({ lang, setLang, t }: { lang: Lang; setLang: (l: Lang) => void; 
       setLogoClicks(0)
     }
   }
+
   return (
     <nav className="navbar">
       <div className="nav-logo" style={{ textDecoration: 'none' }} onClick={handleLogoClick}>
@@ -593,7 +582,7 @@ function EventsPage({ t }: { t: T }) {
       </div>
       <div className="events-list">
         {visibleEvents.map((event, index) => (
-        <Link key={index} to={`/events/${event.id}`} style={{ textDecoration: 'none' }}>
+          <Link key={index} to={`/events/${event.id}`} style={{ textDecoration: 'none' }}>
             <div className="event-card" style={{ cursor: 'pointer', height: '100%' }}>
               <div className="event-image-wrapper" style={{ background: `linear-gradient(135deg, ${event.color}, ${event.color}99)` }}>
                 <h3 style={{ color: 'white', fontSize: 20, fontWeight: 900, padding: '0 16px' }}>{event.name}</h3>
@@ -644,7 +633,7 @@ function Footer() {
         </div>
         <div className="footer-right">
           <p>📧 su@innopolis.university</p>
-          <p>📍 Room 67 </p>
+          <p>📍 Room 67</p>
           <p>🕐 Tue & Thu 18:00 - 20:00</p>
         </div>
       </div>
@@ -672,7 +661,7 @@ function App() {
         <Route path="/donations" element={<DonationsPage t={t} />} />
         <Route path="/admin" element={<AdminPage lang={lang} />} />
       </Routes>
-      <Footer/>
+      <Footer />
     </BrowserRouter>
   )
 }

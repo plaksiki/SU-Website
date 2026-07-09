@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 
+const API_URL = 'http://10.93.26.192:8080'
+
 interface Event {
   id: string
   title: string
@@ -7,7 +9,7 @@ interface Event {
   location: string
   description: string
 }
-type QuestionType = 'text' | 'single' | 'multiple'
+type QuestionType = 'open_text' | 'single_choice' | 'multiple_choice'
 
 interface Question {
   id: string
@@ -61,74 +63,76 @@ const adminTranslations = {
   }
 }
 
-const QUESTIONNAIRES_DATA = [
-  {
-    id: 'q1',
-    titleEn: 'Academic Experience Survey',
-    titleRu: 'Опрос об учёбе',
-    questions: [
-      { id: 'q1_1', textEn: 'How would you rate teaching quality?', textRu: 'Как вы оцениваете качество преподавания?', type: 'single', options: 'Excellent | Good | Average | Poor', required: true },
-      { id: 'q1_2', textEn: 'Which subjects are most challenging?', textRu: 'Какие предметы сложнее всего?', type: 'multiple', options: 'Calculus | Linear Algebra | Algorithms | Physics | English', required: false },
-      { id: 'q1_3', textEn: 'Suggestions for Student Union?', textRu: 'Пожелания студенческому совету?', type: 'text', options: '', required: false },
-    ]
-  },
-  {
-    id: 'q2',
-    titleEn: 'SU IT Internship Application',
-    titleRu: 'Заявка на стажировку в SU IT',
-    questions: [
-      { id: 'q2_1', textEn: 'Your frontend experience level?', textRu: 'Ваш уровень опыта во фронтенде?', type: 'single', options: 'Beginner | Intermediate | Advanced', required: true },
-      { id: 'q2_2', textEn: 'Which technologies do you know?', textRu: 'Какие технологии вы знаете?', type: 'multiple', options: 'TypeScript/React | Tailwind | Node.js | PostgreSQL | Docker', required: false },
-      { id: 'q2_3', textEn: 'GitHub or portfolio link', textRu: 'Ссылка на GitHub или портфолио', type: 'text', options: '', required: true },
-    ]
-  }
-]
 
-const exportToCSV = () => {
-  const rows: string[] = []
- 
-  rows.push([
-    'Questionnaire ID',
-    'Title EN',
-    'Title RU', 
-    'Question ID',
-    'Question EN',
-    'Question RU',
-    'Type',
-    'Required',
-    'Options'
-  ].join(';'))
+const exportToCSV = async () => {
+  try {
+    const [questionnaires, answers, responses] = await Promise.all([
+      fetch(`${API_URL}/questionnaires`).then(r => r.json()),
+      fetch(`${API_URL}/answers`).then(r => r.json()),
+      fetch(`${API_URL}/responses`).then(r => r.json()),
+    ])
 
-  for (const q of QUESTIONNAIRES_DATA) {
-    for (const question of q.questions) {
-      rows.push([
-        q.id,
-        `"${q.titleEn}"`,   
-        `"${q.titleRu}"`,
-        question.id,
-        `"${question.textEn}"`,
-        `"${question.textRu}"`,
-        question.type,
-        question.required ? 'yes' : 'no',
-        `"${question.options}"`
-      ].join(';'))
+    const questionsMap: Record<number, {id: number, text: string}[]> = {}
+    const optionsMap: Record<number, {id: number, text: string}[]> = {}
+
+    await Promise.all(
+      questionnaires.map(async (q: {id: number}) => {
+        const qs = await fetch(`${API_URL}/question/by-questionnaire/${q.id}`).then(r => r.json())
+        questionsMap[q.id] = qs
+        await Promise.all(
+          qs.map(async (question: {id: number, questionType: string}) => {
+            if (question.questionType !== 'open_text') {
+              const opts = await fetch(`${API_URL}/options/by-question/${question.id}`).then(r => r.json())
+              optionsMap[question.id] = opts
+            }
+          })
+        )
+      })
+    )
+
+    const rows: string[] = []
+    rows.push(['Questionnaire', 'Question', 'Answer'].join(';'))
+
+    for (const questionnaire of questionnaires) {
+      const questionnaireResponses = responses.filter((r: {questionnaireId: number}) => r.questionnaireId === questionnaire.id)
+      const questionnaireQuestions = questionsMap[questionnaire.id] || []
+
+      for (const response of questionnaireResponses) {
+        const responseAnswers = answers.filter((a: {responseId: number}) => a.responseId === response.id)
+        for (const answer of responseAnswers) {
+          const question = questionnaireQuestions.find((q: {id: number}) => q.id === answer.questionId)
+          let answerText = answer.text_answer || ''
+          if (answer.optionId) {
+            const opts = optionsMap[answer.questionId] || []
+            const option = opts.find((o: {id: number, text: string}) => o.id === answer.optionId)
+            answerText = option ? option.text : String(answer.optionId)
+          }
+          rows.push([
+            `"${questionnaire.title}"`,
+            `"${question?.text || ''}"`,
+            `"${answerText}"`
+          ].join(';'))
+        }
+      }
     }
-  }
 
-  const csv = rows.join('\n')
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = 'questionnaires.csv'
-  link.click()
-  URL.revokeObjectURL(url)
+    const csv = rows.join('\n')
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'answers.csv'
+    link.click()
+    URL.revokeObjectURL(url)
+  } catch {
+    alert('\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044C \u0434\u0430\u043D\u043D\u044B\u0435 \u0441 \u0441\u0435\u0440\u0432\u0435\u0440\u0430')
+  }
 }
 
 
 function AdminPage({ lang }: { lang: Lang }) {
   const t = adminTranslations[lang]
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('admin_logged_in') === 'true')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -143,9 +147,33 @@ function AdminPage({ lang }: { lang: Lang }) {
   const [qDescription, setQDescription] = useState('')
   const [draftQuestions, setDraftQuestions] = useState<Question[]>([])
   const [questionText, setQuestionText] = useState('')
-  const [questionType, setQuestionType] = useState<QuestionType>('text')
+  const [questionType, setQuestionType] = useState<QuestionType>('open_text')
   const [optionsInput, setOptionsInput] = useState('')
   const [qFormError, setQFormError] = useState('')
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetch(`${API_URL}/questionnaires`)
+        .then(r => r.json())
+        .then(data => setQuestionnaires(data.map((q: {id: number, title: string, description: string}) => ({
+          id: q.id.toString(),
+          title: q.title,
+          description: q.description,
+          questions: []
+        }))))
+        .catch(() => {})
+    }
+  }, [isLoggedIn])
+
+  const handleDeleteQuestionnaire = async (id: string) => {
+    if (!confirm('Удалить опросник?')) return
+    try {
+      await fetch(`${API_URL}/questionnaire/${id}`, { method: 'DELETE' })
+      setQuestionnaires(prev => prev.filter(q => q.id !== id))
+    } catch {
+      setQuestionnaires(prev => prev.filter(q => q.id !== id))
+    }
+  }
 
   const handleAddQuestion = () => {
   if (!questionText) return
@@ -154,7 +182,7 @@ function AdminPage({ lang }: { lang: Lang }) {
     id: Date.now().toString(),
     text: questionText,
     type: questionType,
-    options: questionType === 'text'
+    options: questionType === 'open_text'
       ? []
       : optionsInput.split(',').map((opt) => opt.trim()).filter((opt) => opt !== '')
   }
@@ -162,13 +190,13 @@ function AdminPage({ lang }: { lang: Lang }) {
   setDraftQuestions((prev) => [...prev, question])
 
   setQuestionText('')
-  setQuestionType('text')
+  setQuestionType('open_text')
   setOptionsInput('')
 }
 const handleRemoveQuestion = (id: string) => {
   setDraftQuestions((prev) => prev.filter((q) => q.id !== id))
 }
-const handleCreateQuestionnaire = () => {
+const handleCreateQuestionnaire = async () => {
   if (!qTitle || !qDescription) {
     setQFormError('Заполните название и описание опросника')
     return
@@ -180,29 +208,100 @@ const handleCreateQuestionnaire = () => {
 
   setQFormError('')
 
-  const questionnaire: Questionnaire = {
-    id: Date.now().toString(),
-    title: qTitle,
-    description: qDescription,
-    questions: draftQuestions
+  try {
+    // 1. Создаём опросник на бэкенде
+    const res = await fetch(`${API_URL}/questionnaire`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: qTitle,
+        description: qDescription,
+        startedAt: new Date().toISOString(),
+        finishedAt: null
+      })
+    })
+
+    if (!res.ok) throw new Error('Failed to create questionnaire')
+    const created = await res.json()
+
+    // 2. Создаём вопросы на бэкенде
+    const typeMap: Record<string, string> = {
+      text: 'open_text',
+      single: 'single_choice',
+      multiple: 'multiple_choice'
+    }
+
+    const createdQuestions = await Promise.all(
+      draftQuestions.map((q, index) =>
+        fetch(`${API_URL}/questions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            questionnaireId: created.id,
+            text: q.text,
+            questionType: typeMap[q.type] || q.type,
+            orderIndex: index + 1
+          })
+        }).then(r => r.json())
+      )
+    )
+
+    // 3. Создаём варианты ответа
+    await Promise.all(
+      createdQuestions.flatMap((createdQ, index) => {
+        const q = draftQuestions[index]
+        if (q.options.length === 0) return []
+        return q.options.map((optText, optIndex) =>
+          fetch(`${API_URL}/options`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              questionId: createdQ.id,
+              text: optText,
+              orderIndex: optIndex + 1
+            })
+          })
+        )
+      })
+    )
+
+    // 4. Сохраняем локально
+    const questionnaire: Questionnaire = {
+      id: created.id.toString(),
+      title: qTitle,
+      description: qDescription,
+      questions: draftQuestions
+    }
+    setQuestionnaires(prev => [questionnaire, ...prev])
+    setQTitle('')
+    setQDescription('')
+    setDraftQuestions([])
+    setQFormError('')
+
+  } catch {
+    const questionnaire: Questionnaire = {
+      id: Date.now().toString(),
+      title: qTitle,
+      description: qDescription,
+      questions: draftQuestions
+    }
+    setQuestionnaires(prev => [questionnaire, ...prev])
+    setQTitle('')
+    setQDescription('')
+    setDraftQuestions([])
   }
-
-  setQuestionnaires((prev) => [questionnaire, ...prev])
-
-  setQTitle('')
-  setQDescription('')
-  setDraftQuestions([])
 }
 
 
   const handleLogin = () => {
-  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-    setIsLoggedIn(true)
-    setError('')
-  } else {
-    setError(t.error)
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+      setIsLoggedIn(true)
+      localStorage.setItem('admin_logged_in', 'true')
+      setError('')
+    } else {
+      setError(t.error)
+    }
   }
-}
 
 useEffect(() => {
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -337,6 +436,7 @@ useEffect(() => {
         <button
           onClick={() => {
             setIsLoggedIn(false)
+            localStorage.removeItem('admin_logged_in')
             setUsername('')
             setPassword('')
           }}
@@ -444,12 +544,12 @@ useEffect(() => {
             onChange={(e) => setQuestionType(e.target.value as QuestionType)}
             style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
           >
-            <option value="text">Развёрнутый ответ</option>
-            <option value="single">Один вариант</option>
-            <option value="multiple">Несколько вариантов</option>
+            <option value="open_text">Развёрнутый ответ</option>
+            <option value="single_choice">Один вариант</option>
+            <option value="multiple_choice">Несколько вариантов</option>
           </select>
 
-          {questionType !== 'text' && (
+          {questionType !== 'open_text' && (
             <input
               type="text"
               value={optionsInput}
@@ -498,12 +598,19 @@ useEffect(() => {
 
         {questionnaires.length > 0 && (
           <div style={{ marginTop: 32 }}>
-            <h3 style={{ marginBottom: 16 }}>Созданные опросники ({questionnaires.length})</h3>
+            <h3 style={{ marginBottom: 16 }}>Опросники ({questionnaires.length})</h3>
             {questionnaires.map((qn) => (
-              <div key={qn.id} style={{ padding: 16, border: '1px solid #e2e8f0', borderRadius: 12, marginBottom: 12 }}>
-                <strong>{qn.title}</strong>
-                <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0' }}>{qn.description}</p>
-                <p style={{ fontSize: 12, color: '#40ba21' }}>{qn.questions.length} вопрос(ов)</p>
+              <div key={qn.id} style={{ padding: 16, border: '1px solid #e2e8f0', borderRadius: 12, marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <strong>{qn.title}</strong>
+                  <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0' }}>{qn.description}</p>
+                </div>
+                <button
+                  onClick={() => handleDeleteQuestionnaire(qn.id)}
+                  style={{ border: 'none', background: 'none', color: '#dc2626', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}
+                >
+                  Удалить
+                </button>
               </div>
             ))}
           </div>
