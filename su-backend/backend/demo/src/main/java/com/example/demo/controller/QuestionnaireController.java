@@ -7,6 +7,7 @@ import com.example.demo.repository.QuestionnaireRepository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,5 +35,10 @@ public class QuestionnaireController {
     @PostMapping("/questionnaire")
     public Questionnaire createQuestionnaire(@RequestBody Questionnaire entity) {
         return repository.save(entity);
+    }
+
+    @DeleteMapping("/questionnaire/{id}")
+    public void deleteQuestionnaire(@PathVariable Long id) {
+        repository.deleteById(id);
     }
 }
