@@ -608,7 +608,7 @@ function HistoryPage({ t, lang }: { t: T; lang: Lang }) {
   )
 }
 
-function EventPage({ t, events }: { t: T; events: SuEvent[] }) {
+function EventPage({ t, lang, events }: { t: T; lang: Lang; events: SuEvent[] }) {
   const { id } = useParams()
   const event = events.find(e => e.id === id)
 
@@ -629,18 +629,18 @@ function EventPage({ t, events }: { t: T; events: SuEvent[] }) {
           <span className={`badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
             {event.isActive ? t.upcoming : t.passed}
           </span>
-          <h1>{event.name}</h1>
-          <p>📅 {event.date} &nbsp; 📍 {event.location}</p>
+          <h1>{localize(event.name, lang)}</h1>
+          <p>📅 {event.date} &nbsp; 📍 {localize(event.location, lang)}</p>
         </div>
         <div className="event-full-body">
-          <p>{event.description}</p>
+          <p>{localize(event.description, lang)}</p>
         </div>
       </div>
     </div>
   )
 }
 
-function EventsPage({ t, events }: { t: T; events: SuEvent[] }) {
+function EventsPage({ t, lang, events }: { t: T; lang: Lang; events: SuEvent[] }) {
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'passed'>('all')
 
   const visibleEvents = events.filter(event => {
@@ -666,13 +666,13 @@ function EventsPage({ t, events }: { t: T; events: SuEvent[] }) {
           <Link key={index} to={`/events/${event.id}`} style={{ textDecoration: 'none' }}>
             <div className="event-card" style={{ cursor: 'pointer', height: '100%' }}>
               <div className="event-image-wrapper" style={{ background: `linear-gradient(135deg, ${event.color}, ${event.color}99)` }}>
-                <h3 style={{ color: 'white', fontSize: 20, fontWeight: 900, padding: '0 16px' }}>{event.name}</h3>
+                <h3 style={{ color: 'white', fontSize: 20, fontWeight: 900, padding: '0 16px' }}>{localize(event.name, lang)}</h3>
                 <span className={`event-badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
                   {event.isActive ? t.upcoming : t.passed}
                 </span>
               </div>
               <div className="event-card-body">
-                <p>📅 {event.date} &nbsp; 📍 {event.location}</p>
+                <p>📅 {event.date} &nbsp; 📍 {localize(event.location, lang)}</p>
                 <span className="event-details-link">{t.details}</span>
               </div>
             </div>
@@ -743,10 +743,10 @@ function App() {
       <Navbar lang={lang} setLang={setLang} t={t} />
       <Routes>
         <Route path="/departments/:slug" element={<DepartmentPage t={t} lang={lang} />} />
-        <Route path="/events/:id" element={<EventPage t={t} events={events} />} />
+        <Route path="/events/:id" element={<EventPage t={t} lang={lang} events={events} />} />
         <Route path="/history" element={<HistoryPage t={t} lang={lang} />} />
         <Route path="/" element={<HomePage t={t} />} />
-        <Route path="/events" element={<EventsPage t={t} events={events} />} />
+        <Route path="/events" element={<EventsPage t={t} lang={lang} events={events} />} />
         <Route path="/polls" element={<PollsPage t={t} lang={lang} />} />
         <Route path="/donations" element={<DonationsPage t={t} />} />
         <Route path="/admin" element={<AdminPage lang={lang} onEventsChange={(evts) => setEvents(evts as SuEvent[])} />} />

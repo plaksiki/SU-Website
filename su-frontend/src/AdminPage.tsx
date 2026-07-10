@@ -586,14 +586,14 @@ useEffect(() => {
         />
         <p style={{ fontSize: 12, color: '#64748b', marginBottom: 4 }}>{t.event_start_date}</p>
         <input
-          type="date"
+          type="datetime-local"
           value={newDate}
           onChange={(e) => setNewDate(e.target.value)}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
         />
         <p style={{ fontSize: 12, color: '#64748b', marginBottom: 4 }}>{t.event_end_date}</p>
         <input
-          type="date"
+          type="datetime-local"
           value={newFinishedAt}
           onChange={(e) => setNewFinishedAt(e.target.value)}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
