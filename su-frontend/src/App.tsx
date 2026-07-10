@@ -749,7 +749,7 @@ function App() {
         <Route path="/events" element={<EventsPage t={t} events={events} />} />
         <Route path="/polls" element={<PollsPage t={t} lang={lang} />} />
         <Route path="/donations" element={<DonationsPage t={t} />} />
-        <Route path="/admin" element={<AdminPage lang={lang} onEventsChange={(evts) => setEvents(evts)} />} />
+        <Route path="/admin" element={<AdminPage lang={lang} onEventsChange={(evts) => setEvents(evts as SuEvent[])} />} />
       </Routes>
       <Footer />
     </BrowserRouter>
