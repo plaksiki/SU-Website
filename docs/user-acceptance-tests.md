@@ -119,9 +119,9 @@ Scenarios are executed with the customer during Sprint Review.
 
 | Field | Details |
 |-------|---------|
-| **Related User Story** | US-05 – Exporting questionnaire results |
+| **Related User Story** | US-05 - Exporting questionnaire results |
 | **Priority** | Must Have |
-| **Status** | ✅ Pass (Sprint 4 Review – 2026-07-10) |
+| **Status** | ✅ Pass (Sprint 4 Review - 2026-07-10) |
 
 **Given** an admin is logged into the Admin Panel
 **When** the admin fills in the questionnaire title, description, adds at least one question, and clicks "Create questionnaire"
@@ -134,9 +134,9 @@ Scenarios are executed with the customer during Sprint Review.
 
 | Field | Details |
 |-------|---------|
-| **Related User Story** | US-05 – Exporting questionnaire results |
+| **Related User Story** | US-05 - Exporting questionnaire results |
 | **Priority** | Must Have |
-| **Status** | ✅ Pass (Sprint 4 Review – 2026-07-10) |
+| **Status** | ✅ Pass (Sprint 4 Review - 2026-07-10) |
 
 **Given** an admin is logged into the Admin Panel
 **And** at least one user has submitted a response to a questionnaire
@@ -151,9 +151,9 @@ Scenarios are executed with the customer during Sprint Review.
 
 | Field | Details |
 |-------|---------|
-| **Related User Story** | US-03 – Viewing SU structure |
+| **Related User Story** | US-03 - Viewing SU structure |
 | **Priority** | Must Have |
-| **Status** | ✅ Pass (Sprint 4 Review – 2026-07-10) |
+| **Status** | ✅ Pass (Sprint 4 Review - 2026-07-10) |
 
 **Given** a user opens the SU Website home page
 **When** the page loads
