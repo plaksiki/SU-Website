@@ -608,7 +608,7 @@ function HistoryPage({ t, lang }: { t: T; lang: Lang }) {
   )
 }
 
-function EventPage({ t, events }: { t: T; events: SuEvent[] }) {
+function EventPage({ t, events }: { t: T; events: SuSuEvent[] }) {
   const { id } = useParams()
   const event = events.find(e => e.id === id)
 
@@ -640,7 +640,7 @@ function EventPage({ t, events }: { t: T; events: SuEvent[] }) {
   )
 }
 
-function EventsPage({ t, events }: { t: T; events: SuEvent[] }) {
+function EventsPage({ t, events }: { t: T; events: SuSuEvent[] }) {
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'passed'>('all')
 
   const visibleEvents = events.filter(event => {
@@ -728,13 +728,13 @@ function Footer() {
 
 function App() {
   const [lang, setLang] = useState<Lang>('en')
-  const [events, setEvents] = useState<Event[]>([])
+  const [events, setEvents] = useState<SuEvent[]>([])
   const t = translations[lang]
 
   useEffect(() => {
     fetch(`${API_URL}/events`)
       .then(r => r.ok ? r.json() : [])
-      .then((data: BackendEvent[]) => setEvents(data.map(mapBackendEvent)))
+      .then((data: BackendSuEvent[]) => setEvents(data.map(mapBackendEvent)))
       .catch(() => {})
   }, [])
 
