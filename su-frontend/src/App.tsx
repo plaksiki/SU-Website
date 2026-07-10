@@ -608,7 +608,7 @@ function HistoryPage({ t, lang }: { t: T; lang: Lang }) {
   )
 }
 
-function EventPage({ t, events }: { t: T; events: SuSuEvent[] }) {
+function EventPage({ t, events }: { t: T; events: SuEvent[] }) {
   const { id } = useParams()
   const event = events.find(e => e.id === id)
 
@@ -640,7 +640,7 @@ function EventPage({ t, events }: { t: T; events: SuSuEvent[] }) {
   )
 }
 
-function EventsPage({ t, events }: { t: T; events: SuSuEvent[] }) {
+function EventsPage({ t, events }: { t: T; events: SuEvent[] }) {
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'passed'>('all')
 
   const visibleEvents = events.filter(event => {
@@ -734,7 +734,7 @@ function App() {
   useEffect(() => {
     fetch(`${API_URL}/events`)
       .then(r => r.ok ? r.json() : [])
-      .then((data: BackendSuEvent[]) => setEvents(data.map(mapBackendEvent)))
+      .then((data: BackendEvent[]) => setEvents(data.map(mapBackendEvent)))
       .catch(() => {})
   }, [])
 
@@ -749,7 +749,7 @@ function App() {
         <Route path="/events" element={<EventsPage t={t} events={events} />} />
         <Route path="/polls" element={<PollsPage t={t} lang={lang} />} />
         <Route path="/donations" element={<DonationsPage t={t} />} />
-        <Route path="/admin" element={<AdminPage lang={lang} onEventsChange={setEvents} />} />
+        <Route path="/admin" element={<AdminPage lang={lang} onEventsChange={(evts) => setEvents(evts)} />} />
       </Routes>
       <Footer />
     </BrowserRouter>
