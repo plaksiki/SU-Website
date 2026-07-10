@@ -45,9 +45,12 @@ const adminTranslations = {
     exprt_btn: 'Export Questionnaires to CSV',
     logged_in_as: 'Logged in as:',
     create_event: 'Create Event',
-    event_title_placeholder: 'Event title',
-    event_location_placeholder: 'Location',
-    event_description_placeholder: 'Event description',
+    event_title_placeholder: 'Title (Название | Title)',
+    event_location_placeholder: 'Location (Место | Location)',
+    event_description_placeholder: 'Description (Описание | Description)',
+    event_bilingual_hint: 'For bilingual support use format: Русский | English',
+    event_start_date: 'Start date',
+    event_end_date: 'End date (when it moves to "Past")',
     event_list: 'Events',
     create_questionnaire: 'Create Questionnaire',
     q_title_placeholder: 'Questionnaire title (RU | EN)',
@@ -84,9 +87,12 @@ const adminTranslations = {
     exprt_btn: 'Экспорт анкет в CSV',
     logged_in_as: 'Вы вошли как:',
     create_event: 'Создать событие',
-    event_title_placeholder: 'Название события',
-    event_location_placeholder: 'Место проведения',
-    event_description_placeholder: 'Описание события',
+    event_title_placeholder: 'Название (Название | Title)',
+    event_location_placeholder: 'Место (Место | Location)',
+    event_description_placeholder: 'Описание (Описание | Description)',
+    event_bilingual_hint: 'Для двуязычности используйте формат: Русский | English',
+    event_start_date: 'Дата начала',
+    event_end_date: 'Дата окончания (когда перейдёт в «Прошедшие»)',
     event_list: 'Список событий',
     create_questionnaire: 'Создать опросник',
     q_title_placeholder: 'Название опросника (РУ | EN)',
@@ -556,36 +562,36 @@ useEffect(() => {
 
       <div className="donation-card">
         <h3 style={{ marginBottom: 16 }}>{t.create_event}</h3>
-        <p style={{ fontSize: 12, color: '#94a3b8', marginBottom: 8 }}>Для двух языков используй формат: <code>Русский | English</code></p>
+        <p style={{ fontSize: 12, color: '#94a3b8', marginBottom: 8 }}>{t.event_bilingual_hint}</p>
         <input
           type="text"
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
-          placeholder={t.event_title_placeholder + ' (Название | Title)'}
+          placeholder={t.event_title_placeholder}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
         />
         <input
           type="text"
           value={newLocation}
           onChange={(e) => setNewLocation(e.target.value)}
-          placeholder={t.event_location_placeholder + ' (Место | Location)'}
+          placeholder={t.event_location_placeholder}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
         />
         <textarea
           value={newDescription}
           onChange={(e) => setNewDescription(e.target.value)}
-          placeholder={t.event_description_placeholder + ' (Описание | Description)'}
+          placeholder={t.event_description_placeholder}
           rows={3}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box', resize: 'vertical' }}
         />
-        <p style={{ fontSize: 12, color: '#64748b', marginBottom: 4 }}>Дата начала</p>
+        <p style={{ fontSize: 12, color: '#64748b', marginBottom: 4 }}>{t.event_start_date}</p>
         <input
           type="date"
           value={newDate}
           onChange={(e) => setNewDate(e.target.value)}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
         />
-        <p style={{ fontSize: 12, color: '#64748b', marginBottom: 4 }}>Дата окончания (когда перейдёт в «Прошедшие»)</p>
+        <p style={{ fontSize: 12, color: '#64748b', marginBottom: 4 }}>{t.event_end_date}</p>
         <input
           type="date"
           value={newFinishedAt}
