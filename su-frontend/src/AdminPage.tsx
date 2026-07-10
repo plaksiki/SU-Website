@@ -205,6 +205,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   const [newDate, setNewDate] = useState('')
   const [newLocation, setNewLocation] = useState('')
   const [newDescription, setNewDescription] = useState('')
+  const [newFinishedAt, setNewFinishedAt] = useState('')
   const [formError, setFormError] = useState('')
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([])
   const [qTitle, setQTitle] = useState('')
@@ -485,6 +486,7 @@ useEffect(() => {
           description: newDescription,
           eventTime: new Date(newDate).toISOString().replace('Z', ''),
           eventLocation: newLocation,
+          finishedAt: newFinishedAt ? new Date(newFinishedAt).toISOString().replace('Z', '') : null,
         })
       })
       refreshEvents()
@@ -495,6 +497,7 @@ useEffect(() => {
     setNewDate('')
     setNewLocation('')
     setNewDescription('')
+    setNewFinishedAt('')
   }
 
   const handleDeleteEvent = async (id: string) => {
@@ -553,32 +556,41 @@ useEffect(() => {
 
       <div className="donation-card">
         <h3 style={{ marginBottom: 16 }}>{t.create_event}</h3>
+        <p style={{ fontSize: 12, color: '#94a3b8', marginBottom: 8 }}>Для двух языков используй формат: <code>Русский | English</code></p>
         <input
           type="text"
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
-          placeholder={t.event_title_placeholder}
-          style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
-        />
-        <input
-          type="date"
-          value={newDate}
-          onChange={(e) => setNewDate(e.target.value)}
+          placeholder={t.event_title_placeholder + ' (Название | Title)'}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
         />
         <input
           type="text"
           value={newLocation}
           onChange={(e) => setNewLocation(e.target.value)}
-          placeholder={t.event_location_placeholder}
+          placeholder={t.event_location_placeholder + ' (Место | Location)'}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
         />
         <textarea
           value={newDescription}
           onChange={(e) => setNewDescription(e.target.value)}
-          placeholder={t.event_description_placeholder}
+          placeholder={t.event_description_placeholder + ' (Описание | Description)'}
           rows={3}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box', resize: 'vertical' }}
+        />
+        <p style={{ fontSize: 12, color: '#64748b', marginBottom: 4 }}>Дата начала</p>
+        <input
+          type="date"
+          value={newDate}
+          onChange={(e) => setNewDate(e.target.value)}
+          style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
+        />
+        <p style={{ fontSize: 12, color: '#64748b', marginBottom: 4 }}>Дата окончания (когда перейдёт в «Прошедшие»)</p>
+        <input
+          type="date"
+          value={newFinishedAt}
+          onChange={(e) => setNewFinishedAt(e.target.value)}
+          style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
         />
 
         <button className="btn" onClick={handleAddEvent} style={{ width: '100%' }}>
