@@ -194,7 +194,7 @@ const exportToCSV = async (fetchErrorMsg: string) => {
 }
 
 
-function AdminPage({ lang }: { lang: Lang }) {
+function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (events: Event[]) => void }) {
   const t = adminTranslations[lang]
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('admin_logged_in') === 'true')
   const [username, setUsername] = useState('')
@@ -215,6 +215,23 @@ function AdminPage({ lang }: { lang: Lang }) {
   const [optionsInput, setOptionsInput] = useState('')
   const [qFormError, setQFormError] = useState('')
 
+  const refreshEvents = () => {
+    fetch(`${API_URL}/events`)
+      .then(r => r.json())
+      .then((data: {id: number, title: string, description: string, eventTime: string, eventLocation: string}[]) => {
+        const mapped = data.map(e => ({
+          id: e.id.toString(),
+          title: e.title,
+          date: e.eventTime ? e.eventTime.split('T')[0] : '',
+          location: e.eventLocation || '',
+          description: e.description || '',
+        }))
+        setEvents(mapped)
+        onEventsChange?.(mapped as Event[])
+      })
+      .catch(() => {})
+  }
+
   useEffect(() => {
     if (isLoggedIn) {
       fetch(`${API_URL}/questionnaires`)
@@ -226,6 +243,7 @@ function AdminPage({ lang }: { lang: Lang }) {
           questions: []
         }))))
         .catch(() => {})
+      refreshEvents()
     }
   }, [isLoggedIn])
 
@@ -452,25 +470,39 @@ useEffect(() => {
     )
   }
 
-  const handleAddEvent = () => {
+  const handleAddEvent = async () => {
     if (!newTitle || !newDate || !newLocation || !newDescription) {
       setFormError(t.form_error_fields)
       return
     }
     setFormError('')
-
-    const event: Event =  {
-      id: Date.now().toString(),
-      title: newTitle,
-      date: newDate,
-      location: newLocation,
-      description: newDescription
+    try {
+      await fetch(`${API_URL}/event`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: newTitle,
+          description: newDescription,
+          eventTime: new Date(newDate).toISOString().replace('Z', ''),
+          eventLocation: newLocation,
+        })
+      })
+      refreshEvents()
+    } catch {
+      refreshEvents()
     }
-    setEvents((prevEvents) => [event,...prevEvents])
     setNewTitle('')
     setNewDate('')
     setNewLocation('')
     setNewDescription('')
+  }
+
+  const handleDeleteEvent = async (id: string) => {
+    if (!confirm('Удалить событие?')) return
+    try {
+      await fetch(`${API_URL}/event/${id}`, { method: 'DELETE' })
+    } catch { /* ignore */ }
+    refreshEvents()
   }
 
   return (
@@ -561,12 +593,20 @@ useEffect(() => {
           <div style={{ marginTop: 32 }}>
             <h3 style={{ marginBottom: 16 }}>{t.event_list} ({events.length})</h3>
             {events.map((event) => (
-              <div key={event.id} style={{ padding: 16, border: '1px solid #e2e8f0', borderRadius: 12, marginBottom: 12 }}>
-                <strong>{event.title}</strong>
-                <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0' }}>
-                  {event.date} {event.location && `${event.location}`}
-                </p>
-                {event.description && <p style={{ fontSize: 14 }}>{event.description}</p>}
+              <div key={event.id} style={{ padding: 16, border: '1px solid #e2e8f0', borderRadius: 12, marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <strong>{event.title}</strong>
+                  <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0' }}>
+                    {event.date} {event.location && `· ${event.location}`}
+                  </p>
+                  {event.description && <p style={{ fontSize: 14 }}>{event.description}</p>}
+                </div>
+                <button
+                  onClick={() => handleDeleteEvent(event.id)}
+                  style={{ border: 'none', background: 'none', color: '#dc2626', cursor: 'pointer', fontSize: 13, fontWeight: 600, flexShrink: 0 }}
+                >
+                  {t.delete}
+                </button>
               </div>
             ))}
           </div>
