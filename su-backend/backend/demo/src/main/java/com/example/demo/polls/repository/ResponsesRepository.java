@@ -1,5 +1,5 @@
-package com.example.demo.repository;
-import com.example.demo.entity.Responses;
+package com.example.demo.polls.repository;
+import com.example.demo.polls.entity.Responses;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ResponsesRepository

@@ -1,7 +1,7 @@
-package com.example.demo.controller;
+package com.example.demo.polls.controller;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.demo.entity.Responses;
-import com.example.demo.repository.ResponsesRepository;
+import com.example.demo.polls.entity.Responses;
+import com.example.demo.polls.repository.ResponsesRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;

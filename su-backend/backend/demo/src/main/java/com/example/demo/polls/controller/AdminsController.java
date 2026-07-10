@@ -1,7 +1,7 @@
-package com.example.demo.controller;
+package com.example.demo.polls.controller;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.demo.entity.Admins;
-import com.example.demo.repository.AdminsRepository;
+import com.example.demo.polls.entity.Admins;
+import com.example.demo.polls.repository.AdminsRepository;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

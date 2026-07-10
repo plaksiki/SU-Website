@@ -1,5 +1,5 @@
-package com.example.demo.repository;
-import com.example.demo.entity.Questions;
+package com.example.demo.polls.repository;
+import com.example.demo.polls.entity.Questions;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

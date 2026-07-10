@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.polls.controller;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

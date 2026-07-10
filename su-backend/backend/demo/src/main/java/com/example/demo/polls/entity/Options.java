@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.example.demo.polls.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,28 +7,25 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "questions")
-public class Questions {
+@Table(name = "options")
+public class Options {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-    @Column(name = "questionnaire_id")
-    private Long questionnaireId;
+    @Column(name = "question_id")
+    private Long questionId;
     private String text;
-    @Column(name = "question_type")
-    private String questionType;
     @Column(name = "order_index")
     private Long orderIndex;
 
-    public Questions() {
+    public Options() {
         this.text = "default";
     }
 
-    public Questions(Long id, Long questionnaireId, String text, String questionType, Long orderIndex) {
+    public Options(Long id, Long questionsId, String text, Long orderIndex) {
         this.id = id;
-        this.questionnaireId = questionnaireId;
+        this.questionId = questionsId;
         this.text = text;
-        this.questionType = questionType;
         this.orderIndex = orderIndex;
     }
 
@@ -40,12 +37,12 @@ public class Questions {
         this.id = id;
     }
 
-    public Long getQuestionnaireId() {
-        return this.questionnaireId;
+    public Long getQuestionId() {
+        return questionId;
     }
 
-    public void setQuestionnaireId(Long questionnaireId) {
-        this.questionnaireId = questionnaireId;
+    public void setQuestionId(Long questionId) {
+        this.questionId = questionId;
     }
 
     public String getText() {
@@ -56,14 +53,6 @@ public class Questions {
         this.text = text;
     }
 
-    public String getQuestionType() {
-        return this.questionType;
-    }
-
-    public void setQuestionType(String questionType) {
-        this.questionType = questionType;
-    }
-
     public Long getOrderIndex() {
         return this.orderIndex;
     }
@@ -71,4 +60,5 @@ public class Questions {
     public void setOrderIndex(Long orderIndex) {
         this.orderIndex = orderIndex;
     }
+
 }
