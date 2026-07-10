@@ -1,5 +1,5 @@
 # User Acceptance Tests
-**Last Updated:** 2026-06-25
+**Last Updated:** 2026-07-10
 
 This document defines UAT scenarios for the SU Website.
 Scenarios are executed with the customer during Sprint Review.
@@ -115,14 +115,65 @@ Scenarios are executed with the customer during Sprint Review.
 
 ---
 
+### UAT-8: Creating a Questionnaire via Admin Panel
+
+| Field | Details |
+|-------|---------|
+| **Related User Story** | US-05 – Exporting questionnaire results |
+| **Priority** | Must Have |
+| **Status** | ✅ Pass (Sprint 4 Review – 2026-07-10) |
+
+**Given** an admin is logged into the Admin Panel
+**When** the admin fills in the questionnaire title, description, adds at least one question, and clicks "Create questionnaire"
+**Then** the new questionnaire appears in the questionnaire list in the Admin Panel
+**And** the new questionnaire is visible to users on the Questionnaires page
+
+---
+
+### UAT-9: Viewing Questionnaire Answers in CSV Export
+
+| Field | Details |
+|-------|---------|
+| **Related User Story** | US-05 – Exporting questionnaire results |
+| **Priority** | Must Have |
+| **Status** | ✅ Pass (Sprint 4 Review – 2026-07-10) |
+
+**Given** an admin is logged into the Admin Panel
+**And** at least one user has submitted a response to a questionnaire
+**When** the admin clicks "Export Questionnaires to CSV"
+**Then** a CSV file is downloaded
+**And** the file contains each questionnaire as a separate section with its title
+**And** each row represents one user's complete response with answers to all questions
+
+---
+
+### UAT-10: Viewing Department Members on the Home Page
+
+| Field | Details |
+|-------|---------|
+| **Related User Story** | US-03 – Viewing SU structure |
+| **Priority** | Must Have |
+| **Status** | ✅ Pass (Sprint 4 Review – 2026-07-10) |
+
+**Given** a user opens the SU Website home page
+**When** the page loads
+**Then** the user can see all three departments (SU Core, SU Active, SU Media)
+**And** clicking on a department card opens a dedicated department page
+**And** the department page lists all members with their names, roles, and photos
+
+---
+
 ## Execution History
 
-| Scenario | Sprint 1 | Sprint 2 | Sprint 3 |
-|----------|----------|----------|----------|
-| UAT-1: Viewing events | Not tested | ✅ Pass | Not tested |
-| UAT-2: Submitting questionnaire | Not tested | ✅ Pass | Not tested |
-| UAT-3: Language switching | Not tested | ✅ Pass | Not tested |
-| UAT-4: Admin Login page | Not tested | Not tested | ✅ Pass |
-| UAT-5: Log in Admin Panel and log out | Not tested | Not tested | ✅ Pass |
-| UAT-6: csv Export from the Admin Panel | Not tested | Not tested | ✅ Pass |
-| UAT-7: Events Details | Not tested | Not tested | ✅ Pass |
+| Scenario | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 |
+|----------|----------|----------|----------|----------|
+| UAT-1: Viewing events | Not tested | ✅ Pass | Not tested | Not tested |
+| UAT-2: Submitting questionnaire | Not tested | ✅ Pass | Not tested | Not tested |
+| UAT-3: Language switching | Not tested | ✅ Pass | Not tested | Not tested |
+| UAT-4: Admin Login page | Not tested | Not tested | ✅ Pass | Not tested |
+| UAT-5: Log in Admin Panel and log out | Not tested | Not tested | ✅ Pass | Not tested |
+| UAT-6: csv Export from the Admin Panel | Not tested | Not tested | ✅ Pass | Not tested |
+| UAT-7: Events Details | Not tested | Not tested | ✅ Pass | Not tested |
+| UAT-8: Creating a questionnaire via Admin Panel | Not tested | Not tested | Not tested | ✅ Pass |
+| UAT-9: Viewing answers in CSV export | Not tested | Not tested | Not tested | ✅ Pass |
+| UAT-10: Viewing department members on home page | Not tested | Not tested | Not tested | ✅ Pass |
