@@ -1,4 +1,4 @@
-package com.example.demo.polls.entity;
+package com.example.demo.events.entity;
 
 import java.time.LocalDateTime;
 import jakarta.persistence.Column;
@@ -10,33 +10,37 @@ import jakarta.persistence.Table;
 
 
 @Entity
-@Table(name = "questionnaires")
-public class Questionnaire {
+@Table(name = "events")
+public class Events {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
     private String title;
     private String description;
-    @Column(name = "started_at")
-    private LocalDateTime startedAt;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
     @Column(name = "finished_at")
     private LocalDateTime finishedAt;
+    @Column(name = "event_time")
+    private String eventTime;
+    @Column(name = "event_location")
+    private String eventLocation;
 
 
-    public Questionnaire () {
+    public Events () {
         title = "default";
         description = "no description";
     }
 
-    public Questionnaire (Long id, String title, String description,
-        LocalDateTime startedAt, LocalDateTime finishedAt) {
+    public Events(Long id, String title, String description, LocalDateTime createdAt, LocalDateTime finishedAt, String eventTime, String eventLocation) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.startedAt = startedAt;
+        this.createdAt = createdAt;
         this.finishedAt = finishedAt;
+        this.eventTime = eventTime;
+        this.eventLocation = eventLocation;
     }
-
 
     public Long getId() {
         return this.id;
@@ -62,20 +66,35 @@ public class Questionnaire {
         this.description = description;
     }
 
-    public LocalDateTime getStartedAt() {
-        return startedAt;
+    public LocalDateTime getCreatedAt() {
+        return this.createdAt;
     }
 
-    public void setStartedAt(LocalDateTime startedAt) {
-        this.startedAt = startedAt;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public LocalDateTime getFinishedAt() {
-        return finishedAt;
+        return this.finishedAt;
     }
 
     public void setFinishedAt(LocalDateTime finishedAt) {
         this.finishedAt = finishedAt;
     }
 
+    public String getEventTime() {
+        return this.eventTime;
+    }
+
+    public void setEventTime(String eventTime) {
+        this.eventTime = eventTime;
+    }
+
+    public String getEventLocation() {
+        return this.eventLocation;
+    }
+
+    public void setEventLocation(String eventLocation) {
+        this.eventLocation = eventLocation;
+    }
 }

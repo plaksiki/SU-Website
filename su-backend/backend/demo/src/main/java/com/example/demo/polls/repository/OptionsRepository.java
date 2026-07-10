@@ -1,4 +1,5 @@
 package com.example.demo.polls.repository;
+
 import com.example.demo.polls.entity.Options;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
