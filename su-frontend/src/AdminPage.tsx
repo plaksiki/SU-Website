@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 
 const API_URL = 'http://10.93.26.192:8080'
 
-interface Event {
+interface SuEvent {
   id: string
   title: string
   date: string
@@ -194,13 +194,13 @@ const exportToCSV = async (fetchErrorMsg: string) => {
 }
 
 
-function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (events: Event[]) => void }) {
+function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (events: SuEvent[]) => void }) {
   const t = adminTranslations[lang]
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('admin_logged_in') === 'true')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [events, setEvents] = useState<Event[]>([])
+  const [events, setEvents] = useState<SuEvent[]>([])
   const [newTitle, setNewTitle] = useState('')
   const [newDate, setNewDate] = useState('')
   const [newLocation, setNewLocation] = useState('')
@@ -227,7 +227,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
           description: e.description || '',
         }))
         setEvents(mapped)
-        onEventsChange?.(mapped as Event[])
+        onEventsChange?.(mapped as SuEvent[])
       })
       .catch(() => {})
   }

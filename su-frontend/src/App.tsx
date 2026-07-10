@@ -98,7 +98,7 @@ const translations = {
   }
 }
 
-interface Event {
+interface SuEvent {
   id: string
   name: string
   date: string
@@ -119,7 +119,7 @@ interface BackendEvent {
 
 const EVENT_COLORS = ['#16a34a', '#0891b2', '#7c3aed', '#dc2626', '#d97706', '#0d9488']
 
-function mapBackendEvent(e: BackendEvent, idx: number): Event {
+function mapBackendEvent(e: BackendEvent, idx: number): SuEvent {
   const date = e.eventTime ? e.eventTime.split('T')[0] : ''
   return {
     id: String(e.id),
@@ -608,7 +608,7 @@ function HistoryPage({ t, lang }: { t: T; lang: Lang }) {
   )
 }
 
-function EventPage({ t, events }: { t: T; events: Event[] }) {
+function EventPage({ t, events }: { t: T; events: SuEvent[] }) {
   const { id } = useParams()
   const event = events.find(e => e.id === id)
 
@@ -640,7 +640,7 @@ function EventPage({ t, events }: { t: T; events: Event[] }) {
   )
 }
 
-function EventsPage({ t, events }: { t: T; events: Event[] }) {
+function EventsPage({ t, events }: { t: T; events: SuEvent[] }) {
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'passed'>('all')
 
   const visibleEvents = events.filter(event => {
