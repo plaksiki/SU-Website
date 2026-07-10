@@ -48,8 +48,6 @@ The database is accessed only by backend modules, preventing direct dependencies
 
 ### Quality Requirements Supported or Constrained
 
-### Quality Requirements Supported or Constrained
-
 **Supported:**
 
 - **QR-1 – Maintainability (Code Consistency):** The separation between frontend, backend, and persistence layers simplifies development and maintenance. The modular architecture, together with automated CI checks, helps developers modify the codebase while preserving consistency and reducing integration issues.
