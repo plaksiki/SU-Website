@@ -194,7 +194,7 @@ const exportToCSV = async (fetchErrorMsg: string) => {
 }
 
 
-function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (events: SuEvent[]) => void }) {
+function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (events: unknown[]) => void }) {
   const t = adminTranslations[lang]
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('admin_logged_in') === 'true')
   const [username, setUsername] = useState('')
