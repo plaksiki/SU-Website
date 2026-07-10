@@ -8,23 +8,60 @@ This document describes the architecture of the Student Union Website, including
 
 ### Component Diagram
 
+![Static Component Diagram](static-view/component-diagram.png)
+
+Source (PlantUML): [static-component-diagram.puml](static-view/component-diagram.puml)
+
 ### What the Diagram Shows
 
+The component diagram shows the static architecture of the Student Union Website and illustrates the main software components, external actors, infrastructure, and communication paths between them.
+
+The frontend consists of several functional components, including Home, History, Events, Polls, Support Us, and the Admin Panel. Most pages currently serve static content, while the Polls and Admin Panel components communicate with the backend through a REST API using HTTPS and JSON.
+
+The backend is organized into three main functional modules responsible for questionnaire management, administrator authorization, and response processing. These modules interact with a PostgreSQL database that stores questionnaires, questions, options, responses, and administrator credentials.
+
+The diagram also shows the deployment environment, where the backend and database are hosted inside Docker containers running on a virtual machine. GitHub Actions is used as the CI/CD platform for automated build and deployment.
 
 ### Coupling and Cohesion
 
+The architecture follows a layered design with separation between the presentation layer, backend services, and persistence layer.
+
+Communication between the frontend and backend is performed through REST APIs, resulting in low coupling between client and server implementations. Backend modules are responsible for distinct areas of functionality, providing high cohesion by keeping related responsibilities together.
+
+The database is accessed only by backend modules, preventing direct dependencies between the frontend and persistence layer.
 
 ### Maintainability Implications
 
 **Strengths:**
 
+- Clear separation of frontend, backend, and database responsibilities.
+- Modular backend structure simplifies future feature development.
+- REST-based communication allows frontend and backend to evolve independently.
+- Dockerized deployment improves portability and reproducibility across environments.
+- Functional modules can be extended with minimal impact on unrelated parts of the system.
+
 **Constraints:**
+
+- Several frontend pages currently contain static content and will require backend integration as functionality grows (events page).
+- The backend is deployed as a single application, limiting scalability and fault tolerance.
+- Database access is centralized in a single PostgreSQL instance, creating a potential single point of failure.
+
+### Quality Requirements Supported or Constrained
 
 ### Quality Requirements Supported or Constrained
 
 **Supported:**
 
+- **QR-1 – Maintainability (Code Consistency):** The separation between frontend, backend, and persistence layers simplifies development and maintenance. The modular architecture, together with automated CI checks, helps developers modify the codebase while preserving consistency and reducing integration issues.
+- **QR-2 – Reliability (Build Stability):** The use of GitHub Actions together with a clearly separated project structure supports automated builds and continuous verification of the application before deployment.
+- **QR-6 – Functional Suitability (Questionnaire Submission):** The dedicated Questionnaire, Response, and Authorization backend modules provide a clear separation of responsibilities, making questionnaire processing easier to implement, test, and maintain.
+
 **Constrained:**
+
+- **QR-3 – Performance Efficiency (Bundle Size):** As additional frontend pages and features are introduced, the application bundle may continue to grow. The current architecture does not yet include techniques such as code splitting or lazy loading to minimize bundle size.
+- **QR-4 – Usability (Mobile Responsiveness):** While the frontend is designed to support responsive layouts, maintaining responsiveness across all pages will require continuous development and testing as new UI components are added.
+- **QR-5 – Usability (Language Switching):** The centralized translation mechanism supports multilingual content, but every newly added page and UI element must be integrated with the translation system to ensure complete language coverage.
+
 
 ## Dynamic View
 
