@@ -136,6 +136,8 @@
 ### Planned Items
 
 - **Supporting PBIs:**
-
+  - [#200](https://github.com/plaksiki/SU-Website/issues/200)
+  - [#199](https://github.com/plaksiki/SU-Website/issues/199)
+  - [#198](https://github.com/plaksiki/SU-Website/issues/198)
 
 ---
