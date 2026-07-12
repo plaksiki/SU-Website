@@ -350,23 +350,50 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
 
   const selectedPoll = backendPolls.find(p => String(p.id) === selectedId)
 
-  // Нет выбранного опросника - показываем список
   if (!selectedId) return (
-    <div className="container">
-      <div className="section-title">
-        <h2>{t.polls_title}</h2>
-        <p>{t.polls_desc}</p>
+    <div style={{ width: '100%', padding: '40px 32px', boxSizing: 'border-box' as const }}>
+      <style>{`.polls-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; } @media(max-width:900px){.polls-grid{grid-template-columns:repeat(2,1fr)}} @media(max-width:560px){.polls-grid{grid-template-columns:1fr}}`}</style>
+      <div style={{ marginBottom: 32, textAlign: 'center' }}>
+        <h1 style={{ fontSize: 40, fontWeight: 900, color: '#0f172a', margin: '0 0 6px' }}>{t.polls_title}</h1>
+        <p style={{ color: '#64748b', fontSize: 15, margin: 0 }}>{t.polls_desc}</p>
       </div>
       {loading && <p style={{ textAlign: 'center', color: '#64748b' }}>Loading...</p>}
       {fetchError && <p style={{ textAlign: 'center', color: '#dc2626' }}>Could not connect to server.</p>}
-      <div className="events-list">
+      <div className="polls-grid">
         {!loading && !fetchError && backendPolls.map(poll => (
-          <div key={poll.id} className="event-card" style={{ cursor: 'pointer' }} onClick={() => loadQuestionnaire(String(poll.id))}>
-            <span className="badge badge-upcoming">Live</span>
-            <h2>{localize(poll.title, lang)}</h2>
-            <p>{localize(poll.description, lang)}</p>
-            <br />
-            <button className="btn" style={{ fontSize: 14 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</button>
+          <div key={poll.id} style={{
+            background: 'white', borderRadius: 20, overflow: 'hidden',
+            border: '1px solid #e8edf2', cursor: 'pointer', display: 'flex', flexDirection: 'column',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+            onClick={() => loadQuestionnaire(String(poll.id))}
+            onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-5px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 32px rgba(0,0,0,0.1)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '' }}
+          >
+            {/* Та же цветная шапка что у ивентов */}
+            <div style={{
+              background: 'linear-gradient(160deg, #40ba21ee, #14532d99)',
+              padding: '22px 22px 22px', minHeight: 200,
+              position: 'relative', overflow: 'hidden',
+              display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+            }}>
+              <div style={{ position: 'absolute', top: -40, right: -40, width: 160, height: 160, borderRadius: '50%', background: 'rgba(255,255,255,0.12)' }} />
+              <div style={{ position: 'absolute', bottom: -25, right: 30, width: 90, height: 90, borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
+              <span style={{
+                alignSelf: 'flex-start',
+                background: 'rgba(255,255,255,0.28)', backdropFilter: 'blur(6px)',
+                color: 'white', fontWeight: 800, fontSize: 10,
+                letterSpacing: '1.5px', padding: '5px 13px', borderRadius: 20, textTransform: 'uppercase',
+              }}>Live</span>
+              <h3 style={{ color: 'white', fontSize: 22, fontWeight: 900, margin: 0, lineHeight: 1.2, position: 'relative' }}>
+                {localize(poll.title, lang)}
+              </h3>
+            </div>
+            {/* Тело */}
+            <div style={{ padding: '16px 22px 20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 12 }}>
+              <p style={{ color: '#64748b', fontSize: 14, margin: 0, lineHeight: 1.5 }}>{localize(poll.description, lang)}</p>
+              <span style={{ color: '#40ba21', fontWeight: 700, fontSize: 13 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</span>
+            </div>
           </div>
         ))}
       </div>
@@ -772,7 +799,7 @@ function EventPage({ t, lang, events }: { t: T; lang: Lang; events: SuEvent[] })
 
   return (
     <div style={{ minHeight: '100vh', background: '#f8fafc' }}>
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: '32px 20px 60px' }}>
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '32px 32px 60px' }}>
         <Link to="/events" style={{ color: '#40ba21', fontWeight: 600, textDecoration: 'none', fontSize: 14, display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 24 }}>
           ← {t.events}
         </Link>
@@ -826,14 +853,14 @@ function EventsPage({ t, lang, events }: { t: T; lang: Lang; events: SuEvent[] }
   })
 
   return (
-    <div style={{ width: '100%', padding: '40px 48px', boxSizing: 'border-box' }}>
+    <div style={{ width: '100%', padding: '40px 32px', boxSizing: 'border-box' as const }}>
       <style>{`
-        .events-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+        .events-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
         @media (max-width: 900px) { .events-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 560px) { .events-grid { grid-template-columns: 1fr; } }
       `}</style>
 
-      <div style={{ marginBottom: 32 }}>
+      <div style={{ marginBottom: 32, textAlign: 'center' }}>
         <h1 style={{ fontSize: 40, fontWeight: 900, color: '#0f172a', margin: '0 0 6px' }}>{t.events_title}</h1>
         <p style={{ color: '#64748b', fontSize: 15, margin: 0 }}>{t.events_desc}</p>
       </div>
@@ -867,32 +894,32 @@ function EventsPage({ t, lang, events }: { t: T; lang: Lang; events: SuEvent[] }
               onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '' }}
             >
               <div style={{
-                background: `linear-gradient(160deg, ${event.color}ee 0%, ${event.color}99 100%)`,
-                padding: '24px 24px 22px',
-                minHeight: 160,
+                background: `linear-gradient(160deg, ${event.color}ee 0%, ${event.color}88 100%)`,
+                padding: '22px 22px 22px',
+                minHeight: 200,
                 position: 'relative', overflow: 'hidden',
                 display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
               }}>
-                <div style={{ position: 'absolute', top: -30, right: -30, width: 130, height: 130, borderRadius: '50%', background: 'rgba(255,255,255,0.12)' }} />
-                <div style={{ position: 'absolute', bottom: -20, right: 40, width: 70, height: 70, borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
+                <div style={{ position: 'absolute', top: -40, right: -40, width: 160, height: 160, borderRadius: '50%', background: 'rgba(255,255,255,0.12)' }} />
+                <div style={{ position: 'absolute', bottom: -25, right: 30, width: 90, height: 90, borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
 
                 <span style={{
                   alignSelf: 'flex-start',
-                  background: event.isActive ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.2)',
+                  background: event.isActive ? 'rgba(255,255,255,0.28)' : 'rgba(0,0,0,0.2)',
                   backdropFilter: 'blur(6px)',
                   color: 'white', fontWeight: 800, fontSize: 10,
-                  letterSpacing: '1.5px', padding: '4px 12px', borderRadius: 20,
+                  letterSpacing: '1.5px', padding: '5px 13px', borderRadius: 20,
                   textTransform: 'uppercase',
                 }}>
                   {event.isActive ? t.upcoming : t.passed}
                 </span>
 
-                <h3 style={{ color: 'white', fontSize: 19, fontWeight: 800, margin: 0, lineHeight: 1.25, position: 'relative' }}>
+                <h3 style={{ color: 'white', fontSize: 22, fontWeight: 900, margin: 0, lineHeight: 1.2, position: 'relative' }}>
                   {localize(event.name, lang)}
                 </h3>
               </div>
 
-              <div style={{ padding: '18px 24px 22px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 14 }}>
+              <div style={{ padding: '16px 22px 20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 12 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#475569', fontSize: 13 }}>
                     <span style={{ width: 20, height: 20, background: '#f1f5f9', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, flexShrink: 0 }}>📅</span>
