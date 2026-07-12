@@ -136,56 +136,58 @@ interface Member {
   name: string
   role?: string
   photo?: string
+  bio?: string
 }
 
 const getDepartments = (t: T) => [
   {
     id: 1, slug: "su-core", name: "SU Core", tag: "SU.CORE", icon: "🛡️", description: t.dept_core_desc,
     members: [
-      { name: "Andrew Gekhtin", role: "COO", photo: "./assets/Core/Andrew.png" },
-      { name: "Amelia Gizatullina", role: "Assistant", photo: "./assets/Core/Amelia.jpeg" },
-      { name: "Timur Bikmetov", photo: "./assets/Core/Timur.jpg" },
-      { name: "Egor Shvetsov", photo: "./assets/Core/Egor.jpeg" },
-      { name: "Anna Zyrianova", photo: "./assets/Core/Anna.jpg" },
-      { name: "Valerii Tiniakov", photo: "./assets/Core/Valerii.jpg" },
-      { name: "Yaroslav Moskvin", photo: "./assets/Core/Yaroslav.jpg" },
-      { name: "Albert Khechoyan", photo: "./assets/Core/Albert.jpeg" },
-      { name: "Takhir Salikhov", photo: "./assets/Core/Takhir.jpg" },
-      { name: "Dmitrii Malofeev", photo: "./assets/Core/Dmitrii.jpeg" },
-      { name: "Esdras Diffouo Fopa", photo: "./assets/Core/Esdras.JPG" },
-      { name: "Telman Nuruzov", photo: "./assets/Core/Telman.jpg" },
+      { name: "Andrew Gekhtin", role: "COO", photo: "./assets/Core/Andrew.png", bio: "Good time of the day! My name is Andrew, and I'm a second year cybersecurity student. I've been working in SU:Core throughout the Spring semester and contributed to several vital cases, like potential increase of dormitory accommodation prices and modernization of Shishkin Park. Starting from April 18th, 2026, I serve as the COO of SU:Core. For any inquiries, I highly encourage you to contact me. Let us continue making Innopolis University a distinguished and comfortable place for students!" },
+      { name: "Amelia Gizatullina", role: "Assistant", photo: "./assets/Core/Amelia.jpeg", bio: "Hii!! I am Amelia Gizatullina, a first year student at Innopolis University. I am also a Deputy Head of SU:Core. For me Student Union is about improving student life, representing students' interests, and building effective communication between students and the administration. So, that's why I am here for you!!" },
+      { name: "Timur Bikmetov", photo: "./assets/Core/Timur.jpg", bio: "Hi everyone! I'm Timur Bikmetov, a second-year bachelor's student. I've helped organize several events and olympiads. As a member of SU, I'll be happy to support you with any questions or challenges that come up. See you! :)" },
+      { name: "Egor Shvetsov", photo: "./assets/Core/Egor.jpeg", bio: "I like working in the student council because I get to participate in negotiations with the administration. It's an exciting opportunity to contribute to the development of the student community and ensure that our voices are heard. Additionally, I enjoy resolving conflict situations — it allows me to use my problem-solving skills and help create a harmonious and supportive environment for all students." },
+      { name: "Anna Zyrianova", photo: "./assets/Core/Anna.jpg", bio: "Hi! My name is Anna, and I'm a second-year student. I joined SU:Core last Fall and since then have focused primarily on facilitating discussions with the university administration. I'm passionate about understanding how things work behind the scenes at our university and am dedicated to improving student life." },
+      { name: "Valerii Tiniakov", photo: "./assets/Core/Valerii.jpg", bio: "Hello there! I'm Valerii Tiniakov, a second-year student. I joined the Student Union to actively contribute to the development of our university environment. I believe that even small changes can make a big difference. I'm here to apply my skills to help solve problems and bring fresh initiatives to life." },
+      { name: "Yaroslav Moskvin", photo: "./assets/Core/Yaroslav.jpg", bio: "sup 😝" },
+      { name: "Albert Khechoyan", photo: "./assets/Core/Albert.jpeg", bio: "Hello everyone! I'm Albert Khechoyan, a second-year CBS student. I joined the SU:Core team because I want to contribute to solving challenges within our student community. I'm here to support every student and help make university life better for everyone. Feel free to reach out! ❤️" },
+      { name: "Takhir Salikhov", photo: "./assets/Core/Takhir.jpg", bio: "Hello everybody! I am a B25-MFAI student Salikhov Tahir. I am pleased to help the Innopolis University community, so I joined SU." },
+      { name: "Dmitrii Malofeev", photo: "./assets/Core/Dmitrii.jpeg", bio: "Hello there! I'm Dmitrii, a first-year DSAI student. Since joining SU:Core, my responsibilities have grown from handling internal university documents to developing technical projects and platforms for the Student Union. I am here to apply my skills to help solve problems and make student life more comfortable and modern." },
+      { name: "Esdras Diffouo Fopa", photo: "./assets/Core/Esdras.JPG", bio: "Studying abroad comes with many challenges; the language barrier is only the tip of the iceberg. Through the 319 Team, Russian language courses, and fellowship programs, IU already does a lot to support the international student community — and that is commendable. Hi, I'm Esdras, and I'm eager to contribute to making IU feel like home. For everyone." },
+      { name: "Telman Nuruzov", photo: "./assets/Core/Telman.jpg", bio: "👋 Hi! My name is Telman, and I'm a second-year bachelor's student. I recently joined Student Union because I'm highly motivated by the opportunity to make a real contribution to improving student life and see a meaningful impact from my work. I hope to be a useful part of the team and work together to make student life even better. Good luck everyone 🤙" },
     ] as Member[]
   },
   {
     id: 2, slug: "su-active", name: "SU Active", tag: "SU.ACTIVE", icon: "⚡", description: t.dept_active_desc,
     members: [
-      { name: "Maria Martianova", role: "COO", photo: "./assets/Active/Maria.JPG" },
-      { name: "Irina Perekrestova", role: "Assistant", photo: "./assets/Active/Irina.JPG" },
-      { name: "Albina Fadeeva", photo: "./assets/Active/Albina.jpg" },
-      { name: "Aliya Khadeeva", photo: "./assets/Active/Aliya.JPG" },
+      { name: "Maria Martianova", role: "COO", photo: "./assets/Active/Maria2.jpg", bio: "Hey! My name's Masha, but you can call me Marusya). I'm a first-year bachelor's student and also the COO of SU:Active. I'm a very active person with a huge desire to make students' lives more exciting. I'm so happy to be a part of our student community! 🫶🏻" },
+      { name: "Irina Perekrestova", role: "Assistant", photo: "./assets/Active/Irina.JPG", bio: "hey everyone im ira and ive been part of su:active for a year now 😛 My main responsibility is event area decoration, but i also try to take active part in team coordination and newbie onboarding process. Love organising stuff, creating fun decorations and watching it all come together! хихи хаха" },
+      { name: "Albina Fadeeva", photo: "./assets/Active/Albina.jpg", bio: "Hi!! My name is Albina. I joined SU to take part in organizing events. I always have a lot of ideas, especially for handmade master classes and fun activities. SU:Active is a great opportunity to bring my ideas to life and bring joy to others." },
+      { name: "Aliya Khadeeva", photo: "./assets/Active/Aliya.JPG", bio: "Hello! Aliya Khadeeva here, a second-year student and part of SU:Active. I'm involved in various initiatives and truly enjoy making university life more fun and exciting." },
       { name: "Georgy Pyanov", photo: "./assets/Active/Georgii.jpg" },
-      { name: "Kristina Ushakova", photo: "./assets/Active/Kristina.JPG" },
+      { name: "Kristina Ushakova", photo: "./assets/Active/Kristina.JPG", bio: "Hi everyone! My name is Kristina, and I'm a second-year bachelor's student. I've always loved taking part in different activities, and here in Innopolis I realized I want more than just to participate — I want to help make those moments happen. That's why I'm part of SU:Active!" },
       { name: "Marina Alexandrova", photo: "./assets/Active/Marina.JPG" },
-      { name: "Darina Luchinina", role: "Intern", photo: "./assets/Active/Darina.JPG" },
-      { name: "Askar Aitov", role: "Intern", photo: "./assets/Active/Askar.JPG" },
-      { name: "Svetlana Yakusheva", role: "Intern", photo: "./assets/Active/Svetlana.JPG" },
-      { name: "Amaliya Kharisova", role: "Intern", photo: "./assets/Active/Amalia.JPG" },
-      { name: "Roman Titov", role: "Intern", photo: "./assets/Active/Roman.jpg" },
-      { name: "Maria Karpova", role: "Intern", photo: "./assets/Active/Maria2.jpg" },
-      { name: "Ekaterina Efremova", role: "Intern", photo: "./assets/Active/Ekaterina.JPG" },
-      { name: "Arsenii Shchekin", role: "Intern", photo: "./assets/Active/Arsenii.JPG" },
-      { name: "Anastasiya Kalashnikova", role: "Intern", photo: "./assets/Active/Anastasia.JPG" },
-      { name: "Maximilian Mifsud Bonici", role: "Intern", photo: "./assets/Active/Maximilian.JPG" },
+      { name: "Darina Luchinina", role: "Intern", photo: "./assets/Active/Darina.JPG", bio: "Hi, I'm Darina, a first-year bachelor student))) I recently joined SU:Active because I have always been interested in organizing university events. I think it's very exciting. Well, I'm eager to meet new people here and gain new experiences. I believe that SU will give me this opportunity!" },
+      { name: "Askar Aitov", role: "Intern", photo: "./assets/Active/Askar.JPG", bio: "Hi! My name is Askar, and I'm a first-year bachelor's student. I'm very excited to join the Student Union. I'm an active person and enjoy participating in the organization of various events. I hope that, together as a team, we will create engaging, memorable, and enjoyable events for all students." },
+      { name: "Svetlana Yakusheva", role: "Intern", photo: "./assets/Active/Svetlana.JPG", bio: "Hi, I'm Sveta. I am full of different ideas, especially for decorations and workshops. I hope that being a part of SU:Active is a great opportunity to show my skills." },
+      { name: "Amaliya Kharisova", role: "Intern", photo: "./assets/Active/Amalia.JPG", bio: "Hi! I'm Amaliya, second-year student and part of SU:Active. I joined the team because I genuinely love organizing activities and making things happen behind the scenes. My role is to ensure smooth communication with our volunteers, help create engaging master classes, and support the team in bringing different event activities." },
+      { name: "Roman Titov", role: "Intern", photo: "./assets/Active/Roman.jpg", bio: "Good time of day! Roman here, a second-year student and creative chaos. After almost two years of just attending classes, I decided it was time to actually do something. I'm a dancer, a designer, a video editor, a photographer, and honestly a little bit of everything else. In SU:Active, I'm exactly the same: no fixed role, just wherever I'm needed. Chill but creative, that's the deal 🙂" },
+      { name: "Maria Karpova", role: "Intern", photo: "./assets/Active/Maria.JPG", bio: "heyy! my name is Maria, I'm a second-year bachelor's student, part of the scenario team and the biggest math analysis fan here. hope you enjoy our work 🪷" },
+      { name: "Ekaterina Efremova", role: "Intern", photo: "./assets/Active/Ekaterina.JPG", bio: "Hi! I'm Katya, a first-year bachelor's student. I love technical subjects like calculus and physics, but creativity has always been with me too. Fun fact: I spent ten years at art school (graduated with honors) and nearly went into architecture. I also enjoy social activities: events, performing, helping others. That's why I joined SU:Active — to grow, try new things, and share joy." },
+      { name: "Arsenii Shchekin", role: "Intern", photo: "./assets/Active/Arsenii.JPG", bio: "Hello. I'm Arsenii. My goal is to bring positive to people's life and to create fun memories. I believe that life is about having fun." },
+      { name: "Anastasiya Kalashnikova", role: "Intern", photo: "./assets/Active/Anastasia.JPG", bio: "My name is Nastya, I love making things with my hands, mostly knitting or crocheting. I also read books, watch movies, do calisthenics and actively trying myself in something new." },
+      { name: "Maximilian Mifsud Bonici", role: "Intern", photo: "./assets/Active/Maximilian.JPG", bio: "Hallo! I'm Maximilian, and am a British second year student. I joined SU:active because I saw the cool events being held on a constant basis and thought it would be nice to be a part of the process. Ready to be of service 🫡" },
     ] as Member[]
   },
   {
     id: 3, slug: "su-media", name: "SU Media", tag: "SU.MEDIA", icon: "📸", description: t.dept_media_desc,
     members: [
-      { name: "Silvia Fedorovskaya", role: "COO", photo: "./assets/Media/Silvia.jpg" },
-      { name: "Egor Lesnykh", role: "Assistant", photo: "./assets/Media/Egor(1).jpg" },
-      { name: "Ksenia Minaeva", photo: "./assets/Media/Ksenia.jpeg" },
-      { name: "Daniyar Fairushin", photo: "./assets/Media/Daniyar.jpg" },
-      { name: "Yana Birkina", photo: "./assets/Media/Yana.jpg" },
+      { name: "Silvia Fedorovskaya", role: "COO", photo: "./assets/Media/Silvia.jpg", bio: "My name is Silvia; I love creating content and I'm the COO of SU:Media. I joined the Student Union to cover our activities in the media, raise our profile and gain experience. I'm also involved with Innopolis City Media and act as the SMM ambassador coordinator." },
+      { name: "Egor Lesnykh", role: "Assistant", photo: "./assets/Media/Egor(1).jpg", bio: "Hey, I'm Egor, a first-year bachelor student. I've recently joined SU:Media because I'm really astonished by video content and social medias. My goal is to provide students and other people info about our SU in a visual-catchy way." },
+      { name: "Ksenia Minaeva", photo: "./assets/Media/Ksenia.jpeg", bio: "Hi everyone! I'm Kseniia. I really like photography! and because of this i'm in SU:Media. I like creating photos for students and give them some sort of memories from university events!!" },
+      { name: "Daniyar Fairushin", photo: "./assets/Media/Daniyar.jpg", bio: "Hi there, I'm Daniyar. One of my favorite things to do is photography, that's why I'm here." },
+      { name: "Yana Birkina", photo: "./assets/Media/Yana.jpg", bio: "Hi, I'm Yana, and I've recently joined the SU:Media team. As a photographer, I want to capture the real atmosphere of university events — the emotions, details, and moments that make student life memorable." },
+      { name: "Egor Khramtsov", photo: "./assets/Media/Egor.jpg", bio: "Hi! I'm Egor, a second-year student. I enjoy taking photos at events to capture good moments and create lasting memories for people." },
     ] as Member[]
   },
 ]
@@ -436,9 +438,53 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
   )
 }
 
+const DEPT_ACCENTS: Record<string, string> = {
+  'su-core':   'linear-gradient(135deg, #14532d 0%, #40ba21 100%)',
+  'su-active': 'linear-gradient(135deg, #40ba21 0%, #86efac 100%)',
+  'su-media':  'linear-gradient(135deg, #166534 0%, #15803d 100%)',
+}
+
+function MemberModal({ member, slug, onClose }: { member: Member; slug: string; onClose: () => void }) {
+  const photo = member.photo ? getPhoto(member.photo) : undefined
+  const accent = DEPT_ACCENTS[slug] || 'linear-gradient(135deg, #40ba21, #166534)'
+  const isIntern = member.role === 'Intern'
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" style={{ maxWidth: 460, borderRadius: 24, overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+        {/* Цветная шапка с фото */}
+        <div style={{ background: accent, padding: '36px 32px 48px', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
+          <div style={{ position: 'absolute', bottom: -36, left: '50%', transform: 'translateX(-50%)' }}>
+            {photo
+              ? <img src={photo} alt={member.name} style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: '3px solid white', display: 'block' }} />
+              : <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#40ba21', fontSize: 28, fontWeight: 900, border: '3px solid white' }}>{member.name[0]}</div>
+            }
+          </div>
+        </div>
+        {/* Контент */}
+        <div style={{ padding: '52px 32px 32px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+          {member.role && (
+            <span style={{
+              fontSize: 11, fontWeight: 800, letterSpacing: '1.5px',
+              color: isIntern ? '#94a3b8' : '#40ba21',
+              textTransform: 'uppercase',
+            }}>{member.role}</span>
+          )}
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: '#0f172a', margin: 0, textAlign: 'center' }}>{member.name}</h2>
+          {member.bio && (
+            <p style={{ color: '#64748b', fontSize: 14, lineHeight: 1.75, textAlign: 'center', marginTop: 4 }}>{member.bio}</p>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function DepartmentPage({ t }: { t: T; lang?: Lang }) {
   const { slug } = useParams()
   const dept = getDepartments(t).find(d => d.slug === slug)
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null)
+  const accent = DEPT_ACCENTS[slug || ''] || 'linear-gradient(135deg, #40ba21, #166534)'
 
   if (!dept) return (
     <div className="container">
@@ -447,49 +493,154 @@ function DepartmentPage({ t }: { t: T; lang?: Lang }) {
     </div>
   )
 
+  // Разбиваем на leadership и остальных
+  const leaders = dept.members.filter(m => m.role && m.role !== 'Intern')
+  const regular = dept.members.filter(m => !m.role)
+  const interns = dept.members.filter(m => m.role === 'Intern')
+
   return (
-    <div className="container">
-      <Link to="/" style={{ color: '#40ba21', fontWeight: 'bold', textDecoration: 'none' }}>
-        ← {t.home}
-      </Link>
-      <div className="event-full-page" style={{ marginTop: 20 }}>
-        <div className="event-full-header" style={{ background: 'linear-gradient(135deg, #40ba21, #166534)' }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>{dept.icon}</div>
-          <span className="dept-tag" style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13 }}>{dept.tag}</span>
-          <h1 style={{ color: 'white', fontSize: 36, fontWeight: 900, margin: '8px 0' }}>{dept.name}</h1>
-          <p style={{ color: 'rgba(255,255,255,0.9)' }}>{dept.description}</p>
-        </div>
-        <div className="event-full-body">
-          <h3 style={{ marginBottom: 16, color: '#1e293b' }}>{t.members}</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {dept.members.map((member, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: '#f8fafc', borderRadius: 12, border: '1px solid #e2e8f0' }}>
-                {member.photo && getPhoto(member.photo)
-                  ? <img src={getPhoto(member.photo)} alt={member.name} style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
-                  : <div style={{ width: 40, height: 40, borderRadius: '50%', background: member.role === 'Intern' ? '#94a3b8' : '#40ba21', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', flexShrink: 0 }}>{member.name[0]}</div>
-                }
-                <div>
-                  <span style={{ fontWeight: 500, color: '#1e293b', display: 'block' }}>{member.name}</span>
-                  {member.role && <span style={{ fontSize: 12, color: member.role === 'Intern' ? '#94a3b8' : '#40ba21', fontWeight: 600 }}>{member.role}</span>}
-                </div>
+    <div style={{ minHeight: '100vh', background: '#f8fafc' }}>
+      {/* Компактный hero — карточка, не полоса */}
+      <div style={{ maxWidth: 1000, margin: '0 auto', padding: '32px 20px 0' }}>
+        <Link to="/" style={{ color: '#40ba21', fontWeight: 600, textDecoration: 'none', fontSize: 14, display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 24 }}>
+          ← {t.home}
+        </Link>
+        <div style={{
+          background: accent,
+          borderRadius: 24,
+          padding: '40px 48px',
+          position: 'relative',
+          overflow: 'hidden',
+          marginBottom: 48,
+        }}>
+          {/* Декор */}
+          <div style={{ position: 'absolute', top: -40, right: -40, width: 200, height: 200, borderRadius: '50%', background: 'rgba(255,255,255,0.07)' }} />
+          <div style={{ position: 'absolute', bottom: -30, right: '20%', width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }} />
+
+          <div style={{ position: 'relative' }}>
+            <span style={{
+              display: 'inline-block',
+              fontSize: 11, fontWeight: 800, letterSpacing: '2px',
+              color: 'rgba(255,255,255,0.75)',
+              background: 'rgba(255,255,255,0.15)',
+              padding: '4px 12px', borderRadius: 20,
+              marginBottom: 16,
+            }}>{dept.tag}</span>
+            <h1 style={{ color: 'white', fontSize: 40, fontWeight: 900, margin: '0 0 10px', lineHeight: 1.1 }}>{dept.name}</h1>
+            <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 15, maxWidth: 500, lineHeight: 1.6, margin: '0 0 24px' }}>{dept.description}</p>
+            <div style={{ display: 'flex', gap: 24 }}>
+              <div>
+                <span style={{ color: 'white', fontWeight: 900, fontSize: 26, display: 'block', lineHeight: 1 }}>{dept.members.length}</span>
+                <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, fontWeight: 600 }}>MEMBERS</span>
               </div>
-            ))}
+              {interns.length > 0 && (
+                <div>
+                  <span style={{ color: 'white', fontWeight: 900, fontSize: 26, display: 'block', lineHeight: 1 }}>{interns.length}</span>
+                  <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, fontWeight: 600 }}>INTERNS</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Члены */}
+      <div style={{ maxWidth: 1000, margin: '0 auto', padding: '0 20px 60px' }}>
+        {/* Leadership */}
+        {leaders.length > 0 && (
+          <div style={{ marginBottom: 48 }}>
+            <h2 style={{ fontSize: 13, fontWeight: 800, letterSpacing: '2px', color: '#94a3b8', textTransform: 'uppercase', marginBottom: 20 }}>Leadership</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
+              {leaders.map((member, i) => <MemberCard key={i} member={member} slug={slug || ''} onClick={() => setSelectedMember(member)} />)}
+            </div>
+          </div>
+        )}
+
+        {/* Regular members */}
+        {regular.length > 0 && (
+          <div style={{ marginBottom: 48 }}>
+            <h2 style={{ fontSize: 13, fontWeight: 800, letterSpacing: '2px', color: '#94a3b8', textTransform: 'uppercase', marginBottom: 20 }}>{t.members}</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 16 }}>
+              {regular.map((member, i) => <MemberCard key={i} member={member} slug={slug || ''} onClick={() => setSelectedMember(member)} />)}
+            </div>
+          </div>
+        )}
+
+        {/* Interns */}
+        {interns.length > 0 && (
+          <div>
+            <h2 style={{ fontSize: 13, fontWeight: 800, letterSpacing: '2px', color: '#94a3b8', textTransform: 'uppercase', marginBottom: 20 }}>Interns</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 16 }}>
+              {interns.map((member, i) => <MemberCard key={i} member={member} slug={slug || ''} onClick={() => setSelectedMember(member)} />)}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {selectedMember && <MemberModal member={selectedMember} slug={slug || ''} onClose={() => setSelectedMember(null)} />}
+    </div>
+  )
+}
+
+function MemberCard({ member, slug, onClick }: { member: Member; slug: string; onClick: () => void }) {
+  const photo = member.photo ? getPhoto(member.photo) : undefined
+  const hasBio = !!member.bio
+  const isIntern = member.role === 'Intern'
+  const accent = DEPT_ACCENTS[slug] || '#40ba21'
+  // вытащим первый цвет градиента для аватара
+  const avatarColor = isIntern ? '#94a3b8' : (accent.includes('1d4ed8') ? '#1d4ed8' : '#40ba21')
+
+  return (
+    <div
+      onClick={() => hasBio && onClick()}
+      style={{
+        background: 'white', borderRadius: 16, padding: '20px 16px',
+        border: '1px solid #e2e8f0', textAlign: 'center',
+        cursor: hasBio ? 'pointer' : 'default',
+        transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
+      }}
+      onMouseEnter={e => { if (hasBio) { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)' } }}
+      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '' }}
+    >
+      {photo
+        ? <img src={photo} alt={member.name} style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: `2.5px solid ${avatarColor}` }} />
+        : <div style={{ width: 72, height: 72, borderRadius: '50%', background: avatarColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 26, fontWeight: 800 }}>{member.name[0]}</div>
+      }
+      <div>
+        <span style={{ fontWeight: 700, color: '#0f172a', fontSize: 14, lineHeight: 1.3, display: 'block' }}>{member.name}</span>
+        {member.role && <span style={{ fontSize: 11, color: avatarColor, fontWeight: 700, letterSpacing: '0.5px' }}>{member.role}</span>}
+      </div>
+      {hasBio && <span style={{ fontSize: 11, color: '#94a3b8' }}>tap to read →</span>}
     </div>
   )
 }
 
 function DepartmentCard(props: { slug: string; name: string; tag: string; icon: string; description: string; t: T }) {
+  const accent = DEPT_ACCENTS[props.slug] || 'linear-gradient(135deg, #40ba21, #166534)'
   return (
-    <Link to={`/departments/${props.slug}`} style={{ textDecoration: 'none', flex: 1, minWidth: 220 }}>
-      <div className="dept-card">
-        <div className="dept-icon">{props.icon}</div>
-        <span className="dept-tag">{props.tag}</span>
-        <h3>{props.name}</h3>
-        <p>{props.description}</p>
-        <span className="dept-toggle">{props.t.dep_core}</span>
+    <Link to={`/departments/${props.slug}`} style={{ textDecoration: 'none', flex: 1, minWidth: 260 }}>
+      <div style={{
+        background: 'white', borderRadius: 20, overflow: 'hidden',
+        border: '1px solid #e2e8f0', height: '100%',
+        display: 'flex', flexDirection: 'column',
+        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+      }}
+        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-6px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 16px 40px rgba(0,0,0,0.12)' }}
+        onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '' }}
+      >
+        <div style={{ background: accent, padding: '28px 28px 24px', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: -20, right: -20, width: 100, height: 100, borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
+          <div style={{ position: 'absolute', top: 20, right: 20, width: 50, height: 50, borderRadius: '50%', background: 'rgba(255,255,255,0.12)' }} />
+          <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '2px', color: 'rgba(255,255,255,0.7)', display: 'block', marginBottom: 10 }}>{props.tag}</span>
+          <h3 style={{ color: 'white', fontSize: 24, fontWeight: 900, margin: 0 }}>{props.name}</h3>
+        </div>
+        <div style={{ padding: '20px 28px 24px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 16 }}>
+          <p style={{ color: '#64748b', fontSize: 14, lineHeight: 1.6, margin: 0 }}>{props.description}</p>
+          <span style={{ color: '#40ba21', fontWeight: 700, fontSize: 14 }}>
+            {props.t.dep_core}
+          </span>
+        </div>
       </div>
     </Link>
   )
@@ -620,20 +771,45 @@ function EventPage({ t, lang, events }: { t: T; lang: Lang; events: SuEvent[] })
   )
 
   return (
-    <div className="container">
-      <Link to="/events" style={{ color: '#40ba21', fontWeight: 'bold', textDecoration: 'none' }}>
-        ← {t.events}
-      </Link>
-      <div className="event-full-page">
-        <div className="event-full-header" style={{ background: `linear-gradient(135deg, ${event.color}, ${event.color}99)` }}>
-          <span className={`badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
-            {event.isActive ? t.upcoming : t.passed}
-          </span>
-          <h1>{localize(event.name, lang)}</h1>
-          <p>📅 {event.date} &nbsp; 📍 {localize(event.location, lang)}</p>
-        </div>
-        <div className="event-full-body">
-          <p>{localize(event.description, lang)}</p>
+    <div style={{ minHeight: '100vh', background: '#f8fafc' }}>
+      <div style={{ maxWidth: 720, margin: '0 auto', padding: '32px 20px 60px' }}>
+        <Link to="/events" style={{ color: '#40ba21', fontWeight: 600, textDecoration: 'none', fontSize: 14, display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 24 }}>
+          ← {t.events}
+        </Link>
+        <div style={{ background: 'white', borderRadius: 24, overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+          {/* Цветная шапка */}
+          <div style={{
+            background: `linear-gradient(135deg, ${event.color}, ${event.color}bb)`,
+            padding: '40px 40px 36px',
+            position: 'relative', overflow: 'hidden',
+          }}>
+            <div style={{ position: 'absolute', top: -30, right: -30, width: 180, height: 180, borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
+            <span style={{
+              display: 'inline-block',
+              background: 'rgba(255,255,255,0.25)', backdropFilter: 'blur(8px)',
+              color: 'white', fontWeight: 800, fontSize: 11, letterSpacing: '1.5px',
+              padding: '5px 14px', borderRadius: 20, textTransform: 'uppercase', marginBottom: 16,
+            }}>
+              {event.isActive ? t.upcoming : t.passed}
+            </span>
+            <h1 style={{ color: 'white', fontSize: 36, fontWeight: 900, margin: '0 0 16px', lineHeight: 1.1 }}>
+              {localize(event.name, lang)}
+            </h1>
+            <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
+              <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
+                📅 {event.date}
+              </span>
+              {event.location && (
+                <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
+                  📍 {localize(event.location, lang)}
+                </span>
+              )}
+            </div>
+          </div>
+          {/* Описание */}
+          <div style={{ padding: '32px 40px' }}>
+            <p style={{ color: '#475569', fontSize: 16, lineHeight: 1.8, margin: 0 }}>{localize(event.description, lang)}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -650,30 +826,88 @@ function EventsPage({ t, lang, events }: { t: T; lang: Lang; events: SuEvent[] }
   })
 
   return (
-    <div className="container">
-      <div className="section-title">
-        <h2>{t.events_title}</h2>
-        <p>{t.events_desc}</p>
+    <div style={{ width: '100%', padding: '40px 48px', boxSizing: 'border-box' }}>
+      <style>{`
+        .events-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+        @media (max-width: 900px) { .events-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 560px) { .events-grid { grid-template-columns: 1fr; } }
+      `}</style>
+
+      <div style={{ marginBottom: 32 }}>
+        <h1 style={{ fontSize: 40, fontWeight: 900, color: '#0f172a', margin: '0 0 6px' }}>{t.events_title}</h1>
+        <p style={{ color: '#64748b', fontSize: 15, margin: 0 }}>{t.events_desc}</p>
       </div>
-      <div className="filter-buttons">
-        <button className={`btn-outline ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>{t.all}</button>
-        <button className={`btn-outline ${filter === 'upcoming' ? 'active' : ''}`} onClick={() => setFilter('upcoming')}>{t.upcoming}</button>
-        <button className={`btn-outline ${filter === 'passed' ? 'active' : ''}`} onClick={() => setFilter('passed')}>{t.passed}</button>
+
+      <div style={{ display: 'inline-flex', gap: 4, marginBottom: 36, background: '#f1f5f9', padding: '4px', borderRadius: 12 }}>
+        {(['all', 'upcoming', 'passed'] as const).map(f => (
+          <button key={f} onClick={() => setFilter(f)} style={{
+            padding: '8px 22px', borderRadius: 9, border: 'none', cursor: 'pointer',
+            fontWeight: 700, fontSize: 13,
+            background: filter === f ? 'white' : 'transparent',
+            color: filter === f ? '#0f172a' : '#94a3b8',
+            boxShadow: filter === f ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
+            transition: 'all 0.15s ease',
+          }}>
+            {f === 'all' ? t.all : f === 'upcoming' ? t.upcoming : t.passed}
+          </button>
+        ))}
       </div>
+
       {events.length === 0 && <p style={{ textAlign: 'center', color: '#64748b', marginTop: 32 }}>No events yet.</p>}
-      <div className="events-list">
+
+      <div className="events-grid">
         {visibleEvents.map((event, index) => (
           <Link key={index} to={`/events/${event.id}`} style={{ textDecoration: 'none' }}>
-            <div className="event-card" style={{ cursor: 'pointer', height: '100%' }}>
-              <div className="event-image-wrapper" style={{ background: `linear-gradient(135deg, ${event.color}, ${event.color}99)` }}>
-                <h3 style={{ color: 'white', fontSize: 20, fontWeight: 900, padding: '0 16px' }}>{localize(event.name, lang)}</h3>
-                <span className={`event-badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
+            <div style={{
+              background: 'white', borderRadius: 20, overflow: 'hidden',
+              border: '1px solid #e8edf2', height: '100%', display: 'flex', flexDirection: 'column',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            }}
+              onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-6px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 16px 40px rgba(0,0,0,0.12)' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '' }}
+            >
+              <div style={{
+                background: `linear-gradient(160deg, ${event.color}ee 0%, ${event.color}99 100%)`,
+                padding: '24px 24px 22px',
+                minHeight: 160,
+                position: 'relative', overflow: 'hidden',
+                display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+              }}>
+                <div style={{ position: 'absolute', top: -30, right: -30, width: 130, height: 130, borderRadius: '50%', background: 'rgba(255,255,255,0.12)' }} />
+                <div style={{ position: 'absolute', bottom: -20, right: 40, width: 70, height: 70, borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
+
+                <span style={{
+                  alignSelf: 'flex-start',
+                  background: event.isActive ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.2)',
+                  backdropFilter: 'blur(6px)',
+                  color: 'white', fontWeight: 800, fontSize: 10,
+                  letterSpacing: '1.5px', padding: '4px 12px', borderRadius: 20,
+                  textTransform: 'uppercase',
+                }}>
                   {event.isActive ? t.upcoming : t.passed}
                 </span>
+
+                <h3 style={{ color: 'white', fontSize: 19, fontWeight: 800, margin: 0, lineHeight: 1.25, position: 'relative' }}>
+                  {localize(event.name, lang)}
+                </h3>
               </div>
-              <div className="event-card-body">
-                <p>📅 {event.date} &nbsp; 📍 {localize(event.location, lang)}</p>
-                <span className="event-details-link">{t.details}</span>
+
+              <div style={{ padding: '18px 24px 22px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 14 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#475569', fontSize: 13 }}>
+                    <span style={{ width: 20, height: 20, background: '#f1f5f9', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, flexShrink: 0 }}>📅</span>
+                    {event.date}
+                  </div>
+                  {event.location && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#475569', fontSize: 13 }}>
+                      <span style={{ width: 20, height: 20, background: '#f1f5f9', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, flexShrink: 0 }}>📍</span>
+                      {localize(event.location, lang)}
+                    </div>
+                  )}
+                </div>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: '#40ba21', fontWeight: 700, fontSize: 13 }}>
+                  {lang === 'en' ? 'Details' : 'Подробнее'} →
+                </span>
               </div>
             </div>
           </Link>
