@@ -22,7 +22,7 @@ public class Events {
     @Column(name = "finished_at")
     private LocalDateTime finishedAt;
     @Column(name = "event_time")
-    private String eventTime;
+    private LocalDateTime eventTime;
     @Column(name = "event_location")
     private String eventLocation;
 
@@ -32,7 +32,7 @@ public class Events {
         description = "no description";
     }
 
-    public Events(Long id, String title, String description, LocalDateTime createdAt, LocalDateTime finishedAt, String eventTime, String eventLocation) {
+    public Events(Long id, String title, String description, LocalDateTime createdAt, LocalDateTime finishedAt, LocalDateTime eventTime, String eventLocation) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -82,11 +82,11 @@ public class Events {
         this.finishedAt = finishedAt;
     }
 
-    public String getEventTime() {
+    public LocalDateTime getEventTime() {
         return this.eventTime;
     }
 
-    public void setEventTime(String eventTime) {
+    public void setEventTime(LocalDateTime eventTime) {
         this.eventTime = eventTime;
     }
 

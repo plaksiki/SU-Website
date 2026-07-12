@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 
 const API_URL = 'http://10.93.26.192:8080'
 
-interface Event {
+interface SuEvent {
   id: string
   title: string
   date: string
@@ -45,9 +45,12 @@ const adminTranslations = {
     exprt_btn: 'Export Questionnaires to CSV',
     logged_in_as: 'Logged in as:',
     create_event: 'Create Event',
-    event_title_placeholder: 'Event title',
-    event_location_placeholder: 'Location',
-    event_description_placeholder: 'Event description',
+    event_title_placeholder: 'Title (Название | Title)',
+    event_location_placeholder: 'Location (Место | Location)',
+    event_description_placeholder: 'Description (Описание | Description)',
+    event_bilingual_hint: 'For bilingual support use format: Русский | English',
+    event_start_date: 'Start date',
+    event_end_date: 'End date (when it moves to "Past")',
     event_list: 'Events',
     create_questionnaire: 'Create Questionnaire',
     q_title_placeholder: 'Questionnaire title (RU | EN)',
@@ -84,9 +87,12 @@ const adminTranslations = {
     exprt_btn: 'Экспорт анкет в CSV',
     logged_in_as: 'Вы вошли как:',
     create_event: 'Создать событие',
-    event_title_placeholder: 'Название события',
-    event_location_placeholder: 'Место проведения',
-    event_description_placeholder: 'Описание события',
+    event_title_placeholder: 'Название (Название | Title)',
+    event_location_placeholder: 'Место (Место | Location)',
+    event_description_placeholder: 'Описание (Описание | Description)',
+    event_bilingual_hint: 'Для двуязычности используйте формат: Русский | English',
+    event_start_date: 'Дата начала',
+    event_end_date: 'Дата окончания (когда перейдёт в «Прошедшие»)',
     event_list: 'Список событий',
     create_questionnaire: 'Создать опросник',
     q_title_placeholder: 'Название опросника (РУ | EN)',
@@ -194,17 +200,18 @@ const exportToCSV = async (fetchErrorMsg: string) => {
 }
 
 
-function AdminPage({ lang }: { lang: Lang }) {
+function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (events: unknown[]) => void }) {
   const t = adminTranslations[lang]
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('admin_logged_in') === 'true')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [events, setEvents] = useState<Event[]>([])
+  const [events, setEvents] = useState<SuEvent[]>([])
   const [newTitle, setNewTitle] = useState('')
   const [newDate, setNewDate] = useState('')
   const [newLocation, setNewLocation] = useState('')
   const [newDescription, setNewDescription] = useState('')
+  const [newFinishedAt, setNewFinishedAt] = useState('')
   const [formError, setFormError] = useState('')
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([])
   const [qTitle, setQTitle] = useState('')
@@ -214,6 +221,23 @@ function AdminPage({ lang }: { lang: Lang }) {
   const [questionType, setQuestionType] = useState<QuestionType>('open_text')
   const [optionsInput, setOptionsInput] = useState('')
   const [qFormError, setQFormError] = useState('')
+
+  const refreshEvents = () => {
+    fetch(`${API_URL}/events`)
+      .then(r => r.json())
+      .then((data: {id: number, title: string, description: string, eventTime: string, eventLocation: string}[]) => {
+        const mapped = data.map(e => ({
+          id: e.id.toString(),
+          title: e.title,
+          date: e.eventTime ? e.eventTime.split('T')[0] : '',
+          location: e.eventLocation || '',
+          description: e.description || '',
+        }))
+        setEvents(mapped)
+        onEventsChange?.(mapped as SuEvent[])
+      })
+      .catch(() => {})
+  }
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -226,6 +250,7 @@ function AdminPage({ lang }: { lang: Lang }) {
           questions: []
         }))))
         .catch(() => {})
+      refreshEvents()
     }
   }, [isLoggedIn])
 
@@ -452,25 +477,41 @@ useEffect(() => {
     )
   }
 
-  const handleAddEvent = () => {
+  const handleAddEvent = async () => {
     if (!newTitle || !newDate || !newLocation || !newDescription) {
       setFormError(t.form_error_fields)
       return
     }
     setFormError('')
-
-    const event: Event =  {
-      id: Date.now().toString(),
-      title: newTitle,
-      date: newDate,
-      location: newLocation,
-      description: newDescription
+    try {
+      await fetch(`${API_URL}/event`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: newTitle,
+          description: newDescription,
+          eventTime: new Date(newDate).toISOString().replace('Z', ''),
+          eventLocation: newLocation,
+          finishedAt: newFinishedAt ? new Date(newFinishedAt).toISOString().replace('Z', '') : null,
+        })
+      })
+      refreshEvents()
+    } catch {
+      refreshEvents()
     }
-    setEvents((prevEvents) => [event,...prevEvents])
     setNewTitle('')
     setNewDate('')
     setNewLocation('')
     setNewDescription('')
+    setNewFinishedAt('')
+  }
+
+  const handleDeleteEvent = async (id: string) => {
+    if (!confirm('Удалить событие?')) return
+    try {
+      await fetch(`${API_URL}/event/${id}`, { method: 'DELETE' })
+    } catch { /* ignore */ }
+    refreshEvents()
   }
 
   return (
@@ -521,17 +562,12 @@ useEffect(() => {
 
       <div className="donation-card">
         <h3 style={{ marginBottom: 16 }}>{t.create_event}</h3>
+        <p style={{ fontSize: 12, color: '#94a3b8', marginBottom: 8 }}>{t.event_bilingual_hint}</p>
         <input
           type="text"
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
           placeholder={t.event_title_placeholder}
-          style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
-        />
-        <input
-          type="date"
-          value={newDate}
-          onChange={(e) => setNewDate(e.target.value)}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
         />
         <input
@@ -548,6 +584,20 @@ useEffect(() => {
           rows={3}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box', resize: 'vertical' }}
         />
+        <p style={{ fontSize: 12, color: '#64748b', marginBottom: 4 }}>{t.event_start_date}</p>
+        <input
+          type="datetime-local"
+          value={newDate}
+          onChange={(e) => setNewDate(e.target.value)}
+          style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
+        />
+        <p style={{ fontSize: 12, color: '#64748b', marginBottom: 4 }}>{t.event_end_date}</p>
+        <input
+          type="datetime-local"
+          value={newFinishedAt}
+          onChange={(e) => setNewFinishedAt(e.target.value)}
+          style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
+        />
 
         <button className="btn" onClick={handleAddEvent} style={{ width: '100%' }}>
           {t.create_event}
@@ -561,12 +611,20 @@ useEffect(() => {
           <div style={{ marginTop: 32 }}>
             <h3 style={{ marginBottom: 16 }}>{t.event_list} ({events.length})</h3>
             {events.map((event) => (
-              <div key={event.id} style={{ padding: 16, border: '1px solid #e2e8f0', borderRadius: 12, marginBottom: 12 }}>
-                <strong>{event.title}</strong>
-                <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0' }}>
-                  {event.date} {event.location && `${event.location}`}
-                </p>
-                {event.description && <p style={{ fontSize: 14 }}>{event.description}</p>}
+              <div key={event.id} style={{ padding: 16, border: '1px solid #e2e8f0', borderRadius: 12, marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <strong>{event.title}</strong>
+                  <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0' }}>
+                    {event.date} {event.location && `· ${event.location}`}
+                  </p>
+                  {event.description && <p style={{ fontSize: 14 }}>{event.description}</p>}
+                </div>
+                <button
+                  onClick={() => handleDeleteEvent(event.id)}
+                  style={{ border: 'none', background: 'none', color: '#dc2626', cursor: 'pointer', fontSize: 13, fontWeight: 600, flexShrink: 0 }}
+                >
+                  {t.delete}
+                </button>
               </div>
             ))}
           </div>

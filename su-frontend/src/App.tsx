@@ -98,46 +98,39 @@ const translations = {
   }
 }
 
-interface Event {
+interface SuEvent {
   id: string
   name: string
   date: string
-  image: string
   color: string
   location: string
   description: string
   isActive?: boolean
 }
 
-const events: Event[] = [
-  {
-    id: "minecraft-event",
-    name: "Minecraft Event",
-    date: "2026-10-01",
-    image: "",
-    color: "#16a34a",
-    location: "IU Gaming Room",
-    description: "Join us for a fun Minecraft building competition! All skill levels welcome. Prizes for the best builds."
-  },
-  {
-    id: "csgo-event",
-    name: "CS:GO Event",
-    date: "2026-11-01",
-    image: "",
-    color: "#0891b2",
-    location: "IU Esports Arena",
-    description: "Competitive CS:GO tournament. Form your team and compete for the championship title and exclusive IU merchandise."
-  },
-  {
-    id: "hackathon-event",
-    name: "Hackathon",
-    date: "2025-12-01",
-    image: "",
-    color: "#7c3aed",
-    location: "IU Co-working Area",
-    description: "48-hour hackathon. Build innovative solutions for university life. Mentors available throughout the event."
-  },
-]
+interface BackendEvent {
+  id: number
+  title: string
+  description: string
+  eventTime: string
+  eventLocation: string
+  finishedAt: string | null
+}
+
+const EVENT_COLORS = ['#16a34a', '#0891b2', '#7c3aed', '#dc2626', '#d97706', '#0d9488']
+
+function mapBackendEvent(e: BackendEvent, idx: number): SuEvent {
+  const date = e.eventTime ? e.eventTime.split('T')[0] : ''
+  return {
+    id: String(e.id),
+    name: e.title,
+    date,
+    color: EVENT_COLORS[idx % EVENT_COLORS.length],
+    location: e.eventLocation || '',
+    description: e.description || '',
+    isActive: e.finishedAt ? new Date(e.finishedAt) >= new Date() : (date ? new Date(date) >= new Date() : true),
+  }
+}
 
 interface Member {
   name: string
@@ -197,11 +190,6 @@ const getDepartments = (t: T) => [
   },
 ]
 
-const today = new Date()
-const eventsWithStatus = events.map(event => ({
-  ...event,
-  isActive: new Date(event.date) >= today
-}))
 
 
 interface BackendQuestionnaire {
@@ -620,9 +608,9 @@ function HistoryPage({ t, lang }: { t: T; lang: Lang }) {
   )
 }
 
-function EventPage({ t }: { t: T }) {
+function EventPage({ t, lang, events }: { t: T; lang: Lang; events: SuEvent[] }) {
   const { id } = useParams()
-  const event = eventsWithStatus.find(e => e.id === id)
+  const event = events.find(e => e.id === id)
 
   if (!event) return (
     <div className="container">
@@ -641,21 +629,21 @@ function EventPage({ t }: { t: T }) {
           <span className={`badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
             {event.isActive ? t.upcoming : t.passed}
           </span>
-          <h1>{event.name}</h1>
-          <p>📅 {event.date} &nbsp; 📍 {event.location}</p>
+          <h1>{localize(event.name, lang)}</h1>
+          <p>📅 {event.date} &nbsp; 📍 {localize(event.location, lang)}</p>
         </div>
         <div className="event-full-body">
-          <p>{event.description}</p>
+          <p>{localize(event.description, lang)}</p>
         </div>
       </div>
     </div>
   )
 }
 
-function EventsPage({ t }: { t: T }) {
+function EventsPage({ t, lang, events }: { t: T; lang: Lang; events: SuEvent[] }) {
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'passed'>('all')
 
-  const visibleEvents = eventsWithStatus.filter(event => {
+  const visibleEvents = events.filter(event => {
     if (filter === 'upcoming') return event.isActive
     if (filter === 'passed') return !event.isActive
     return true
@@ -672,18 +660,19 @@ function EventsPage({ t }: { t: T }) {
         <button className={`btn-outline ${filter === 'upcoming' ? 'active' : ''}`} onClick={() => setFilter('upcoming')}>{t.upcoming}</button>
         <button className={`btn-outline ${filter === 'passed' ? 'active' : ''}`} onClick={() => setFilter('passed')}>{t.passed}</button>
       </div>
+      {events.length === 0 && <p style={{ textAlign: 'center', color: '#64748b', marginTop: 32 }}>No events yet.</p>}
       <div className="events-list">
         {visibleEvents.map((event, index) => (
           <Link key={index} to={`/events/${event.id}`} style={{ textDecoration: 'none' }}>
             <div className="event-card" style={{ cursor: 'pointer', height: '100%' }}>
               <div className="event-image-wrapper" style={{ background: `linear-gradient(135deg, ${event.color}, ${event.color}99)` }}>
-                <h3 style={{ color: 'white', fontSize: 20, fontWeight: 900, padding: '0 16px' }}>{event.name}</h3>
+                <h3 style={{ color: 'white', fontSize: 20, fontWeight: 900, padding: '0 16px' }}>{localize(event.name, lang)}</h3>
                 <span className={`event-badge ${event.isActive ? 'badge-upcoming' : 'badge-passed'}`}>
                   {event.isActive ? t.upcoming : t.passed}
                 </span>
               </div>
               <div className="event-card-body">
-                <p>📅 {event.date} &nbsp; 📍 {event.location}</p>
+                <p>📅 {event.date} &nbsp; 📍 {localize(event.location, lang)}</p>
                 <span className="event-details-link">{t.details}</span>
               </div>
             </div>
@@ -739,19 +728,28 @@ function Footer() {
 
 function App() {
   const [lang, setLang] = useState<Lang>('en')
+  const [events, setEvents] = useState<SuEvent[]>([])
   const t = translations[lang]
+
+  useEffect(() => {
+    fetch(`${API_URL}/events`)
+      .then(r => r.ok ? r.json() : [])
+      .then((data: BackendEvent[]) => setEvents(data.map(mapBackendEvent)))
+      .catch(() => {})
+  }, [])
+
   return (
     <BrowserRouter>
       <Navbar lang={lang} setLang={setLang} t={t} />
       <Routes>
         <Route path="/departments/:slug" element={<DepartmentPage t={t} lang={lang} />} />
-        <Route path="/events/:id" element={<EventPage t={t} />} />
+        <Route path="/events/:id" element={<EventPage t={t} lang={lang} events={events} />} />
         <Route path="/history" element={<HistoryPage t={t} lang={lang} />} />
         <Route path="/" element={<HomePage t={t} />} />
-        <Route path="/events" element={<EventsPage t={t} />} />
+        <Route path="/events" element={<EventsPage t={t} lang={lang} events={events} />} />
         <Route path="/polls" element={<PollsPage t={t} lang={lang} />} />
         <Route path="/donations" element={<DonationsPage t={t} />} />
-        <Route path="/admin" element={<AdminPage lang={lang} />} />
+        <Route path="/admin" element={<AdminPage lang={lang} onEventsChange={(evts) => setEvents(evts as SuEvent[])} />} />
       </Routes>
       <Footer />
     </BrowserRouter>
