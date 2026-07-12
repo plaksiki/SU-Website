@@ -170,10 +170,10 @@ UAT was conducted during the Sprint 4 review. All tests passed, but customers as
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | Alina P. | [#192](https://github.com/plaksiki/SU-Website/issues/192) | [#194](https://github.com/plaksiki/SU-Website/pull/194), [#204](https://github.com/plaksiki/SU-Website/pull/204) | 1 | - | CONTRIBUTING.md, README.md for Week 6 | - | - |
 | Bulat S | [#178](https://github.com/plaksiki/SU-Website/issues/178) | [#195](https://github.com/plaksiki/SU-Website/pull/195) | - | Local tests/deployment of the dev branch | AGENTS.md, LLM weekly report | - | - |
-| Dasha S. | [#191](https://github.com/plaksiki/SU-Website/issues/191), [#196](https://github.com/plaksiki/SU-Website/issues/196) | [#202](https://github.com/plaksiki/SU-Website/pull/202) | 0 | - | Customer Handover, architecture static view description | - | - |
+| Dasha S. | [#191](https://github.com/plaksiki/SU-Website/issues/191), [#196](https://github.com/plaksiki/SU-Website/issues/196) | [#202](https://github.com/plaksiki/SU-Website/pull/202) | - | - | Customer Handover, architecture static view description | - | - |
 | Emil G. | - | - | 1 | - | customer handover | - | - |
 | Kristina B. | [#182](https://github.com/plaksiki/SU-Website/issues/182) | [#203](https://github.com/plaksiki/SU-Website/pull/203) | - | - | Week 6 retropective | - | - |
-| Svetlana L. | [#185](https://github.com/plaksiki/SU-Website/issues/185) | - | 1 | - | Week 6 Review transcript and summary | - | - |
+| Svetlana L. | [#185](https://github.com/plaksiki/SU-Website/issues/185) | - | 2 | - | Week 6 Review transcript and summary | - | - |
 
 ---
 
