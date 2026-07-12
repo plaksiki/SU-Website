@@ -90,3 +90,52 @@
   - [#157] feat: events and departments as separate pages + grid layout fix
 
 ---
+
+## Sprint 4
+
+| Item | Details |
+|------|---------|
+| **Sprint** | Sprint 4 |
+| **Milestone** | [Sprint 4](https://github.com/plaksiki/SU-Website/milestone/16) |
+| **Dates** | Start: 2026-07-06 / Finish: 2026-07-12 |
+| **Sprint Goal** | Events and questionnaire creation and csv export of real survey results |
+
+### Focus & Outcomes
+
+- Implement SU brandbook
+- Creating of events an questionnaires from admin panel (they must be will be visble on user's page)
+
+### Planned Items
+
+- **User Stories:**
+  - [#45] US-05: Exporting questionnaire results
+
+- **Supporting PBIs:**
+  - [#191] Finish up backend
+  - [#196] Event Implementation
+  - [#179] Instructions for agents
+  - [#180] Instructions for contributers
+
+---
+
+## Sprint 5
+
+| Item | Details |
+|------|---------|
+| **Sprint** | Sprint 5 |
+| **Milestone** | [Sprint 5](https://github.com/orgs/plaksiki/projects/18) |
+| **Dates** | Start: 2026-07-13 / Finish: 2026-07-19 |
+| **Sprint Goal** | Admin panel refactoring and pages auto upadte |
+
+### Focus & Outcomes
+
+- Separate admin panel on different pages
+- Make only one csv table dowmloading per one pick
+- Continue backend structure building
+
+### Planned Items
+
+- **Supporting PBIs:**
+
+
+---

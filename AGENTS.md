@@ -4,7 +4,7 @@ Instructions for AI agents working in this repository.
 
 ## Project Structure
 
-```
+```markdown
 SU-Website/
 ├── su-frontend/        # React + TypeScript + Vite frontend
 │   └── src/
@@ -31,6 +31,7 @@ SU-Website/
 ## Running Locally
 
 ### Frontend
+
 ```bash
 cd su-frontend
 npm install
@@ -39,12 +40,14 @@ npm run build     # production build
 ```
 
 ### Backend
+
 ```bash
 cd su-backend/backend/demo
 ./mvnw spring-boot:run   # starts at http://localhost:8080
 ```
 
 ### With Docker (production)
+
 ```bash
 docker-compose -f docker-compose.prod.yml up -d
 ```
