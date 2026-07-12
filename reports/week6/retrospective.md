@@ -27,6 +27,4 @@ Based on the previous retrospective, we decided to keep a single backend develop
 ## Action points
 
 1. Redesign the admin panel
-2. Move admin log in logic to the backend
-3. Update documentation to its final state
-4. 
+2. Update documentation to its final state
