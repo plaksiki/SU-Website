@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface AnswersRepository extends JpaRepository<Answers, Long> {
         @Query("""
-        SELECT new com.example.demo.polls.dto.AnswerExportModel(
+        SELECT new com.example.demo.polls.model.AnswerExportModel(
         a.responseId,
         q.text,
         COALESCE(o.text, a.text_answer)
