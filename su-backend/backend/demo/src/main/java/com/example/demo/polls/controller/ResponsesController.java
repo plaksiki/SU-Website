@@ -59,7 +59,6 @@ public class ResponsesController {
 
         StatefulBeanToCsv<Responses> writer = new StatefulBeanToCsvBuilder<Responses>(response.getWriter())
                 .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
-                .withSeparator(',')
                 .build();
         writer.write(responses);
     }
