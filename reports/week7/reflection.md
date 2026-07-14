@@ -3,48 +3,82 @@
 ## 1. Learning Points
 
 ### Customer review and feedback:
-- 
 
-### Documentation review:
-- 
+- The team conducted a customer review session on 2026-07-17. See: [meeting summary](https://github.com/plaksiki/SU-Website/blob/main/reports/week7/sprint-review-summary.md), [transcript](https://github.com/plaksiki/SU-Website/blob/main/reports/week7/sprint-review-transcript.md).
 
-### Refining the workflow:
-- As in the previous week, we tried to organize all the documentation from the beginning of the week and distribute it to everyone according to their abilities and abilities, taking into account the presence of unforeseen situations. We also put more effort into the documentation to maintain integrity and order.
+### Documentation review
 
-### Sprint increment (MVP v3):
-- As in the previous week, we systematized and fixed all the problems related to last and current week, as well as made final amendments to improve and fix the design in some way, and edited the backend, databases and dockers. And finally structured all documentation, code and data for transfering to customer.
+**What was added/updated:**
+
+- **AGENTS.md**: Instructions for agents working inside the repository.
+- **CONTRIBUTING.md**: Instructions for anyoe who wants to contribute to the project.
+- 3 UATs connected to the admin panel items creation were added.
+- Work statuses in User stories document were updated.
+
+### Refining the workflow
+
+- Git workflow stayed the same as during Sprint 3.
+- We put more effort into the documentation: added instructions for agents and contributors, updated already existed documentation we started the project with.
+
+### Sprint increment
+
+**During the sprint we mostly did "filler" tasks that was failed before:**
+
+- Thumbor implementation to optimize photo downloading.
+- Admins log in logic written on backend.
+- Admin panel and departments view refactoring.
+- Now pages are updated when surfing between them through the website.
+- Admin log in logic performed on backend.
+- The csv. reports answers of questionnaries are available for each questionnarie.
 
 ## 2. Validated Assumptions
 
-### Documentation review:
-- 
+### Documentation review
 
-### MVP v3 and deployment:
-- The website remains deployable on the IU virtual machine — confirmed, the MVP v3 and Sprint 5 increment was successfully demonstrated to the customer on the VM.
+- We should split the tasks in the way where the person who did the technical part document about this part by himself.
+- It is better for team lead to write reflection and retrospective since she is acting in every little "department" in the team and communicate with teammates more comparing to others.
+- We learned that documentation is the way of communicating with people, which was not involved in the development proccess. It should be consice and readable so other developers/customers/investors could understand the logic and purpose of the product.
 
-### Customer feedback:
-- The overall UI design direction was confirmed by the customer as visually appealing and on the right track.
-- Finalyze all core features and documentation.
+### Deployment
+
+- The website remains deployable on the IU virtual machine — confirmed, the Sprint 5 increment was successfully demonstrated to the customer on the VM.
+- Final deployment of teh product will be done by customers' development team by forking the origin repository.
+
+### Customer feedback
+
+- The Website design is approved.
+- The architecture design decision is not good: most of logic implemented through frontend.
 
 ## 3. Friction and Gaps
 
-### Unresolved requirements:
-- No unresolved requirements.
+### Unresolved requirements
 
-### Technical risks:
-- No technical risks on this week.
+- Pages should be updated when surfing between them through the website.
 
-### Missing scope:
-- No missing scope was identified — all planned tasks for Sprint 5 were completed successfully.
+### Technical risks
 
-### Blocked work:
-- No action required.
+- Admins verification is happening on frontend, which is not safe.
 
-### Process friction:
-- No process frictions and gaps.
+### Missing scope
 
-### Uncertainties:
+- No missing scope.
+
+### Blocked work
+
+- No work was blocked.
+
+### Process friction
+
+- In some cases, PR approvals were delayed, which slightly slowed down the merging process.
+
+### Uncertainties
+
 - No uncertainties.
 
+### UAT
+
+- A new UAT session with a SU representative is planned for Sprint 5, where a fully ready-made product will be demonstrated and tested successfully.
+
 ## 4. Planned Response
-- Demonstrate and transfer final version of the product and finish the project.
+
+- Demonstrate and transfer final version of the product, finish the project and present it on 21 of July as a final exam.
