@@ -231,44 +231,69 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
   const [answers, setAnswers] = useState<Record<string, string | number | number[]>>({})
   const [submitted, setSubmitted] = useState(false)
   const [errors, setErrors] = useState<Record<string, boolean>>({})
-  const [backendPolls, setBackendPolls] = useState<BackendQuestionnaire[]>([])
+  const [backendPolls, setBackendPolls] = useState<BackendQuestionnaire[]>(() => {
+    try { return JSON.parse(localStorage.getItem('admin_questionnaires') || '[]') } catch { return [] }
+  })
   const [questions, setQuestions] = useState<BackendQuestion[]>([])
   const [options, setOptions] = useState<Record<number, BackendOption[]>>({})
-  const [loading, setLoading] = useState(true)
-  const [questionsLoading, setQuestionsLoading] = useState(false)
-  const [fetchError, setFetchError] = useState(false)
+  const [fetchError] = useState(false)
 
   useEffect(() => {
     fetch(`${API_URL}/questionnaires`)
-      .then(res => res.ok ? res.json() : [])
-      .then(data => {
-        setBackendPolls(data)
-        setLoading(false)
-      })
-      .catch(() => { setFetchError(true); setLoading(false) })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => { if (data) setBackendPolls(data) })
+      .catch(() => {})
   }, [])
 
-  const loadQuestionnaire = async (id: string) => {
-    setQuestionsLoading(true)
+  const loadQuestionnaire = (id: string) => {
+    setSelectedId(id)
     setQuestions([])
     setOptions({})
-    setSelectedId(id)
-    try {
-      const qs: BackendQuestion[] = await fetch(`${API_URL}/question/by-questionnaire/${id}`).then(r => r.json())
-      setQuestions(qs.sort((a, b) => a.orderIndex - b.orderIndex))
 
-      const optsByQuestion: Record<number, BackendOption[]> = {}
-      await Promise.all(
-        qs.filter(q => q.questionType !== 'open_text').map(async q => {
-          const opts: BackendOption[] = await fetch(`${API_URL}/options/by-question/${q.id}`).then(r => r.json())
-          optsByQuestion[q.id] = opts.sort((a, b) => a.orderIndex - b.orderIndex)
+    // Сразу из localStorage — мгновенно
+    try {
+      const cached = JSON.parse(localStorage.getItem('admin_questionnaires') || '[]')
+      const found = cached.find((q: { id: string }) => q.id === id)
+      if (found?.questions) {
+        const mapped: BackendQuestion[] = found.questions.map((q: { id: string; text: string; type: string }, i: number) => ({
+          id: Number(q.id) || i + 1,
+          questionnaireId: Number(id),
+          text: q.text,
+          questionType: q.type as 'single_choice' | 'multiple_choice' | 'open_text',
+          orderIndex: i + 1,
+        }))
+        setQuestions(mapped)
+        const optsByQuestion: Record<number, BackendOption[]> = {}
+        found.questions.forEach((q: { id: string; type: string; options: string[] }, i: number) => {
+          if (q.type !== 'open_text' && q.options?.length) {
+            optsByQuestion[Number(q.id) || i + 1] = q.options.map((text: string, j: number) => ({
+              id: j + 1,
+              questionId: Number(q.id) || i + 1,
+              text,
+              orderIndex: j + 1,
+            }))
+          }
         })
-      )
-      setOptions(optsByQuestion)
-    } catch {
-      // вопросы не загрузились
-    }
-    setQuestionsLoading(false)
+        setOptions(optsByQuestion)
+      }
+    } catch { /* ignore */ }
+
+    // Обновляем с сервера в фоне
+    fetch(`${API_URL}/question/by-questionnaire/${id}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(async (qs: BackendQuestion[] | null) => {
+        if (!qs) return
+        setQuestions(qs.sort((a, b) => a.orderIndex - b.orderIndex))
+        const optsByQuestion: Record<number, BackendOption[]> = {}
+        await Promise.all(
+          qs.filter(q => q.questionType !== 'open_text').map(async q => {
+            const opts: BackendOption[] = await fetch(`${API_URL}/options/by-question/${q.id}`).then(r => r.json())
+            optsByQuestion[q.id] = opts.sort((a, b) => a.orderIndex - b.orderIndex)
+          })
+        )
+        setOptions(optsByQuestion)
+      })
+      .catch(() => {})
   }
 
   const handleSingle = (qid: number, optionId: number) => {
@@ -357,10 +382,9 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
         <h1 style={{ fontSize: 40, fontWeight: 900, color: '#0f172a', margin: '0 0 6px' }}>{t.polls_title}</h1>
         <p style={{ color: '#64748b', fontSize: 15, margin: 0 }}>{t.polls_desc}</p>
       </div>
-      {loading && <p style={{ textAlign: 'center', color: '#64748b' }}>Loading...</p>}
       {fetchError && <p style={{ textAlign: 'center', color: '#dc2626' }}>Could not connect to server.</p>}
       <div className="polls-grid">
-        {!loading && !fetchError && backendPolls.map(poll => (
+        {backendPolls.map(poll => (
           <div key={poll.id} style={{
             background: 'white', borderRadius: 20, overflow: 'hidden',
             border: '1px solid #e8edf2', cursor: 'pointer', display: 'flex', flexDirection: 'column',
@@ -397,13 +421,6 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
           </div>
         ))}
       </div>
-    </div>
-  )
-
-  // Загружаются вопросы
-  if (questionsLoading) return (
-    <div className="container">
-      <p style={{ textAlign: 'center', color: '#64748b', marginTop: 40 }}>Loading...</p>
     </div>
   )
 
@@ -987,15 +1004,34 @@ function Footer() {
   )
 }
 
+function mapCachedEvent(e: { id: string; title: string; date: string; location: string; description: string }, idx: number): SuEvent {
+  return {
+    id: e.id,
+    name: e.title,
+    date: e.date,
+    color: EVENT_COLORS[idx % EVENT_COLORS.length],
+    location: e.location || '',
+    description: e.description || '',
+    isActive: e.date ? new Date(e.date) >= new Date() : true,
+  }
+}
+
 function App() {
   const [lang, setLang] = useState<Lang>('en')
-  const [events, setEvents] = useState<SuEvent[]>([])
+  const [events, setEvents] = useState<SuEvent[]>(() => {
+    try {
+      const cached = JSON.parse(localStorage.getItem('admin_events') || '[]')
+      return cached.map(mapCachedEvent)
+    } catch { return [] }
+  })
   const t = translations[lang]
 
   useEffect(() => {
     fetch(`${API_URL}/events`)
-      .then(r => r.ok ? r.json() : [])
-      .then((data: BackendEvent[]) => setEvents(data.map(mapBackendEvent)))
+      .then(r => r.ok ? r.json() : null)
+      .then((data: BackendEvent[] | null) => {
+        if (data) setEvents(data.map(mapBackendEvent))
+      })
       .catch(() => {})
   }, [])
 
