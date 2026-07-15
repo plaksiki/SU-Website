@@ -47,6 +47,8 @@ Website of the Innopolis University students union. This is the bussines card of
 
 ## Core Documentation
 
+- **[AGENTS.md](AGENTS.md)**
+- **[CONTRIBUTING.md](CONTRIBUTING.md)**
 - **[DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md)** — Deployment instructions
 - **[CHANGELOG.md](https://github.com/plaksiki/SU-Website/blob/main/CHANGELOG.md)** — Version history
 - **[Development Process](https://github.com/plaksiki/SU-Website/blob/main/docs/development-process.md)**
