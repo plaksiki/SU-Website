@@ -1,7 +1,5 @@
 package com.example.demo.polls.controller;
 
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.demo.polls.entity.Answers;
 import com.example.demo.polls.entity.Options;
 import com.example.demo.polls.entity.Questions;
@@ -63,13 +61,13 @@ public class AnswersController {
             @PathVariable Long questionnaireId,
             HttpServletResponse response
     ) throws IOException {
-        response.setContentType("text/csv; charset=UTF-8");
-        String filename =
-                "questionnaire_" + questionnaireId + ".csv";
+        response.setContentType("text/csv");
+        response.setCharacterEncoding("UTF-8");
         response.setHeader(
-                HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + filename + "\""
+            HttpHeaders.CONTENT_DISPOSITION,
+            "attachment; filename=\"questionnaire_" + questionnaireId + ".csv\""
         );
+        response.getWriter().write('\uFEFF');
 
         CSVWriter writer = new CSVWriter(response.getWriter());
         writer.writeNext(new String[]{
