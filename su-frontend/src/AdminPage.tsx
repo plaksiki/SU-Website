@@ -64,20 +64,24 @@ const adminTranslations = {
     q_title_placeholder: 'Questionnaire title (RU | EN)',
     q_desc_placeholder: 'Questionnaire description (RU | EN)',
     bilingual_hint: 'For bilingual support use format: Русский текст | English text',
-    add_question_label: 'Add question',
+    add_question_label: 'New question',
     question_text_placeholder: 'Question text (RU | EN)',
     type_open: 'Open answer',
     type_single: 'Single choice',
     type_multiple: 'Multiple choice',
     options_placeholder: 'Options separated by commas: Yes, No, Maybe',
-    add_question_btn: '+ Add question',
-    questions_in_draft: 'Questions in draft',
+    add_question_btn: '+ Add this question to the list below',
+    questions_in_draft: 'Questions in this questionnaire',
+    no_draft_questions: 'No questions added yet — build the first one below, it will appear here.',
     delete: 'Delete',
     create_q_btn: 'Create questionnaire',
     questionnaires_list: 'Questionnaires',
+    q_position_label: '#',
     no_questionnaires: 'No questionnaires yet.',
     confirm_delete: 'Delete this questionnaire?',
     export_btn: 'Export all to CSV',
+    export_one_btn: 'Export CSV',
+    exporting: 'Exporting…',
     form_error_fields: 'Please fill in all required fields',
     form_error_questions: 'Add at least one question',
     form_error_q_fields: 'Fill in questionnaire title and description',
@@ -113,20 +117,24 @@ const adminTranslations = {
     q_title_placeholder: 'Название опросника (РУ | EN)',
     q_desc_placeholder: 'Описание опросника (РУ | EN)',
     bilingual_hint: 'Для двуязычности используйте формат: Русский текст | English text',
-    add_question_label: 'Добавить вопрос',
+    add_question_label: 'Новый вопрос',
     question_text_placeholder: 'Текст вопроса (РУ | EN)',
     type_open: 'Развёрнутый ответ',
     type_single: 'Один вариант',
     type_multiple: 'Несколько вариантов',
     options_placeholder: 'Варианты через запятую: Да, Нет, Может быть',
-    add_question_btn: '+ Добавить вопрос',
-    questions_in_draft: 'Вопросы в опроснике',
+    add_question_btn: '+ Добавить этот вопрос в список ниже',
+    questions_in_draft: 'Вопросы в этом опроснике',
+    no_draft_questions: 'Пока нет ни одного вопроса — соберите первый ниже, он появится здесь.',
     delete: 'Удалить',
     create_q_btn: 'Создать опросник',
     questionnaires_list: 'Опросники',
+    q_position_label: '№',
     no_questionnaires: 'Опросников пока нет.',
     confirm_delete: 'Удалить опросник?',
     export_btn: 'Экспорт всех в CSV',
+    export_one_btn: 'Скачать CSV',
+    exporting: 'Экспортируем…',
     form_error_fields: 'Пожалуйста, заполните все обязательные поля',
     form_error_questions: 'Добавьте хотя бы один вопрос',
     form_error_q_fields: 'Заполните название и описание опросника',
@@ -135,9 +143,73 @@ const adminTranslations = {
 }
 
 // ============================================================================
-// CSV EXPORT (all questionnaires)
+// CSV EXPORT (общие хелперы + экспорт всех / экспорт одного опросника)
 // ============================================================================
 
+type ApiQuestion = { id: number; text: string; questionType: string }
+type ApiOption = { id: number; text: string }
+type ApiAnswer = { responseId: number; questionId: number; optionId: number | null; textAnswer?: string }
+type ApiResponse = { id: number; questionnaireId: number }
+
+// Строит CSV-строки (заголовок опросника + шапка + ответы) для ОДНОГО опросника.
+// Используется и полным экспортом (для каждого опросника по очереди),
+// и точечным экспортом одного опросника — поэтому вынесено отдельно,
+// чтобы не дублировать логику сопоставления ответов/вариантов.
+const buildCsvRowsForQuestionnaire = (
+  title: string,
+  questions: ApiQuestion[],
+  responses: ApiResponse[],
+  answers: ApiAnswer[],
+  optionsMap: Record<number, ApiOption[]>
+): string[] => {
+  const rows: string[] = []
+  rows.push(`"${title}"`)
+  rows.push(['Ответ #', ...questions.map(q => `"${q.text}"`)].join(';'))
+
+  responses.forEach((response, idx) => {
+    const responseAnswers = answers.filter(a => a.responseId === response.id)
+    const rowCells = [
+      `${idx + 1}`,
+      ...questions.map(q => {
+        const ans = responseAnswers.find(a => a.questionId === q.id)
+        if (!ans) return '""'
+        const allAnswersForQ = responseAnswers.filter(a => a.questionId === q.id && a.optionId)
+        if (allAnswersForQ.length > 1) {
+          const opts = optionsMap[q.id] || []
+          const texts = allAnswersForQ.map(a => {
+            const o = opts.find(opt => opt.id === a.optionId)
+            return o ? o.text : a.optionId
+          })
+          return `"${texts.join(', ')}"`
+        }
+        if (ans.optionId) {
+          const opts = optionsMap[q.id] || []
+          const option = opts.find(o => o.id === ans.optionId)
+          return `"${option ? option.text : ans.optionId}"`
+        }
+        return `"${ans.textAnswer || ''}"`
+      }),
+    ]
+    rows.push(rowCells.join(';'))
+  })
+
+  return rows
+}
+
+// Скачивает готовые CSV-строки как файл (BOM в начале нужен, чтобы Excel
+// правильно определил UTF-8 и не показывал кракозябры с кириллицей).
+const downloadCsv = (rows: string[], filename: string) => {
+  const csv = rows.join('\n')
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  link.click()
+  URL.revokeObjectURL(url)
+}
+
+// Экспорт ВСЕХ опросников разом (как было раньше, просто переиспользует хелперы выше)
 const exportToCSV = async (fetchErrorMsg: string) => {
   try {
     const [questionnaires, answers, responses] = await Promise.all([
@@ -146,15 +218,15 @@ const exportToCSV = async (fetchErrorMsg: string) => {
       fetch(`${API_URL}/responses`).then(r => r.json()),
     ])
 
-    const questionsMap: Record<number, { id: number; text: string }[]> = {}
-    const optionsMap: Record<number, { id: number; text: string }[]> = {}
+    const questionsMap: Record<number, ApiQuestion[]> = {}
+    const optionsMap: Record<number, ApiOption[]> = {}
 
     await Promise.all(
       questionnaires.map(async (q: { id: number }) => {
         const qs = await fetch(`${API_URL}/question/by-questionnaire/${q.id}`).then(r => r.json())
         questionsMap[q.id] = qs
         await Promise.all(
-          qs.map(async (question: { id: number; questionType: string }) => {
+          qs.map(async (question: ApiQuestion) => {
             if (question.questionType !== 'open_text') {
               const opts = await fetch(`${API_URL}/options/by-question/${question.id}`).then(r => r.json())
               optionsMap[question.id] = opts
@@ -168,54 +240,72 @@ const exportToCSV = async (fetchErrorMsg: string) => {
 
     for (const questionnaire of questionnaires) {
       const questionnaireResponses = responses.filter(
-        (r: { questionnaireId: number }) => r.questionnaireId === questionnaire.id
+        (r: ApiResponse) => r.questionnaireId === questionnaire.id
       )
-      const questionnaireQuestions = (questionsMap[questionnaire.id] || []) as { id: number; text: string }[]
+      const questionnaireQuestions = questionsMap[questionnaire.id] || []
       if (questionnaireResponses.length === 0) continue
 
       rows.push('')
-      rows.push(`"${questionnaire.title}"`)
-      const header = ['Ответ #', ...questionnaireQuestions.map((q: { text: string }) => `"${q.text}"`)].join(';')
-      rows.push(header)
-
-      questionnaireResponses.forEach((response: { id: number }, idx: number) => {
-        const responseAnswers = answers.filter((a: { responseId: number }) => a.responseId === response.id)
-        const rowCells = [
-          `${idx + 1}`,
-          ...questionnaireQuestions.map((q: { id: number }) => {
-            const ans = responseAnswers.find((a: { questionId: number }) => a.questionId === q.id)
-            if (!ans) return '""'
-            const allAnswersForQ = responseAnswers.filter(
-              (a: { questionId: number; optionId: number | null }) => a.questionId === q.id && a.optionId
-            )
-            if (allAnswersForQ.length > 1) {
-              const opts = optionsMap[q.id] || []
-              const texts = allAnswersForQ.map((a: { optionId: number }) => {
-                const o = opts.find((opt: { id: number; text: string }) => opt.id === a.optionId)
-                return o ? o.text : a.optionId
-              })
-              return `"${texts.join(', ')}"`
-            }
-            if (ans.optionId) {
-              const opts = optionsMap[q.id] || []
-              const option = opts.find((o: { id: number; text: string }) => o.id === ans.optionId)
-              return `"${option ? option.text : ans.optionId}"`
-            }
-            return `"${ans.textAnswer || ''}"`
-          }),
-        ]
-        rows.push(rowCells.join(';'))
-      })
+      rows.push(
+        ...buildCsvRowsForQuestionnaire(
+          questionnaire.title,
+          questionnaireQuestions,
+          questionnaireResponses,
+          answers,
+          optionsMap
+        )
+      )
     }
 
-    const csv = rows.join('\n')
-    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = 'answers.csv'
-    link.click()
-    URL.revokeObjectURL(url)
+    downloadCsv(rows, 'answers.csv')
+  } catch {
+    alert(fetchErrorMsg)
+  }
+}
+
+// Экспорт результатов ОДНОГО опросника по его id.
+// Опросник и его вопросы берём точечно (GET /questionnaire/{id} и
+// /question/by-questionnaire/{id}), а ответы/варианты фильтруем на фронте,
+// т.к. backend пока не отдаёт их списком с фильтром по questionnaireId.
+const exportQuestionnaireToCSV = async (
+  questionnaireId: string,
+  fallbackTitle: string,
+  fetchErrorMsg: string
+) => {
+  try {
+    const [questionnaire, questions, answers, responses] = await Promise.all([
+      fetch(`${API_URL}/questionnaire/${questionnaireId}`).then(r => r.json()),
+      fetch(`${API_URL}/question/by-questionnaire/${questionnaireId}`).then(r => r.json()),
+      fetch(`${API_URL}/answers`).then(r => r.json()),
+      fetch(`${API_URL}/responses`).then(r => r.json()),
+    ])
+
+    const optionsMap: Record<number, ApiOption[]> = {}
+    await Promise.all(
+      questions.map(async (question: ApiQuestion) => {
+        if (question.questionType !== 'open_text') {
+          const opts = await fetch(`${API_URL}/options/by-question/${question.id}`).then(r => r.json())
+          optionsMap[question.id] = opts
+        }
+      })
+    )
+
+    const questionnaireResponses = responses.filter(
+      (r: ApiResponse) => r.questionnaireId === questionnaire.id
+    )
+
+    const rows = buildCsvRowsForQuestionnaire(
+      questionnaire.title || fallbackTitle,
+      questions,
+      questionnaireResponses,
+      answers,
+      optionsMap
+    )
+
+    const safeTitle = (questionnaire.title || fallbackTitle || 'questionnaire')
+      .replace(/[^\p{L}\p{N}_-]+/gu, '_')
+      .slice(0, 60)
+    downloadCsv(rows, `${safeTitle}_${questionnaireId}.csv`)
   } catch {
     alert(fetchErrorMsg)
   }
@@ -290,6 +380,19 @@ const ADMIN_STYLES = `
   font-family: inherit;
 }
 .admin-error { color: #dc2626; font-size: 13px; margin-top: 12px; font-weight: 600; }
+.admin-btn-outline {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 14px;
+  border: 1.5px dashed #40ba21;
+  background: white;
+  color: #40ba21;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+.admin-btn-outline:hover { background: rgba(64,186,33,0.06); }
 .admin-list-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -362,6 +465,20 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   const [questionType, setQuestionType] = useState<QuestionType>('open_text')
   const [optionsInput, setOptionsInput] = useState('')
   const [qFormError, setQFormError] = useState('')
+
+  // id опросника, который сейчас экспортируется (чтобы показать "…" на кнопке
+  // и не дать нажать её повторно, пока идёт запрос к бэку)
+  const [exportingId, setExportingId] = useState<string | null>(null)
+
+  const handleExportQuestionnaire = async (qn: Questionnaire) => {
+    if (exportingId) return
+    setExportingId(qn.id)
+    try {
+      await exportQuestionnaireToCSV(qn.id, qn.title, t.fetch_error)
+    } finally {
+      setExportingId(null)
+    }
+  }
 
   const saveEvents = (list: SuEvent[]) => {
     setEvents(list)
@@ -713,6 +830,32 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
           <input type="text" className="admin-input" value={qTitle} onChange={e => setQTitle(e.target.value)} placeholder={t.q_title_placeholder} />
           <textarea className="admin-input" value={qDescription} onChange={e => setQDescription(e.target.value)} placeholder={t.q_desc_placeholder} rows={2} style={{ resize: 'vertical' }} />
 
+          {/* Список вопросов, которые УЖЕ войдут в опросник — показываем его первым и всегда,
+              чтобы было наглядно видно: то, что ты добавляешь ниже, попадает именно сюда,
+              а не создаёт отдельный опросник. */}
+          <div style={{ marginBottom: 16 }}>
+            <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>
+              {t.questions_in_draft} ({draftQuestions.length})
+            </p>
+            {draftQuestions.length === 0 && (
+              <p className="admin-hint" style={{ margin: 0 }}>{t.no_draft_questions}</p>
+            )}
+            {draftQuestions.map((q, index) => (
+              <div key={q.id} style={{
+                display: 'flex', alignItems: 'center', gap: 12,
+                padding: 12, border: '1px solid #e2e8f0', borderRadius: 12, marginBottom: 8,
+              }}>
+                <span style={{ fontSize: 14, flex: 1 }}>
+                  {index + 1}. {q.text}
+                  <span style={{ color: '#94a3b8' }}> — {typeLabel(q.type)}</span>
+                </span>
+                <button type="button" className="admin-link-btn" style={{ color: '#dc2626' }} onClick={() => handleRemoveQuestion(q.id)}>
+                  {t.delete}
+                </button>
+              </div>
+            ))}
+          </div>
+
           <div style={{ padding: 16, background: '#f8fafc', borderRadius: 12, marginBottom: 16 }}>
             <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 12 }}>{t.add_question_label}</p>
             <input type="text" className="admin-input" value={questionText} onChange={e => setQuestionText(e.target.value)} placeholder={t.question_text_placeholder} />
@@ -736,34 +879,12 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
             )}
             <button
               type="button"
-              className="admin-nav-btn active"
+              className="admin-btn-outline"
               onClick={handleAddQuestion}
             >
               {t.add_question_btn}
             </button>
           </div>
-
-          {draftQuestions.length > 0 && (
-            <div style={{ marginBottom: 16 }}>
-              <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>
-                {t.questions_in_draft} ({draftQuestions.length})
-              </p>
-              {draftQuestions.map((q, index) => (
-                <div key={q.id} style={{
-                  display: 'flex', alignItems: 'center', gap: 12,
-                  padding: 12, border: '1px solid #e2e8f0', borderRadius: 12, marginBottom: 8,
-                }}>
-                  <span style={{ fontSize: 14, flex: 1 }}>
-                    {index + 1}. {q.text}
-                    <span style={{ color: '#94a3b8' }}> — {typeLabel(q.type)}</span>
-                  </span>
-                  <button type="button" className="admin-link-btn" style={{ color: '#dc2626' }} onClick={() => handleRemoveQuestion(q.id)}>
-                    {t.delete}
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
 
           <button className="btn" onClick={handleCreateQuestionnaire} style={{ width: '100%' }}>
             {t.create_q_btn}
@@ -786,11 +907,22 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
           </div>
           {questionnaires.length === 0 && <p className="admin-hint">{t.no_questionnaires}</p>}
           <div className="admin-list-grid">
-            {questionnaires.map(qn => (
+            {questionnaires.map((qn, index) => (
               <div key={qn.id} className="admin-list-card">
                 <strong>{qn.title}</strong>
+                <p style={{ color: '#94a3b8', fontSize: 12, margin: 0 }}>
+                  {t.q_position_label} {index + 1} · ID {qn.id}
+                </p>
                 <p style={{ color: '#94a3b8', fontSize: 13, margin: 0 }}>{qn.description}</p>
                 <div className="admin-list-card-actions">
+                  <button
+                    className="admin-link-btn"
+                    style={{ color: '#40ba21' }}
+                    disabled={exportingId === qn.id}
+                    onClick={() => handleExportQuestionnaire(qn)}
+                  >
+                    {exportingId === qn.id ? t.exporting : `📥 ${t.export_one_btn}`}
+                  </button>
                   <button className="admin-link-btn" style={{ color: '#dc2626' }} onClick={() => handleDeleteQuestionnaire(qn.id)}>
                     {t.delete}
                   </button>
