@@ -2,20 +2,23 @@ package com.example.demo.polls.model;
 
 public class AnswerExportModel {
 
-    private Long answerNumber;
+    private Long responseId;
     private String question;
     private String answer;
+    private Long orderIndex;
 
-
-    public AnswerExportModel(Long answerNumber, String question, String answer) {
-        this.answerNumber = answerNumber;
+    public AnswerExportModel(Long responseId,
+                             String question,
+                             String answer,
+                             Long orderIndex) {
+        this.responseId = responseId;
         this.question = question;
         this.answer = answer;
+        this.orderIndex = orderIndex;
     }
 
-
-    public Long getAnswerNumber() {
-        return answerNumber;
+    public Long getResponseId() {
+        return responseId;
     }
 
     public String getQuestion() {
@@ -24,5 +27,9 @@ public class AnswerExportModel {
 
     public String getAnswer() {
         return answer;
+    }
+
+    public Long getOrderIndex() {
+        return orderIndex;
     }
 }
