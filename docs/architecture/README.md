@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the architecture of the Student Union Website, including **static view**, **dynamic view**, and ****deployment view.
+This document describes the architecture of the Student Union Website, including **static view**, **dynamic view**, and **deployment view**.
 
 ## Static View
 
@@ -50,15 +50,15 @@ The database is accessed only by backend modules, preventing direct dependencies
 
 **Supported:**
 
-- **QR-1 – Maintainability (Code Consistency):** The separation between frontend, backend, and persistence layers simplifies development and maintenance. The modular architecture, together with automated CI checks, helps developers modify the codebase while preserving consistency and reducing integration issues.
-- **QR-2 – Reliability (Build Stability):** The use of GitHub Actions together with a clearly separated project structure supports automated builds and continuous verification of the application before deployment.
-- **QR-6 – Functional Suitability (Questionnaire Submission):** The dedicated Questionnaire, Response, and Authorization backend modules provide a clear separation of responsibilities, making questionnaire processing easier to implement, test, and maintain.
+- **QR-1 - Maintainability (Code Consistency):** The separation between frontend, backend, and persistence layers simplifies development and maintenance. The modular architecture, together with automated CI checks, helps developers modify the codebase while preserving consistency and reducing integration issues.
+- **QR-2 - Reliability (Build Stability):** The use of GitHub Actions together with a clearly separated project structure supports automated builds and continuous verification of the application before deployment.
+- **QR-6 - Functional Suitability (Questionnaire Submission):** The dedicated Questionnaire, Response, and Authorization backend modules provide a clear separation of responsibilities, making questionnaire processing easier to implement, test, and maintain.
 
 **Constrained:**
 
-- **QR-3 – Performance Efficiency (Bundle Size):** As additional frontend pages and features are introduced, the application bundle may continue to grow. The current architecture does not yet include techniques such as code splitting or lazy loading to minimize bundle size.
-- **QR-4 – Usability (Mobile Responsiveness):** While the frontend is designed to support responsive layouts, maintaining responsiveness across all pages will require continuous development and testing as new UI components are added.
-- **QR-5 – Usability (Language Switching):** The centralized translation mechanism supports multilingual content, but every newly added page and UI element must be integrated with the translation system to ensure complete language coverage.
+- **QR-3 - Performance Efficiency (Bundle Size):** As additional frontend pages and features are introduced, the application bundle may continue to grow. The current architecture does not yet include techniques such as code splitting or lazy loading to minimize bundle size.
+- **QR-4 - Usability (Mobile Responsiveness):** While the frontend is designed to support responsive layouts, maintaining responsiveness across all pages will require continuous development and testing as new UI components are added.
+- **QR-5 - Usability (Language Switching):** The centralized translation mechanism supports multilingual content, but every newly added page and UI element must be integrated with the translation system to ensure complete language coverage.
 
 
 ## Dynamic View
