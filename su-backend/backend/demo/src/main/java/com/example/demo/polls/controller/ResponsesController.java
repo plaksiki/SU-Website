@@ -41,26 +41,4 @@ public class ResponsesController {
     public List<Responses> getAllResponses() {
         return repository.findAll();
     }
-    @GetMapping("/responses/csv/{questionnaireId}")
-    public void getResponsesCsvByQuestionnaireId(
-            @PathVariable Long questionnaireId,
-            HttpServletResponse response) throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
-
-        List<Responses> responses = repository.findByQuestionnaireId(questionnaireId);
-        if (responses.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            response.getWriter().write("No responses found for questionnaire ID: " + questionnaireId);
-            return;
-        }
-        response.setContentType("text/csv");
-        String filename = "responses_questionnaire_" + questionnaireId + ".csv";
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + filename + "\"");
-
-        StatefulBeanToCsv<Responses> writer = new StatefulBeanToCsvBuilder<Responses>(response.getWriter())
-                .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
-                .withSeparator(',')
-                .build();
-        writer.write(responses);
-    }
 }
