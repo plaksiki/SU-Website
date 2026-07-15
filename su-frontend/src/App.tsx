@@ -1027,12 +1027,22 @@ function App() {
   const t = translations[lang]
 
   useEffect(() => {
-    fetch(`${API_URL}/events`)
-      .then(r => r.ok ? r.json() : null)
-      .then((data: BackendEvent[] | null) => {
-        if (data) setEvents(data.map(mapBackendEvent))
-      })
-      .catch(() => {})
+    // загружаем сразу при монтировании, а потом периодически перезапрашиваем,
+    // чтобы isActive пересчитывался заново и событие, у которого кончился дедлайн,
+    // само переехало в «Прошедшие», без обновления страницы вручную.
+    const loadEvents = () => {
+      fetch(`${API_URL}/events`)
+        .then(r => r.ok ? r.json() : null)
+        .then((data: BackendEvent[] | null) => {
+          if (data) setEvents(data.map(mapBackendEvent))
+        })
+        .catch(() => {})
+    }
+
+    loadEvents()
+    const intervalId = setInterval(loadEvents, 60_000) // каждую минуту пересчитываем, кто сейчас актуален, а кто уже прошел
+
+    return () => clearInterval(intervalId)
   }, [])
 
   return (
