@@ -1,14 +1,13 @@
 package com.example.demo.polls.controller;
+
 import org.springframework.web.bind.annotation.RestController;
+
 import com.example.demo.polls.entity.Answers;
-import com.example.demo.polls.entity.Responses;
-import com.example.demo.polls.model.AnswerExportModel;
+import com.example.demo.polls.entity.Options;
+import com.example.demo.polls.entity.Questions;
 import com.example.demo.polls.repository.AnswersRepository;
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import com.example.demo.polls.repository.OptionsRepository;
+import com.example.demo.polls.repository.QuestionsRepository;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -17,58 +16,87 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+
+import com.opencsv.CSVWriter;
+
 
 @RestController
 public class AnswersController {
-    private final AnswersRepository repository;
 
-    public AnswersController (AnswersRepository repository) {
-        this.repository = repository;
+    private final AnswersRepository answersRepository;
+    private final QuestionsRepository questionsRepository;
+    private final OptionsRepository optionsRepository;
+
+
+    public AnswersController(
+            AnswersRepository answersRepository,
+            QuestionsRepository questionsRepository,
+            OptionsRepository optionsRepository) {
+
+        this.answersRepository = answersRepository;
+        this.questionsRepository = questionsRepository;
+        this.optionsRepository = optionsRepository;
     }
+
+
     @GetMapping("/answers/{id}")
-    public Optional<Answers> getOptions(@PathVariable Long id) {
-        return repository.findById(id);
+    public Optional<Answers> getAnswer(@PathVariable Long id) {
+        return answersRepository.findById(id);
     }
+
+
     @PostMapping("/answers")
     public Answers createAnswer(@RequestBody Answers entity) {
-        return repository.save(entity);
+        return answersRepository.save(entity);
     }
+
+
     @GetMapping("/answers")
     public List<Answers> getAllAnswers() {
-        return repository.findAll();
+        return answersRepository.findAll();
     }
+
+
     @GetMapping("/answers/csv/{questionnaireId}")
     public void exportAnswers(
             @PathVariable Long questionnaireId,
             HttpServletResponse response
     ) throws IOException {
-        List<AnswerExportModel> answers =
-                repository.exportAnswers(questionnaireId);
-
         response.setContentType("text/csv; charset=UTF-8");
         String filename =
                 "questionnaire_" + questionnaireId + ".csv";
-
         response.setHeader(
                 HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + filename + "\""
         );
-        CSVWriter writer =
-                new CSVWriter(response.getWriter());
+
+        CSVWriter writer = new CSVWriter(response.getWriter());
         writer.writeNext(new String[]{
-                "Ответ #",
-                "Вопрос",
-                "Ответ"
+                "Response ID",
+                "Question",
+                "Answer"
         });
-        for (AnswerExportModel answer : answers) {
+        List<Answers> answers = answersRepository.findAll();
+        for (Answers answer : answers) {
+            Questions question = questionsRepository.findById(answer.getQuestionId()).orElse(null);
+            if (question == null) {
+                continue;
+            }
+            if (!question.getQuestionnaireId().equals(questionnaireId)) {
+                continue;
+            }
+            String answerText;
+            if (answer.getOptionId() != null) {
+                Options option = optionsRepository.findById(answer.getOptionId()) .orElse(null);
+                answerText = option != null ? option.getText() : "";
+            } else {
+                answerText = answer.getTextAnswer() != null ? answer.getTextAnswer() : "";
+            }
             writer.writeNext(new String[]{
-                    String.valueOf(answer.getAnswerNumber()),
-                    answer.getQuestion(),
-                    answer.getAnswer()
+                    String.valueOf(answer.getResponseId()),
+                    question.getText(),
+                    answerText
             });
         }
         writer.close();
