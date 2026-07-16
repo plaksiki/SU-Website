@@ -7,6 +7,12 @@ import { useNavigate } from 'react-router-dom'
 const deptImages = import.meta.glob('./assets/**/*', { eager: true, query: '?url', import: 'default' }) as Record<string, string>
 function getPhoto(path: string): string | undefined { return deptImages[path] }
 
+function thumborUrl(src: string, width: number, height: number): string {
+  if (!src || import.meta.env.DEV) return src
+  const fullSrc = src.startsWith('http') ? src : `${window.location.origin}${src}`
+  return `/thumbor/unsafe/${width}x${height}/${fullSrc}`
+}
+
 const API_URL = 'http://10.93.26.192:8080'
 
 const translations = {
@@ -106,6 +112,8 @@ interface SuEvent {
   location: string
   description: string
   isActive?: boolean
+  photoUrls?: string[]
+  galleryUrl?: string
 }
 
 interface BackendEvent {
@@ -115,6 +123,8 @@ interface BackendEvent {
   eventTime: string
   eventLocation: string
   finishedAt: string | null
+  photoUrls?: string | null
+  galleryUrl?: string | null
 }
 
 const EVENT_COLORS = ['#16a34a', '#0891b2', '#7c3aed', '#dc2626', '#d97706', '#0d9488']
@@ -129,6 +139,8 @@ function mapBackendEvent(e: BackendEvent, idx: number): SuEvent {
     location: e.eventLocation || '',
     description: e.description || '',
     isActive: e.finishedAt ? new Date(e.finishedAt) >= new Date() : (date ? new Date(date) >= new Date() : true),
+    photoUrls: e.photoUrls ? e.photoUrls.split('\n').map(s => s.trim()).filter(s => s) : [],
+    galleryUrl: e.galleryUrl || '',
   }
 }
 
@@ -489,7 +501,7 @@ const DEPT_ACCENTS: Record<string, string> = {
 }
 
 function MemberModal({ member, slug, onClose }: { member: Member; slug: string; onClose: () => void }) {
-  const photo = member.photo ? getPhoto(member.photo) : undefined
+  const photo = member.photo ? thumborUrl(getPhoto(member.photo) || '', 200, 200) || undefined : undefined
   const accent = DEPT_ACCENTS[slug] || 'linear-gradient(135deg, #40ba21, #166534)'
   const isIntern = member.role === 'Intern'
   return (
@@ -627,7 +639,7 @@ function DepartmentPage({ t }: { t: T; lang?: Lang }) {
 }
 
 function MemberCard({ member, slug, onClick }: { member: Member; slug: string; onClick: () => void }) {
-  const photo = member.photo ? getPhoto(member.photo) : undefined
+  const photo = member.photo ? thumborUrl(getPhoto(member.photo) || '', 200, 200) || undefined : undefined
   const hasBio = !!member.bio
   const isIntern = member.role === 'Intern'
   const accent = DEPT_ACCENTS[slug] || '#40ba21'
@@ -743,7 +755,7 @@ function HomePage({ t }: { t: T }) {
       </div>
       <div style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 48 }}>
         {ceoMembers.map((m, i) => {
-          const photo = m.photo ? getPhoto(m.photo) : undefined
+          const photo = m.photo ? thumborUrl(getPhoto(m.photo) || '', 200, 200) || undefined : undefined
           return (
             <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
               {photo
@@ -854,6 +866,41 @@ function EventPage({ t, lang, events }: { t: T; lang: Lang; events: SuEvent[] })
           <div style={{ padding: '32px 40px' }}>
             <p style={{ color: '#475569', fontSize: 16, lineHeight: 1.8, margin: 0 }}>{localize(event.description, lang)}</p>
           </div>
+          {/* Галерея — только для прошедших ивентов */}
+          {!event.isActive && ((event.photoUrls && event.photoUrls.length > 0) || event.galleryUrl) && (
+            <div style={{ padding: '0 40px 40px' }}>
+              <h3 style={{ fontSize: 18, fontWeight: 800, color: '#0f172a', marginBottom: 16 }}>
+                {lang === 'en' ? 'Photos' : 'Фотографии'}
+              </h3>
+              {event.photoUrls && event.photoUrls.length > 0 && (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12, marginBottom: 16 }}>
+                  {event.photoUrls.map((url, i) => (
+                    <a key={i} href={url} target="_blank" rel="noopener noreferrer">
+                      <img
+                        src={thumborUrl(url, 600, 400)}
+                        alt=""
+                        style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', borderRadius: 12, border: '1px solid #e2e8f0', display: 'block' }}
+                        onError={e => { (e.currentTarget as HTMLImageElement).src = url }}
+                      />
+                    </a>
+                  ))}
+                </div>
+              )}
+              {event.galleryUrl && (
+                <a
+                  href={event.galleryUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 8,
+                    color: '#40ba21', fontWeight: 700, fontSize: 14, textDecoration: 'none',
+                  }}
+                >
+                  📷 {lang === 'en' ? 'View all photos →' : 'Все фотографии →'}
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -1004,7 +1051,7 @@ function Footer() {
   )
 }
 
-function mapCachedEvent(e: { id: string; title: string; date: string; location: string; description: string }, idx: number): SuEvent {
+function mapCachedEvent(e: { id: string; title: string; date: string; location: string; description: string; photoUrls?: string; galleryUrl?: string }, idx: number): SuEvent {
   return {
     id: e.id,
     name: e.title,
@@ -1013,6 +1060,8 @@ function mapCachedEvent(e: { id: string; title: string; date: string; location: 
     location: e.location || '',
     description: e.description || '',
     isActive: e.date ? new Date(e.date) >= new Date() : true,
+    photoUrls: e.photoUrls ? e.photoUrls.split('\n').map(s => s.trim()).filter(s => s) : [],
+    galleryUrl: e.galleryUrl || '',
   }
 }
 
