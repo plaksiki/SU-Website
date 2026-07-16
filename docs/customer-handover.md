@@ -2,9 +2,9 @@
 
 ## Product Status & Handover Scope
 
-- **What this covers:** The web portal of the Innopolis University Students Union (SU) - the "business card" of SU and the interaction bridge between SU members and university students. Covers frontend (React/TypeScript), backend (Java), and database (PostgreSQL).
+- **What this covers:** The web portal of the Innopolis University Students Union (SU) - the "business card" of SU and the interaction bridge between SU members and university students. Covers frontend (TypeScript), backend (Java), and database (PostgreSQL).
 - **What is NOT covered:** A mobile app - does not exist and is not part of the current project scope.
-- **Current state in one paragraph:** The current release is MVP v2.1.0 (2026-07-12, per CHANGELOG.md) - a React frontend paired with a Java Spring Boot backend, deployed via Docker Compose on the production VM 10.93.26.192. v2.1.0 added the SU Brandbook and fixed polls/events created from the admin panel not appearing on the site pages.
+- **Current state in one paragraph:** The current release is MVP v2.1.0 (2026-07-12, per CHANGELOG.md) - a TypeScript frontend paired with a Java Spring Boot backend, deployed via Docker Compose on the production VM 10.93.26.192. v2.1.0 added the SU Brandbook and fixed polls/events created from the admin panel not appearing on the site pages.
 
 ## Transition Scope
 
@@ -13,7 +13,7 @@
 | github.com/plaksiki/SU-Website | Repository | Transferred | Public repository, MIT license; GitHub account owner is `plaksiki`, not the SU directly |
 | Production VM (`10.93.26.192`) | Deployment | Transfered | SSH access as `root`; dev team currently holds root access |
 | su-backend (Spring Boot) | Service | Retained by dev team | Deployed via `docker-compose.prod.yml` |
-| su-frontend (React/TS) | Service | Retained by dev team | Deployed via `docker-compose.prod.yml` |
+| su-frontend (TS) | Service | Retained by dev team | Deployed via `docker-compose.prod.yml` |
 | PostgreSQL instance | Service | Retained by dev team | Port 5432, configured via `.env` |
 | GitHub Actions CI/CD (`.github/workflows`) | Ownership | Retained by dev team | Pipeline configuration stays with developers |
 | Netlify deployment of MVP v0 | Deployment | Deprecated | https://innopolissu.netlify.app/ - test development |
