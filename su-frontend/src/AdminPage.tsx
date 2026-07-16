@@ -802,9 +802,9 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
           </div>
           {events.length === 0 && <p className="admin-hint">{t.no_events}</p>}
           <div className="admin-list-grid">
-            {events.map(event => (
+            {events.map((event, index) => (
               <div key={event.id} className="admin-list-card">
-                <strong>{event.title}</strong>
+                <strong>{index + 1}. {event.title}</strong>
                 <p style={{ color: '#94a3b8', fontSize: 13, margin: 0 }}>
                   {event.date}{event.location && ` · ${event.location}`}
                 </p>
@@ -911,7 +911,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
               <div key={qn.id} className="admin-list-card">
                 <strong>{qn.title}</strong>
                 <p style={{ color: '#94a3b8', fontSize: 12, margin: 0 }}>
-                  {t.q_position_label} {index + 1} · ID {qn.id}
+                  {t.q_position_label} {index + 1}
                 </p>
                 <p style={{ color: '#94a3b8', fontSize: 13, margin: 0 }}>{qn.description}</p>
                 <div className="admin-list-card-actions">
