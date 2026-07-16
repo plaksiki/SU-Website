@@ -24,12 +24,11 @@
 
 **During the sprint we mostly did "filler" tasks that was failed before:**
 
-- Thumbor implementation to optimize photo downloading.
-- Admins log in logic written on backend.
+- More fast photo upload.
+- Polls now can be uploaded seperately in csv format.
 - Admin panel and departments view refactoring.
 - Now pages are updated when surfing between them through the website.
-- Admin log in logic performed on backend.
-- The csv. reports answers of questionnaries are available for each questionnarie.
+- Polls and Events can be changed.
 
 ## 2. Validated Assumptions
 
@@ -48,16 +47,19 @@
 
 - The Website design is approved.
 - The architecture design decision is not good: most of logic implemented through frontend.
+- No catching of exceptions are in the system.
 
 ## 3. Friction and Gaps
 
 ### Unresolved requirements
 
-- Pages should be updated when surfing between them through the website.
+- Thumbor implementation to optimize photo downloading.
+- Unsuccessful responses are not proceed.
 
 ### Technical risks
 
 - Admins verification is happening on frontend, which is not safe.
+- Unsuccessful responses can occur errors and the website should handle it.
 
 ### Missing scope
 
