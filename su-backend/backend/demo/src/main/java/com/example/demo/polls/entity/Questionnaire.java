@@ -16,6 +16,7 @@ public class Questionnaire {
     @Id
     private Long id;
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String description;
     @Column(name = "started_at")
     private LocalDateTime startedAt;

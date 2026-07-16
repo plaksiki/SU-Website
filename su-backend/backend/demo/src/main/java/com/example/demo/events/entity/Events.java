@@ -16,6 +16,7 @@ public class Events {
     @Id
     private Long id;
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String description;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
