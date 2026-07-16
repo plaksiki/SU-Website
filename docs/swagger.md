@@ -4,7 +4,7 @@
 
 Swagger provides an interactive API documentation for the SU Website backend. It automatically generates documentation from the Spring Boot application, so the documentation is always synchronized with the current implementation of the REST API.
 
-The documentation allows developers, testers, and project owners to:
+**The documentation allows developers, testers, and project owners to:**
 
 - explore all available REST endpoints;
 - view request methods (GET, POST, DELETE);
@@ -20,12 +20,12 @@ Endpoints are grouped by controllers (for example, `questionnaire-controller`, `
 
 ### Links
 
-Swagger UI (interactive documentation): [link](http://10.93.26.192:8080/swagger-ui/index.html)  
-OpenAPI specification (JSON): [link](http://10.93.26.192:8080/v3/api-docs)  
+[Swagger UI (interactive documentation)](http://10.93.26.192:8080/swagger-ui/index.html)  
+[OpenAPI specification (JSON)](http://10.93.26.192:8080/v3/api-docs)  
 
 ### Instructions
 
-1. Open the Swagger UI using the link above.
+1. Open the [Swagger UI](http://10.93.26.192:8080/swagger-ui/index.html)  .
 2. Browse the list of controllers on the main page.
 3. Expand the controller that contains the endpoint you want to inspect.
 4. Click on an endpoint to view:
