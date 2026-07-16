@@ -1,10 +1,10 @@
 services:
   backend:
     image: su-backend
-    build: 
+    build:
       context: ./su-backend
     depends_on:
-        db: 
+        db:
           condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME}
@@ -27,9 +27,11 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
-        
+
   db:
     image: postgres:16.0
+    ports:
+    - "5432:5432"
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_USER: ${DB_USER}
@@ -44,6 +46,6 @@ services:
       - db_data:/var/lib/postgresql/data
       - ./su-backend/migrations:/docker-entrypoint-initdb.d
     restart: unless-stopped
-  
+
 volumes:
   db_data:
