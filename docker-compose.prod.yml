@@ -8,6 +8,11 @@ services:
       ALLOW_UNSAFE_URL: "True"
       MAX_WIDTH: 1920
       MAX_HEIGHT: 1080
+      RESULT_STORAGE: thumbor.result_storages.file_storage
+      RESULT_STORAGE_FILE_STORAGE_ROOT_PATH: /data/result_storage
+      RESULT_STORAGE_EXPIRATION_SECONDS: 604800
+    volumes:
+      - thumbor_cache:/data/result_storage
     restart: unless-stopped
 
   backend:
@@ -60,3 +65,4 @@ services:
 
 volumes:
   db_data:
+  thumbor_cache:
