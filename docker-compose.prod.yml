@@ -1,6 +1,6 @@
 services:
   thumbor:
-    image: minimalcompact/thumbor
+    image: ghcr.io/thumbor/thumbor:latest
     container_name: su-thumbor
     ports:
       - "8888:8888"
