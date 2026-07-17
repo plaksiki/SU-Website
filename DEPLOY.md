@@ -22,7 +22,7 @@ This setup is deployed on a production VM with the following details:
 
 ```bash
 git clone https://github.com/plaksiki/SU-Website.git
-cd SU-Website
+cd /SU-Website
 ```
 
 2. **Copy environment variables**
