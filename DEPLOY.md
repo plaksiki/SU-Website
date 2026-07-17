@@ -10,6 +10,7 @@
   - [📦 Deploy from Scratch](#-deploy-from-scratch)
     - [Prerequisites](#prerequisites)
     - [Steps](#steps)
+  - [🔒 Security Notes](#-security-notes)
   - [🔄 Update Deployed Version](#-update-deployed-version)
   - [Health test](#health-test)
   - [Connection DB to Spring Boot](#connection-db-to-spring-boot)
@@ -42,6 +43,14 @@ This setup is currently deployed on a production VM with the following details:
 
 - Docker and Docker Compose installed
 - Ports 80, 5432, 8080, 8888 available
+
+## 🔒 Security Notes
+- PostgreSQL port (5432) must not be exposed to the public internet.
+  In `docker-compose.prod.yml`, it should either be bound to 
+  `127.0.0.1:5432:5432`, or not published at all — the backend connects 
+  to the database via the internal Docker network name `db:5432`.
+- Before deploying, verify: `curl your-vm-ip:5432` from an external 
+  machine should fail/hang.
 
 ### Steps
 
