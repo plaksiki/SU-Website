@@ -191,6 +191,8 @@ HTTP 200
 ===================================
 ```
 
+---
+
 ## Connection DB to Spring Boot
 
 ```properties
