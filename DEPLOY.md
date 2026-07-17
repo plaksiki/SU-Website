@@ -42,7 +42,8 @@ This setup is currently deployed on a production VM with the following details:
 ### Prerequisites
 
 - Docker and Docker Compose installed
-- Ports 80, 5432, 8080, 8888 available
+- Ports 80, 8080, 8888 available externally
+- Port 5432 used internally only (see Security Notes below)
 
 ## 🔒 Security Notes
 - PostgreSQL port (5432) must not be exposed to the public internet.
