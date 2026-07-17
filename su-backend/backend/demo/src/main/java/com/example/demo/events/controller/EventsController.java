@@ -41,7 +41,6 @@ public class EventsController {
         Optional<Events> optional = repository.findById(id);
         if (optional.isPresent()) {
             Events event = optional.get();
-            event.setCreatedAt(entity.getCreatedAt());
             event.setDescription(entity.getDescription());
             event.setEventLocation(entity.getEventLocation());
             event.setEventTime(entity.getEventTime());
