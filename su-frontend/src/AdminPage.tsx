@@ -13,6 +13,8 @@ interface SuEvent {
   date: string
   location: string
   description: string
+  photoUrls?: string
+  galleryUrl?: string
 }
 
 interface Question {
@@ -57,6 +59,13 @@ const adminTranslations = {
     event_bilingual_hint: 'For bilingual support use format: Русский | English',
     event_start_date: 'Start date',
     event_end_date: 'End date (when it moves to "Past")',
+    event_photos_placeholder: 'Photo URLs (one per line)',
+    event_photos_hint: 'Paste photo URLs here — one per line. They will appear as a gallery on the event page.',
+    event_gallery_placeholder: 'Link to full photo album (e.g. Yandex Disk)',
+    edit: 'Edit',
+    save: 'Save changes',
+    edit_event: 'Edit Event',
+    cancel: 'Cancel',
     event_list: 'Events',
     no_events: 'No events yet.',
     confirm_delete_event: 'Delete this event?',
@@ -110,6 +119,13 @@ const adminTranslations = {
     event_bilingual_hint: 'Для двуязычности используйте формат: Русский | English',
     event_start_date: 'Дата начала',
     event_end_date: 'Дата окончания (когда перейдёт в «Прошедшие»)',
+    event_photos_placeholder: 'Ссылки на фото (по одной на строку)',
+    event_photos_hint: 'Вставьте ссылки на фото — по одной на строку. Они покажутся галереей на странице ивента.',
+    event_gallery_placeholder: 'Ссылка на полный альбом (например, Яндекс Диск)',
+    edit: 'Редактировать',
+    save: 'Сохранить',
+    edit_event: 'Редактировать событие',
+    cancel: 'Отмена',
     event_list: 'Список событий',
     no_events: 'Событий пока нет.',
     confirm_delete_event: 'Удалить это событие?',
@@ -455,7 +471,19 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   const [newLocation, setNewLocation] = useState('')
   const [newDescription, setNewDescription] = useState('')
   const [newFinishedAt, setNewFinishedAt] = useState('')
+  const [newPhotoUrls, setNewPhotoUrls] = useState('')
+  const [newGalleryUrl, setNewGalleryUrl] = useState('')
   const [eventFormError, setEventFormError] = useState('')
+
+  // Edit state
+  const [editingEvent, setEditingEvent] = useState<SuEvent | null>(null)
+  const [editTitle, setEditTitle] = useState('')
+  const [editLocation, setEditLocation] = useState('')
+  const [editDescription, setEditDescription] = useState('')
+  const [editDate, setEditDate] = useState('')
+  const [editFinishedAt, setEditFinishedAt] = useState('')
+  const [editPhotoUrls, setEditPhotoUrls] = useState('')
+  const [editGalleryUrl, setEditGalleryUrl] = useState('')
 
   // Questionnaire create form
   const [qTitle, setQTitle] = useState('')
@@ -571,6 +599,8 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
       date: newDate.split('T')[0],
       location: newLocation,
       description: newDescription,
+      photoUrls: newPhotoUrls.trim() || undefined,
+      galleryUrl: newGalleryUrl.trim() || undefined,
     }
 
     // Обновляем UI сразу, не ждём сервер
@@ -580,6 +610,8 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
     setNewLocation('')
     setNewDescription('')
     setNewFinishedAt('')
+    setNewPhotoUrls('')
+    setNewGalleryUrl('')
     setView('event_list')
 
     // Отправляем на сервер в фоне
@@ -592,6 +624,8 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
         eventTime: new Date(newDate).toISOString().replace('Z', ''),
         eventLocation: newLocation,
         finishedAt: newFinishedAt ? new Date(newFinishedAt).toISOString().replace('Z', '') : null,
+        photoUrls: newPhotoUrls.trim() || null,
+        galleryUrl: newGalleryUrl || null,
       }),
     }).then(() => refreshEvents()).catch(() => {})
   }
@@ -600,6 +634,45 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
     if (!confirm(t.confirm_delete_event)) return
     saveEvents(events.filter(e => e.id !== id))
     fetch(`${API_URL}/event/${id}`, { method: 'DELETE' }).catch(() => {})
+  }
+
+  const handleStartEdit = (event: SuEvent) => {
+    setEditingEvent(event)
+    setEditTitle(event.title)
+    setEditLocation(event.location)
+    setEditDescription(event.description)
+    setEditDate(event.date ? `${event.date}T00:00` : '')
+    setEditFinishedAt('')
+    setEditPhotoUrls(event.photoUrls || '')
+    setEditGalleryUrl(event.galleryUrl || '')
+  }
+
+  const handleSaveEdit = () => {
+    if (!editingEvent) return
+    const updated: SuEvent = {
+      ...editingEvent,
+      title: editTitle,
+      location: editLocation,
+      description: editDescription,
+      date: editDate ? editDate.split('T')[0] : editingEvent.date,
+      photoUrls: editPhotoUrls.trim() || undefined,
+      galleryUrl: editGalleryUrl.trim() || undefined,
+    }
+    saveEvents(events.map(e => e.id === updated.id ? updated : e))
+    fetch(`${API_URL}/event/${editingEvent.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: editTitle,
+        description: editDescription,
+        eventTime: editDate ? new Date(editDate).toISOString().replace('Z', '') : null,
+        eventLocation: editLocation,
+        finishedAt: editFinishedAt ? new Date(editFinishedAt).toISOString().replace('Z', '') : null,
+        photoUrls: editPhotoUrls.trim() || null,
+        galleryUrl: editGalleryUrl.trim() || null,
+      }),
+    }).catch(() => {})
+    setEditingEvent(null)
   }
 
   // ========== QUESTION HANDLERS ==========
@@ -801,6 +874,31 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
             <button className="admin-nav-btn" onClick={refreshEvents}>{t.refresh_btn}</button>
           </div>
           {events.length === 0 && <p className="admin-hint">{t.no_events}</p>}
+          {/* Edit modal */}
+          {editingEvent && (
+            <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+              <div style={{ background: 'white', borderRadius: 24, padding: 32, width: '100%', maxWidth: 520, maxHeight: '90vh', overflowY: 'auto' }}>
+                <h3 style={{ marginBottom: 16 }}>{t.edit_event}</h3>
+                <p className="admin-hint">{t.event_bilingual_hint}</p>
+                <input type="text" className="admin-input" value={editTitle} onChange={e => setEditTitle(e.target.value)} placeholder={t.event_title_placeholder} />
+                <input type="text" className="admin-input" value={editLocation} onChange={e => setEditLocation(e.target.value)} placeholder={t.event_location_placeholder} />
+                <textarea className="admin-input" value={editDescription} onChange={e => setEditDescription(e.target.value)} placeholder={t.event_description_placeholder} rows={3} style={{ resize: 'vertical' }} />
+                <p className="admin-field-label">{t.event_start_date}</p>
+                <input type="datetime-local" className="admin-input" value={editDate} onChange={e => setEditDate(e.target.value)} max="9999-12-31T23:59" />
+                <p className="admin-field-label">{t.event_end_date}</p>
+                <input type="datetime-local" className="admin-input" value={editFinishedAt} onChange={e => setEditFinishedAt(e.target.value)} max="9999-12-31T23:59" />
+                <p className="admin-field-label">{t.event_photos_placeholder}</p>
+                <p className="admin-hint">{t.event_photos_hint}</p>
+                <textarea className="admin-input" value={editPhotoUrls} onChange={e => setEditPhotoUrls(e.target.value)} placeholder={t.event_photos_placeholder} rows={3} style={{ resize: 'vertical' }} />
+                <input type="text" className="admin-input" value={editGalleryUrl} onChange={e => setEditGalleryUrl(e.target.value)} placeholder={t.event_gallery_placeholder} />
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <button className="btn" onClick={handleSaveEdit} style={{ flex: 1 }}>{t.save}</button>
+                  <button className="admin-nav-btn" onClick={() => setEditingEvent(null)} style={{ flex: 1 }}>{t.cancel}</button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="admin-list-grid">
             {events.map((event, index) => (
               <div key={event.id} className="admin-list-card">
@@ -810,6 +908,9 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
                 </p>
                 {event.description && <p style={{ fontSize: 14, margin: 0 }}>{event.description}</p>}
                 <div className="admin-list-card-actions">
+                  <button className="admin-link-btn" style={{ color: '#40ba21' }} onClick={() => handleStartEdit(event)}>
+                    {t.edit}
+                  </button>
                   <button className="admin-link-btn" style={{ color: '#dc2626' }} onClick={() => handleDeleteEvent(event.id)}>
                     {t.delete}
                   </button>
