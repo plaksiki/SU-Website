@@ -1,8 +1,6 @@
 package com.example.demo.polls.controller;
 
 import com.example.demo.polls.entity.Answers;
-import com.example.demo.polls.entity.Options;
-import com.example.demo.polls.entity.Questions;
 import com.example.demo.polls.model.AnswerExportModel;
 import com.example.demo.polls.repository.AnswersRepository;
 import com.example.demo.polls.repository.OptionsRepository;
@@ -27,8 +25,6 @@ import com.opencsv.CSVWriter;
 public class AnswersController {
 
     private final AnswersRepository answersRepository;
-    private final QuestionsRepository questionsRepository;
-    private final OptionsRepository optionsRepository;
 
 
     public AnswersController(
@@ -37,8 +33,6 @@ public class AnswersController {
             OptionsRepository optionsRepository) {
 
         this.answersRepository = answersRepository;
-        this.questionsRepository = questionsRepository;
-        this.optionsRepository = optionsRepository;
     }
 
 

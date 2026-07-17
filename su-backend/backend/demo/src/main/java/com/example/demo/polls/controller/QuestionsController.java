@@ -1,7 +1,6 @@
 package com.example.demo.polls.controller;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.polls.entity.Questionnaire;
 import com.example.demo.polls.entity.Questions;
 import com.example.demo.polls.repository.QuestionsRepository;
 

@@ -2,20 +2,11 @@ package com.example.demo.polls.controller;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.polls.entity.Responses;
 import com.example.demo.polls.repository.ResponsesRepository;
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
-import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
