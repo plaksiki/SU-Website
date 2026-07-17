@@ -195,11 +195,11 @@ const getDepartments = (t: T) => [
     id: 3, slug: "su-media", name: "SU Media", tag: "SU.MEDIA", icon: "📸", description: t.dept_media_desc,
     members: [
       { name: "Silvia Fedorovskaya", role: "COO", photo: "./assets/Media/Silvia.jpg", bio: "My name is Silvia; I love creating content and I'm the COO of SU:Media. I joined the Student Union to cover our activities in the media, raise our profile and gain experience. I'm also involved with Innopolis City Media and act as the SMM ambassador coordinator." },
-      { name: "Egor Lesnykh", role: "Assistant", photo: "./assets/Media/Egor(1).jpg", bio: "Hey, I'm Egor, a first-year bachelor student. I've recently joined SU:Media because I'm really astonished by video content and social medias. My goal is to provide students and other people info about our SU in a visual-catchy way." },
+      { name: "Egor Lesnykh", role: "Assistant", photo: "./assets/Media/Egor.jpg", bio: "Hey, I'm Egor, a first-year bachelor student. I've recently joined SU:Media because I'm really astonished by video content and social medias. My goal is to provide students and other people info about our SU in a visual-catchy way." },
       { name: "Ksenia Minaeva", photo: "./assets/Media/Ksenia.jpeg", bio: "Hi everyone! I'm Kseniia. I really like photography! and because of this i'm in SU:Media. I like creating photos for students and give them some sort of memories from university events!!" },
       { name: "Daniyar Fairushin", photo: "./assets/Media/Daniyar.jpg", bio: "Hi there, I'm Daniyar. One of my favorite things to do is photography, that's why I'm here." },
       { name: "Yana Birkina", photo: "./assets/Media/Yana.jpg", bio: "Hi, I'm Yana, and I've recently joined the SU:Media team. As a photographer, I want to capture the real atmosphere of university events — the emotions, details, and moments that make student life memorable." },
-      { name: "Egor Khramtsov", photo: "./assets/Media/Egor.jpg", bio: "Hi! I'm Egor, a second-year student. I enjoy taking photos at events to capture good moments and create lasting memories for people." },
+      { name: "Egor Khramtsov", photo: "./assets/Media/Egor(1).jpg", bio: "Hi! I'm Egor, a second-year student. I enjoy taking photos at events to capture good moments and create lasting memories for people." },
     ] as Member[]
   },
 ]
