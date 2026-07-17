@@ -8,6 +8,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+---
+
+## [2.1.0] - 2026-07-12
+
+### Added
+
+### Changed
+
+- SU Brandbook is implemented
+
+### Fixed
+
+- Polls and Events created from admin panel appear on the Website pages
+
+---
+
+## [2.0.0] - 2026-07-05
+
+### Added
+
 - "Polls" page
 - Questionnaires with single/multiple choice questions and individual answer questions
 - Creating questionnaires with single/multiple choice questions and individual answer questions
