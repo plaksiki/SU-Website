@@ -112,27 +112,10 @@ cd /SU-Website
 tail -f /var/log/site-update.log
 ```
 
-## Connection to DB:
-- ### Via pgAdmin 4:
-  1. Right-click on Servers -> Register -> Server...
-  2. The General tab:
-     Name: PostgreSQL на 192.168.31.17
-  3. The Connection tab:
-     - Host name/address: 192.168.31.17
-     - Port: 5432
-     - Maintenance database: postgres (or SU)
-     - Username: postgres
-     - Password: More5_95
-  5. Click Save
-- ### Via the cmd:
-  1. #### Locally:
-  - ```psql -h localhost -p 5432 -U postgres -d SU```
-  2. #### From a remote computer:
-  - ```psql -h 192.168.31.17 -p 5432 -U postgres -d SU```
-- ### Via the Spring Boot
+## Connection DB to Spring Boot:
   properties:
   ```
-  spring.datasource.url=jdbc:postgresql://192.168.31.17:5432/SU
-  spring.datasource.username=postgres
-  spring.datasource.password=More5_95
+  spring.datasource.url=jdbc:postgresql://{DB_IP-ADRES}:{DB_PORT(usually 5432)}/{DB_NAME}
+  spring.datasource.username={DB_LOGIN (usually postgres or admin)}
+  spring.datasource.password={DB_PASSWORD}
   ```
