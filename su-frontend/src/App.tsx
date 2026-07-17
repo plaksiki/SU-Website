@@ -501,7 +501,8 @@ const DEPT_ACCENTS: Record<string, string> = {
 }
 
 function MemberModal({ member, slug, onClose }: { member: Member; slug: string; onClose: () => void }) {
-  const photo = member.photo ? thumborUrl(getPhoto(member.photo) || '', 200, 200) || undefined : undefined
+  const originalPhoto = member.photo ? getPhoto(member.photo) : undefined
+  const photo = originalPhoto ? thumborUrl(originalPhoto, 200, 200) : undefined
   const accent = DEPT_ACCENTS[slug] || 'linear-gradient(135deg, #40ba21, #166534)'
   const isIntern = member.role === 'Intern'
   return (
@@ -512,7 +513,7 @@ function MemberModal({ member, slug, onClose }: { member: Member; slug: string; 
         <div style={{ background: accent, padding: '36px 32px 48px', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
           <div style={{ position: 'absolute', bottom: -36, left: '50%', transform: 'translateX(-50%)' }}>
             {photo
-              ? <img src={photo} alt={member.name} style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: '3px solid white', display: 'block' }} />
+              ? <img src={photo} alt={member.name} style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: '3px solid white', display: 'block' }} onError={e => { if (originalPhoto) (e.currentTarget as HTMLImageElement).src = originalPhoto }} />
               : <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#40ba21', fontSize: 28, fontWeight: 900, border: '3px solid white' }}>{member.name[0]}</div>
             }
           </div>
@@ -639,7 +640,8 @@ function DepartmentPage({ t }: { t: T; lang?: Lang }) {
 }
 
 function MemberCard({ member, slug, onClick }: { member: Member; slug: string; onClick: () => void }) {
-  const photo = member.photo ? thumborUrl(getPhoto(member.photo) || '', 200, 200) || undefined : undefined
+  const originalPhoto = member.photo ? getPhoto(member.photo) : undefined
+  const photo = originalPhoto ? thumborUrl(originalPhoto, 200, 200) : undefined
   const hasBio = !!member.bio
   const isIntern = member.role === 'Intern'
   const accent = DEPT_ACCENTS[slug] || '#40ba21'
@@ -660,7 +662,7 @@ function MemberCard({ member, slug, onClick }: { member: Member; slug: string; o
       onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '' }}
     >
       {photo
-        ? <img src={photo} alt={member.name} style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: `2.5px solid ${avatarColor}` }} />
+        ? <img src={photo} alt={member.name} style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: `2.5px solid ${avatarColor}` }} onError={e => { if (originalPhoto) (e.currentTarget as HTMLImageElement).src = originalPhoto }} />
         : <div style={{ width: 72, height: 72, borderRadius: '50%', background: avatarColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 26, fontWeight: 800 }}>{member.name[0]}</div>
       }
       <div>
@@ -755,11 +757,12 @@ function HomePage({ t }: { t: T }) {
       </div>
       <div style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 48 }}>
         {ceoMembers.map((m, i) => {
-          const photo = m.photo ? thumborUrl(getPhoto(m.photo) || '', 200, 200) || undefined : undefined
+          const originalPhoto = m.photo ? getPhoto(m.photo) : undefined
+          const photo = originalPhoto ? thumborUrl(originalPhoto, 200, 200) : undefined
           return (
             <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
               {photo
-                ? <img src={photo} alt={m.name} style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', border: '3px solid #40ba21' }} />
+                ? <img src={photo} alt={m.name} style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', border: '3px solid #40ba21' }} onError={e => { if (originalPhoto) (e.currentTarget as HTMLImageElement).src = originalPhoto }} />
                 : <div style={{ width: 100, height: 100, borderRadius: '50%', background: '#40ba21', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 36, fontWeight: 'bold' }}>{m.name[0]}</div>
               }
               <span style={{ fontWeight: 700, color: '#1e293b', fontSize: 15 }}>{m.name}</span>
