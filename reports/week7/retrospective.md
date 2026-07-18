@@ -20,7 +20,7 @@
 
 ## What the team changed or attempted to change based on the previous Sprint Retrospective, and what results they observed
 
-Based on the previous retrospective, we redesigned the admin panel based on customer's revisions and finalized the documentation.
+Based on the previous retrospective, we shifted our workflow and team interaction approach. Two frontend developers focused more on improving existing features and fixing bugs on the frontend side, as well as visual polish, which allowed the third member to concentrate on more complex tasks — backend-frontend integration and implementing new features. We also changed our approach to handling conflicts, addressing disagreements directly and early instead of letting them build up. As a result, we redesigned the admin panel based on the customer's revisions and finalized the documentation, and the team became more cohesive.
 
 ## Action points
 
