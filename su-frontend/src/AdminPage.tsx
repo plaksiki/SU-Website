@@ -509,6 +509,8 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   // Questionnaire create form
   const [qTitle, setQTitle] = useState('')
   const [qDescription, setQDescription] = useState('')
+  const [qStartedAt, setQStartedAt] = useState('')
+  const [qFinishedAt, setQFinishedAt] = useState('')
   const [draftQuestions, setDraftQuestions] = useState<Question[]>([])
   const [questionText, setQuestionText] = useState('')
   const [questionType, setQuestionType] = useState<QuestionType>('open_text')
@@ -861,6 +863,8 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
     saveQuestionnaires([{ id: localId, ...snapshot }, ...questionnaires])
     setQTitle('')
     setQDescription('')
+    setQStartedAt('')
+    setQFinishedAt('')
     setDraftQuestions([])
     setView('q_list')
 
@@ -871,8 +875,8 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
       body: JSON.stringify({
         title: snapshot.title,
         description: snapshot.description,
-        startedAt: new Date().toISOString().replace('Z', ''),
-        finishedAt: null,
+        startedAt: qStartedAt ? new Date(qStartedAt).toISOString().replace('Z', '') : new Date().toISOString().replace('Z', ''),
+        finishedAt: qFinishedAt ? new Date(qFinishedAt).toISOString().replace('Z', '') : null,
       }),
     })
       .then(r => r.ok ? r.json() : Promise.reject())
@@ -1072,6 +1076,10 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
           </p>
           <input type="text" className="admin-input" value={qTitle} onChange={e => setQTitle(e.target.value)} placeholder={t.q_title_placeholder} />
           <textarea className="admin-input" value={qDescription} onChange={e => setQDescription(e.target.value)} placeholder={t.q_desc_placeholder} rows={2} style={{ resize: 'vertical' }} />
+          <p className="admin-field-label">{t.event_start_date}</p>
+          <input type="datetime-local" className="admin-input" value={qStartedAt} onChange={e => setQStartedAt(e.target.value)} max="9999-12-31T23:59" />
+          <p className="admin-field-label">{t.event_end_date}</p>
+          <input type="datetime-local" className="admin-input" value={qFinishedAt} onChange={e => setQFinishedAt(e.target.value)} max="9999-12-31T23:59" />
 
           {/* Список вопросов, которые УЖЕ войдут в опросник — показываем его первым и всегда,
               чтобы было наглядно видно: то, что ты добавляешь ниже, попадает именно сюда,
