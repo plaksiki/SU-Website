@@ -300,49 +300,43 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
   )
 }
 
+function parseCachedPoll(id: string) {
+  try {
+    const cached = JSON.parse(localStorage.getItem('admin_questionnaires') || '[]')
+    const found = cached.find((q: { id: string }) => String(q.id) === id)
+    if (!found) return { poll: null, questions: [], options: {} }
+    const questions: BackendQuestion[] = found.questions?.map((q: { id: string; text: string; type: string }, i: number) => ({
+      id: Number(q.id) || i + 1,
+      questionnaireId: Number(id),
+      text: q.text,
+      questionType: q.type as 'single_choice' | 'multiple_choice' | 'open_text',
+      orderIndex: i + 1,
+    })) || []
+    const options: Record<number, BackendOption[]> = {}
+    found.questions?.forEach((q: { id: string; type: string; options: string[] }, i: number) => {
+      if (q.type !== 'open_text' && q.options?.length) {
+        options[Number(q.id) || i + 1] = q.options.map((text: string, j: number) => ({
+          id: j + 1, questionId: Number(q.id) || i + 1, text, orderIndex: j + 1,
+        }))
+      }
+    })
+    return { poll: found as BackendQuestionnaire, questions, options }
+  } catch { return { poll: null, questions: [], options: {} } }
+}
+
 function PollDetailPage({ t, lang }: { t: T; lang: Lang }) {
   const { id } = useParams()
   const navigate = useNavigate()
   const [answers, setAnswers] = useState<Record<string, string | number | number[]>>({})
   const [submitted, setSubmitted] = useState(false)
   const [errors, setErrors] = useState<Record<string, boolean>>({})
-  const [poll, setPoll] = useState<BackendQuestionnaire | null>(null)
-  const [questions, setQuestions] = useState<BackendQuestion[]>([])
-  const [options, setOptions] = useState<Record<number, BackendOption[]>>({})
+  const cached = id ? parseCachedPoll(id) : { poll: null, questions: [], options: {} }
+  const [poll, setPoll] = useState<BackendQuestionnaire | null>(cached.poll)
+  const [questions, setQuestions] = useState<BackendQuestion[]>(cached.questions)
+  const [options, setOptions] = useState<Record<number, BackendOption[]>>(cached.options)
 
   useEffect(() => {
     if (!id) return
-
-    // Сразу из localStorage — мгновенно
-    try {
-      const cached = JSON.parse(localStorage.getItem('admin_questionnaires') || '[]')
-      const found = cached.find((q: { id: string }) => String(q.id) === id)
-      if (found) {
-        setPoll(found)
-        if (found.questions) {
-          const mapped: BackendQuestion[] = found.questions.map((q: { id: string; text: string; type: string }, i: number) => ({
-            id: Number(q.id) || i + 1,
-            questionnaireId: Number(id),
-            text: q.text,
-            questionType: q.type as 'single_choice' | 'multiple_choice' | 'open_text',
-            orderIndex: i + 1,
-          }))
-          setQuestions(mapped)
-          const optsByQuestion: Record<number, BackendOption[]> = {}
-          found.questions.forEach((q: { id: string; type: string; options: string[] }, i: number) => {
-            if (q.type !== 'open_text' && q.options?.length) {
-              optsByQuestion[Number(q.id) || i + 1] = q.options.map((text: string, j: number) => ({
-                id: j + 1,
-                questionId: Number(q.id) || i + 1,
-                text,
-                orderIndex: j + 1,
-              }))
-            }
-          })
-          setOptions(optsByQuestion)
-        }
-      }
-    } catch { /* ignore */ }
 
     // Обновляем с сервера в фоне
     fetch(`${API_URL}/questionnaires`)
