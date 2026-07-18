@@ -65,6 +65,7 @@ const adminTranslations = {
     edit: 'Edit',
     save: 'Save changes',
     edit_event: 'Edit Event',
+    edit_questionnaire: 'Edit Questionnaire',
     cancel: 'Cancel',
     event_list: 'Events',
     no_events: 'No events yet.',
@@ -125,6 +126,7 @@ const adminTranslations = {
     edit: 'Редактировать',
     save: 'Сохранить',
     edit_event: 'Редактировать событие',
+    edit_questionnaire: 'Редактировать опросник',
     cancel: 'Отмена',
     event_list: 'Список событий',
     no_events: 'Событий пока нет.',
@@ -475,7 +477,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   const [newGalleryUrl, setNewGalleryUrl] = useState('')
   const [eventFormError, setEventFormError] = useState('')
 
-  // Edit state
+  // Edit event state
   const [editingEvent, setEditingEvent] = useState<SuEvent | null>(null)
   const [editTitle, setEditTitle] = useState('')
   const [editLocation, setEditLocation] = useState('')
@@ -484,6 +486,11 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   const [editFinishedAt, setEditFinishedAt] = useState('')
   const [editPhotoUrls, setEditPhotoUrls] = useState('')
   const [editGalleryUrl, setEditGalleryUrl] = useState('')
+
+  // Edit questionnaire state
+  const [editingQuestionnaire, setEditingQuestionnaire] = useState<Questionnaire | null>(null)
+  const [editQTitle, setEditQTitle] = useState('')
+  const [editQDescription, setEditQDescription] = useState('')
 
   // Questionnaire create form
   const [qTitle, setQTitle] = useState('')
@@ -634,6 +641,21 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
     if (!confirm(t.confirm_delete_event)) return
     saveEvents(events.filter(e => e.id !== id))
     fetch(`${API_URL}/event/${id}`, { method: 'DELETE' }).catch(() => {})
+  }
+
+  const handleStartEditQ = (qn: Questionnaire) => {
+    setEditingQuestionnaire(qn)
+    setEditQTitle(qn.title)
+    setEditQDescription(qn.description)
+  }
+
+  const handleSaveEditQ = () => {
+    if (!editingQuestionnaire) return
+    const updated = { ...editingQuestionnaire, title: editQTitle, description: editQDescription }
+    const stored = questionnaires.map(q => q.id === editingQuestionnaire.id ? updated : q)
+    setQuestionnaires(stored)
+    localStorage.setItem('admin_questionnaires', JSON.stringify(stored))
+    setEditingQuestionnaire(null)
   }
 
   const handleStartEdit = (event: SuEvent) => {
@@ -997,6 +1019,22 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
       {/* QUESTIONNAIRES LIST */}
       {view === 'q_list' && (
         <div>
+          {/* Edit questionnaire modal */}
+          {editingQuestionnaire && (
+            <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+              <div style={{ background: 'white', borderRadius: 24, padding: 32, width: '100%', maxWidth: 520, maxHeight: '90vh', overflowY: 'auto' }}>
+                <h3 style={{ marginBottom: 16 }}>{t.edit_questionnaire}</h3>
+                <p className="admin-hint">{t.bilingual_hint}</p>
+                <input type="text" className="admin-input" value={editQTitle} onChange={e => setEditQTitle(e.target.value)} placeholder={t.q_title_placeholder} />
+                <textarea className="admin-input" value={editQDescription} onChange={e => setEditQDescription(e.target.value)} placeholder={t.q_desc_placeholder} rows={3} style={{ resize: 'vertical' }} />
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <button className="btn" onClick={handleSaveEditQ} style={{ flex: 1 }}>{t.save}</button>
+                  <button className="admin-nav-btn" onClick={() => setEditingQuestionnaire(null)} style={{ flex: 1 }}>{t.cancel}</button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
             <h3 style={{ margin: 0 }}>{t.questionnaires_list} ({questionnaires.length})</h3>
             <div style={{ display: 'flex', gap: 8 }}>
@@ -1016,6 +1054,9 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
                 </p>
                 <p style={{ color: '#94a3b8', fontSize: 13, margin: 0 }}>{qn.description}</p>
                 <div className="admin-list-card-actions">
+                  <button className="admin-link-btn" style={{ color: '#40ba21' }} onClick={() => handleStartEditQ(qn)}>
+                    {t.edit}
+                  </button>
                   <button
                     className="admin-link-btn"
                     style={{ color: '#40ba21' }}
