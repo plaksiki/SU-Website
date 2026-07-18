@@ -147,4 +147,4 @@ The product is delivered as open-source code. The customer can:
 | 2026-07-08 | First version of customer-handover.md | dev team |
 | 2026-07-12 | Release v2.1.0 (SU Brandbook implemented; fixed polls/events not appearing after admin-panel creation) | dev team |
 | 2026-07-12 | Week 6: Prefinal version of the product, fixed customer-handover.md | dev team |
-| [date] | Week 7: Final version of the product (MVP v3) and customer-handover.md | dev team |
+| 2026-07-19 | Week 7: Final version of the product (MVP v3) and customer-handover.md | dev team |
