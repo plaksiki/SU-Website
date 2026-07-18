@@ -65,8 +65,8 @@ The product is delivered as open-source code. The customer can:
 
 | Name | Purpose | Where it's set | Who owns the value |
 |---|---|---|---|
-| `DB_NAME` | PostgreSQL database name | `.env` on VM |
-| `DB_USER` | PostgreSQL user | `.env` on VM |
+| `DB_NAME` | PostgreSQL database name | `.env` on VM |  **Customer** (set by customer) |
+| `DB_USER` | PostgreSQL user | `.env` on VM |  **Customer** (set by customer) |
 | `DB_PASSWORD` | PostgreSQL password | `.env` on VM | **Customer** (set by customer) |
 | `THUMBOR_SECURITY_KEY` | Thumbor security | `.env` on VM  | **Customer** (set by customer) |
 
