@@ -239,15 +239,10 @@ function localize(text: string, lang: Lang): string {
 }
 
 function PollsPage({ t, lang }: { t: T; lang: Lang }) {
-  const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [answers, setAnswers] = useState<Record<string, string | number | number[]>>({})
-  const [submitted, setSubmitted] = useState(false)
-  const [errors, setErrors] = useState<Record<string, boolean>>({})
+  const navigate = useNavigate()
   const [backendPolls, setBackendPolls] = useState<BackendQuestionnaire[]>(() => {
     try { return JSON.parse(localStorage.getItem('admin_questionnaires') || '[]') } catch { return [] }
   })
-  const [questions, setQuestions] = useState<BackendQuestion[]>([])
-  const [options, setOptions] = useState<Record<number, BackendOption[]>>({})
   const [fetchError] = useState(false)
 
   useEffect(() => {
@@ -257,40 +252,109 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
       .catch(() => {})
   }, [])
 
-  const loadQuestionnaire = (id: string) => {
-    setSelectedId(id)
-    setQuestions([])
-    setOptions({})
+  return (
+    <div style={{ width: '100%', padding: '40px 32px', boxSizing: 'border-box' as const }}>
+      <style>{`.polls-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; } @media(max-width:900px){.polls-grid{grid-template-columns:repeat(2,1fr)}} @media(max-width:560px){.polls-grid{grid-template-columns:1fr}}`}</style>
+      <div style={{ marginBottom: 32, textAlign: 'center' }}>
+        <h1 style={{ fontSize: 40, fontWeight: 900, color: '#0f172a', margin: '0 0 6px' }}>{t.polls_title}</h1>
+        <p style={{ color: '#64748b', fontSize: 15, margin: 0 }}>{t.polls_desc}</p>
+      </div>
+      {fetchError && <p style={{ textAlign: 'center', color: '#dc2626' }}>Could not connect to server.</p>}
+      <div className="polls-grid">
+        {backendPolls.map(poll => (
+          <div key={poll.id} style={{
+            background: 'white', borderRadius: 20, overflow: 'hidden',
+            border: '1px solid #e8edf2', cursor: 'pointer', display: 'flex', flexDirection: 'column',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+            onClick={() => navigate(`/polls/${poll.id}`)}
+            onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-5px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 32px rgba(0,0,0,0.1)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '' }}
+          >
+            <div style={{
+              background: 'linear-gradient(160deg, #40ba21ee, #14532d99)',
+              padding: '22px 22px 22px', minHeight: 200,
+              position: 'relative', overflow: 'hidden',
+              display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+            }}>
+              <div style={{ position: 'absolute', top: -40, right: -40, width: 160, height: 160, borderRadius: '50%', background: 'rgba(255,255,255,0.12)' }} />
+              <div style={{ position: 'absolute', bottom: -25, right: 30, width: 90, height: 90, borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
+              <span style={{
+                alignSelf: 'flex-start',
+                background: 'rgba(255,255,255,0.28)', backdropFilter: 'blur(6px)',
+                color: 'white', fontWeight: 800, fontSize: 10,
+                letterSpacing: '1.5px', padding: '5px 13px', borderRadius: 20, textTransform: 'uppercase',
+              }}>Live</span>
+              <h3 style={{ color: 'white', fontSize: 22, fontWeight: 900, margin: 0, lineHeight: 1.2, position: 'relative' }}>
+                {localize(poll.title, lang)}
+              </h3>
+            </div>
+            <div style={{ padding: '16px 22px 20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 12 }}>
+              <p style={{ color: '#64748b', fontSize: 14, margin: 0, lineHeight: 1.5 }}>{localize(poll.description, lang)}</p>
+              <span style={{ color: '#40ba21', fontWeight: 700, fontSize: 13 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function PollDetailPage({ t, lang }: { t: T; lang: Lang }) {
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const [answers, setAnswers] = useState<Record<string, string | number | number[]>>({})
+  const [submitted, setSubmitted] = useState(false)
+  const [errors, setErrors] = useState<Record<string, boolean>>({})
+  const [poll, setPoll] = useState<BackendQuestionnaire | null>(null)
+  const [questions, setQuestions] = useState<BackendQuestion[]>([])
+  const [options, setOptions] = useState<Record<number, BackendOption[]>>({})
+
+  useEffect(() => {
+    if (!id) return
 
     // Сразу из localStorage — мгновенно
     try {
       const cached = JSON.parse(localStorage.getItem('admin_questionnaires') || '[]')
-      const found = cached.find((q: { id: string }) => q.id === id)
-      if (found?.questions) {
-        const mapped: BackendQuestion[] = found.questions.map((q: { id: string; text: string; type: string }, i: number) => ({
-          id: Number(q.id) || i + 1,
-          questionnaireId: Number(id),
-          text: q.text,
-          questionType: q.type as 'single_choice' | 'multiple_choice' | 'open_text',
-          orderIndex: i + 1,
-        }))
-        setQuestions(mapped)
-        const optsByQuestion: Record<number, BackendOption[]> = {}
-        found.questions.forEach((q: { id: string; type: string; options: string[] }, i: number) => {
-          if (q.type !== 'open_text' && q.options?.length) {
-            optsByQuestion[Number(q.id) || i + 1] = q.options.map((text: string, j: number) => ({
-              id: j + 1,
-              questionId: Number(q.id) || i + 1,
-              text,
-              orderIndex: j + 1,
-            }))
-          }
-        })
-        setOptions(optsByQuestion)
+      const found = cached.find((q: { id: string }) => String(q.id) === id)
+      if (found) {
+        setPoll(found)
+        if (found.questions) {
+          const mapped: BackendQuestion[] = found.questions.map((q: { id: string; text: string; type: string }, i: number) => ({
+            id: Number(q.id) || i + 1,
+            questionnaireId: Number(id),
+            text: q.text,
+            questionType: q.type as 'single_choice' | 'multiple_choice' | 'open_text',
+            orderIndex: i + 1,
+          }))
+          setQuestions(mapped)
+          const optsByQuestion: Record<number, BackendOption[]> = {}
+          found.questions.forEach((q: { id: string; type: string; options: string[] }, i: number) => {
+            if (q.type !== 'open_text' && q.options?.length) {
+              optsByQuestion[Number(q.id) || i + 1] = q.options.map((text: string, j: number) => ({
+                id: j + 1,
+                questionId: Number(q.id) || i + 1,
+                text,
+                orderIndex: j + 1,
+              }))
+            }
+          })
+          setOptions(optsByQuestion)
+        }
       }
     } catch { /* ignore */ }
 
     // Обновляем с сервера в фоне
+    fetch(`${API_URL}/questionnaires`)
+      .then(r => r.ok ? r.json() : null)
+      .then((data: BackendQuestionnaire[] | null) => {
+        if (data) {
+          const found = data.find(q => String(q.id) === id)
+          if (found) setPoll(found)
+        }
+      })
+      .catch(() => {})
+
     fetch(`${API_URL}/question/by-questionnaire/${id}`)
       .then(r => r.ok ? r.json() : null)
       .then(async (qs: BackendQuestion[] | null) => {
@@ -306,7 +370,7 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
         setOptions(optsByQuestion)
       })
       .catch(() => {})
-  }
+  }, [id])
 
   const handleSingle = (qid: number, optionId: number) => {
     setAnswers(p => ({ ...p, [qid]: optionId }))
@@ -326,7 +390,7 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
   }
 
   const handleSubmit = async () => {
-    if (!selectedId || questions.length === 0) return
+    if (!id || questions.length === 0) return
     const errs: Record<string, boolean> = {}
     for (const q of questions) {
       const v = answers[q.id]
@@ -338,7 +402,7 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
       const responseRes = await fetch(`${API_URL}/responses`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ questionnaireId: Number(selectedId) })
+        body: JSON.stringify({ questionnaireId: Number(id) })
       })
       if (!responseRes.ok) throw new Error('Failed to create response')
       const responseData = await responseRes.json()
@@ -376,86 +440,24 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
     }
   }
 
-  const handleBack = () => {
-    setSelectedId(null)
-    setAnswers({})
-    setSubmitted(false)
-    setErrors({})
-    setQuestions([])
-    setOptions({})
-  }
-
-  const selectedPoll = backendPolls.find(p => String(p.id) === selectedId)
-
-  if (!selectedId) return (
-    <div style={{ width: '100%', padding: '40px 32px', boxSizing: 'border-box' as const }}>
-      <style>{`.polls-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; } @media(max-width:900px){.polls-grid{grid-template-columns:repeat(2,1fr)}} @media(max-width:560px){.polls-grid{grid-template-columns:1fr}}`}</style>
-      <div style={{ marginBottom: 32, textAlign: 'center' }}>
-        <h1 style={{ fontSize: 40, fontWeight: 900, color: '#0f172a', margin: '0 0 6px' }}>{t.polls_title}</h1>
-        <p style={{ color: '#64748b', fontSize: 15, margin: 0 }}>{t.polls_desc}</p>
-      </div>
-      {fetchError && <p style={{ textAlign: 'center', color: '#dc2626' }}>Could not connect to server.</p>}
-      <div className="polls-grid">
-        {backendPolls.map(poll => (
-          <div key={poll.id} style={{
-            background: 'white', borderRadius: 20, overflow: 'hidden',
-            border: '1px solid #e8edf2', cursor: 'pointer', display: 'flex', flexDirection: 'column',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-          }}
-            onClick={() => loadQuestionnaire(String(poll.id))}
-            onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-5px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 32px rgba(0,0,0,0.1)' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '' }}
-          >
-            {/* Та же цветная шапка что у ивентов */}
-            <div style={{
-              background: 'linear-gradient(160deg, #40ba21ee, #14532d99)',
-              padding: '22px 22px 22px', minHeight: 200,
-              position: 'relative', overflow: 'hidden',
-              display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-            }}>
-              <div style={{ position: 'absolute', top: -40, right: -40, width: 160, height: 160, borderRadius: '50%', background: 'rgba(255,255,255,0.12)' }} />
-              <div style={{ position: 'absolute', bottom: -25, right: 30, width: 90, height: 90, borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
-              <span style={{
-                alignSelf: 'flex-start',
-                background: 'rgba(255,255,255,0.28)', backdropFilter: 'blur(6px)',
-                color: 'white', fontWeight: 800, fontSize: 10,
-                letterSpacing: '1.5px', padding: '5px 13px', borderRadius: 20, textTransform: 'uppercase',
-              }}>Live</span>
-              <h3 style={{ color: 'white', fontSize: 22, fontWeight: 900, margin: 0, lineHeight: 1.2, position: 'relative' }}>
-                {localize(poll.title, lang)}
-              </h3>
-            </div>
-            {/* Тело */}
-            <div style={{ padding: '16px 22px 20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 12 }}>
-              <p style={{ color: '#64748b', fontSize: 14, margin: 0, lineHeight: 1.5 }}>{localize(poll.description, lang)}</p>
-              <span style={{ color: '#40ba21', fontWeight: 700, fontSize: 13 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-
-  // Отправлено
   if (submitted) return (
     <div className="container">
       <div className="donation-card" style={{ marginTop: 40 }}>
         <h3 style={{ color: '#40ba21' }}>✓ {t.submitted}</h3>
         <br />
-        <button className="btn" onClick={handleBack}>{lang === 'en' ? '← Back to polls' : '← К опросникам'}</button>
+        <button className="btn" onClick={() => navigate('/polls')}>{lang === 'en' ? '← Back to polls' : '← К опросникам'}</button>
       </div>
     </div>
   )
 
-  // Форма опросника
   return (
     <div className="container">
-      <button onClick={handleBack} style={{ background: 'none', border: 'none', color: '#40ba21', fontWeight: 'bold', cursor: 'pointer', marginBottom: 16 }}>
+      <button onClick={() => navigate('/polls')} style={{ background: 'none', border: 'none', color: '#40ba21', fontWeight: 'bold', cursor: 'pointer', marginBottom: 16 }}>
         ← {lang === 'en' ? 'Back' : 'Назад'}
       </button>
       <div className="hero" style={{ padding: 40 }}>
-        <h1 style={{ fontSize: 28, marginBottom: 8 }}>{selectedPoll ? localize(selectedPoll.title, lang) : ''}</h1>
-        <p style={{ marginBottom: 32 }}>{selectedPoll ? localize(selectedPoll.description, lang) : ''}</p>
+        <h1 style={{ fontSize: 28, marginBottom: 8 }}>{poll ? localize(poll.title, lang) : ''}</h1>
+        <p style={{ marginBottom: 32 }}>{poll ? localize(poll.description, lang) : ''}</p>
         {questions.map((q, idx) => {
           const opts = options[q.id] || []
           const hasErr = errors[q.id]
@@ -1128,6 +1130,7 @@ function App() {
         <Route path="/" element={<HomePage t={t} />} />
         <Route path="/events" element={<EventsPage t={t} lang={lang} events={events} />} />
         <Route path="/polls" element={<PollsPage t={t} lang={lang} />} />
+        <Route path="/polls/:id" element={<PollDetailPage t={t} lang={lang} />} />
         <Route path="/donations" element={<DonationsPage t={t} />} />
         <Route path="/admin" element={<AdminPage lang={lang} onEventsChange={(evts) => setEvents(evts as SuEvent[])} />} />
       </Routes>
