@@ -491,6 +491,14 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   const [editingQuestionnaire, setEditingQuestionnaire] = useState<Questionnaire | null>(null)
   const [editQTitle, setEditQTitle] = useState('')
   const [editQDescription, setEditQDescription] = useState('')
+  const [editQQuestions, setEditQQuestions] = useState<Question[]>([])
+  const [editQNewText, setEditQNewText] = useState('')
+  const [editQNewType, setEditQNewType] = useState<QuestionType>('open_text')
+  const [editQNewOptions, setEditQNewOptions] = useState('')
+  const [editQEditingId, setEditQEditingId] = useState<string | null>(null)
+  const [editQEditText, setEditQEditText] = useState('')
+  const [editQEditType, setEditQEditType] = useState<QuestionType>('open_text')
+  const [editQEditOptions, setEditQEditOptions] = useState('')
 
   // Questionnaire create form
   const [qTitle, setQTitle] = useState('')
@@ -643,19 +651,114 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
     fetch(`${API_URL}/event/${id}`, { method: 'DELETE' }).catch(() => {})
   }
 
-  const handleStartEditQ = (qn: Questionnaire) => {
+  const handleStartEditQ = async (qn: Questionnaire) => {
     setEditingQuestionnaire(qn)
     setEditQTitle(qn.title)
     setEditQDescription(qn.description)
+    setEditQNewText('')
+    setEditQNewType('open_text')
+    setEditQNewOptions('')
+
+    // Сначала показываем из localStorage если есть
+    setEditQQuestions([...qn.questions])
+
+    // Затем подгружаем с бэкенда
+    try {
+      const qs: { id: number; text: string; questionType: string }[] = await fetch(`${API_URL}/question/by-questionnaire/${qn.id}`).then(r => r.json())
+      const sorted = qs.sort((a, b) => a.id - b.id)
+      const questions: Question[] = await Promise.all(sorted.map(async q => {
+        let options: string[] = []
+        if (q.questionType !== 'open_text') {
+          const opts: { text: string }[] = await fetch(`${API_URL}/options/by-question/${q.id}`).then(r => r.json())
+          options = opts.map(o => o.text)
+        }
+        return { id: String(q.id), text: q.text, type: q.questionType as QuestionType, options }
+      }))
+      setEditQQuestions(questions)
+    } catch { /* keep localStorage version */ }
   }
 
-  const handleSaveEditQ = () => {
+  const handleEditQAddQuestion = () => {
+    if (!editQNewText.trim()) return
+    const newQ: Question = {
+      id: Date.now().toString(),
+      text: editQNewText.trim(),
+      type: editQNewType,
+      options: editQNewType !== 'open_text' ? editQNewOptions.split(',').map(s => s.trim()).filter(Boolean) : [],
+    }
+    setEditQQuestions(prev => [...prev, newQ])
+    setEditQNewText('')
+    setEditQNewOptions('')
+  }
+
+  const handleEditQRemoveQuestion = (id: string) => {
+    setEditQQuestions(prev => prev.filter(q => q.id !== id))
+    if (editQEditingId === id) setEditQEditingId(null)
+  }
+
+  const handleEditQStartEdit = (q: Question) => {
+    setEditQEditingId(q.id)
+    setEditQEditText(q.text)
+    setEditQEditType(q.type)
+    setEditQEditOptions(q.options.join(', '))
+  }
+
+  const handleEditQSaveQuestion = (id: string) => {
+    setEditQQuestions(prev => prev.map(q => q.id === id
+      ? { ...q, text: editQEditText, type: editQEditType, options: editQEditType !== 'open_text' ? editQEditOptions.split(',').map(s => s.trim()).filter(Boolean) : [] }
+      : q
+    ))
+    setEditQEditingId(null)
+  }
+
+  const handleSaveEditQ = async () => {
     if (!editingQuestionnaire) return
-    const updated = { ...editingQuestionnaire, title: editQTitle, description: editQDescription }
+    const updated = { ...editingQuestionnaire, title: editQTitle, description: editQDescription, questions: editQQuestions }
     const stored = questionnaires.map(q => q.id === editingQuestionnaire.id ? updated : q)
     setQuestionnaires(stored)
     localStorage.setItem('admin_questionnaires', JSON.stringify(stored))
     setEditingQuestionnaire(null)
+
+    // Сохраняем на бэкенд
+    try {
+      await fetch(`${API_URL}/questionnaire/${editingQuestionnaire.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: editQTitle, description: editQDescription }),
+      })
+
+      // Обновляем каждый существующий вопрос (у которого id — числовой, т.е. пришёл с бэкенда)
+      await Promise.all(editQQuestions.map(async (q, i) => {
+        const numId = Number(q.id)
+        if (!isNaN(numId) && numId > 1000000000) return // временный id от Date.now() — пропускаем
+        if (!isNaN(numId)) {
+          await fetch(`${API_URL}/question/${numId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: q.text, questionType: q.type, questionnaireId: Number(editingQuestionnaire.id), orderIndex: i + 1 }),
+          })
+          // Обновляем options для вопросов с вариантами
+          if (q.type !== 'open_text' && q.options.length > 0) {
+            const existingOpts: { id: number; text: string }[] = await fetch(`${API_URL}/options/by-question/${numId}`).then(r => r.json()).catch(() => [])
+            await Promise.all(q.options.map(async (text, j) => {
+              if (existingOpts[j]) {
+                await fetch(`${API_URL}/option/${existingOpts[j].id}`, {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ text, questionId: numId, orderIndex: j + 1 }),
+                })
+              } else {
+                await fetch(`${API_URL}/options`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ text, questionId: numId, orderIndex: j + 1 }),
+                })
+              }
+            }))
+          }
+        }
+      }))
+    } catch { /* локальное сохранение уже выполнено */ }
   }
 
   const handleStartEdit = (event: SuEvent) => {
@@ -1022,11 +1125,61 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
           {/* Edit questionnaire modal */}
           {editingQuestionnaire && (
             <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-              <div style={{ background: 'white', borderRadius: 24, padding: 32, width: '100%', maxWidth: 520, maxHeight: '90vh', overflowY: 'auto' }}>
+              <div style={{ background: 'white', borderRadius: 24, padding: 32, width: '100%', maxWidth: 560, maxHeight: '90vh', overflowY: 'auto' }}>
                 <h3 style={{ marginBottom: 16 }}>{t.edit_questionnaire}</h3>
                 <p className="admin-hint">{t.bilingual_hint}</p>
                 <input type="text" className="admin-input" value={editQTitle} onChange={e => setEditQTitle(e.target.value)} placeholder={t.q_title_placeholder} />
-                <textarea className="admin-input" value={editQDescription} onChange={e => setEditQDescription(e.target.value)} placeholder={t.q_desc_placeholder} rows={3} style={{ resize: 'vertical' }} />
+                <textarea className="admin-input" value={editQDescription} onChange={e => setEditQDescription(e.target.value)} placeholder={t.q_desc_placeholder} rows={2} style={{ resize: 'vertical' }} />
+
+                {/* Existing questions */}
+                <p style={{ fontSize: 13, fontWeight: 600, margin: '16px 0 8px' }}>{t.questions_in_draft} ({editQQuestions.length})</p>
+                {editQQuestions.length === 0 && <p className="admin-hint">{t.no_draft_questions}</p>}
+                {editQQuestions.map((q, index) => (
+                  <div key={q.id} style={{ padding: 12, border: '1px solid #e2e8f0', borderRadius: 12, marginBottom: 8 }}>
+                    {editQEditingId === q.id ? (
+                      <div>
+                        <input type="text" className="admin-input" value={editQEditText} onChange={e => setEditQEditText(e.target.value)} />
+                        <select value={editQEditType} onChange={e => setEditQEditType(e.target.value as QuestionType)} className="admin-input">
+                          <option value="open_text">{t.type_open}</option>
+                          <option value="single_choice">{t.type_single}</option>
+                          <option value="multiple_choice">{t.type_multiple}</option>
+                        </select>
+                        {editQEditType !== 'open_text' && (
+                          <input type="text" className="admin-input" value={editQEditOptions} onChange={e => setEditQEditOptions(e.target.value)} placeholder={t.options_placeholder} />
+                        )}
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          <button type="button" className="admin-link-btn" style={{ color: '#40ba21' }} onClick={() => handleEditQSaveQuestion(q.id)}>{t.save}</button>
+                          <button type="button" className="admin-link-btn" style={{ color: '#94a3b8' }} onClick={() => setEditQEditingId(null)}>{t.cancel}</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <span style={{ fontSize: 14, flex: 1 }}>
+                          {index + 1}. {q.text}
+                          <span style={{ color: '#94a3b8' }}> — {typeLabel(q.type)}</span>
+                        </span>
+                        <button type="button" className="admin-link-btn" style={{ color: '#40ba21' }} onClick={() => handleEditQStartEdit(q)}>{t.edit}</button>
+                        <button type="button" className="admin-link-btn" style={{ color: '#dc2626' }} onClick={() => handleEditQRemoveQuestion(q.id)}>{t.delete}</button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {/* Add new question */}
+                <div style={{ padding: 16, background: '#f8fafc', borderRadius: 12, margin: '12px 0 16px' }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 12 }}>{t.add_question_label}</p>
+                  <input type="text" className="admin-input" value={editQNewText} onChange={e => setEditQNewText(e.target.value)} placeholder={t.question_text_placeholder} />
+                  <select value={editQNewType} onChange={e => setEditQNewType(e.target.value as QuestionType)} className="admin-input">
+                    <option value="open_text">{t.type_open}</option>
+                    <option value="single_choice">{t.type_single}</option>
+                    <option value="multiple_choice">{t.type_multiple}</option>
+                  </select>
+                  {editQNewType !== 'open_text' && (
+                    <input type="text" className="admin-input" value={editQNewOptions} onChange={e => setEditQNewOptions(e.target.value)} placeholder={t.options_placeholder} />
+                  )}
+                  <button type="button" className="admin-btn-outline" onClick={handleEditQAddQuestion}>{t.add_question_btn}</button>
+                </div>
+
                 <div style={{ display: 'flex', gap: 12 }}>
                   <button className="btn" onClick={handleSaveEditQ} style={{ flex: 1 }}>{t.save}</button>
                   <button className="admin-nav-btn" onClick={() => setEditingQuestionnaire(null)} style={{ flex: 1 }}>{t.cancel}</button>
