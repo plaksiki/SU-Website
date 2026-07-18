@@ -512,10 +512,7 @@ function MemberModal({ member, slug, onClose }: { member: Member; slug: string; 
         {/* Цветная шапка с фото */}
         <div style={{ background: accent, padding: '36px 32px 48px', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
           <div style={{ position: 'absolute', bottom: -36, left: '50%', transform: 'translateX(-50%)' }}>
-            {photo
-              ? <img src={photo} alt={member.name} style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: '3px solid white', display: 'block' }} onError={e => { if (originalPhoto) (e.currentTarget as HTMLImageElement).src = originalPhoto }} />
-              : <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#40ba21', fontSize: 28, fontWeight: 900, border: '3px solid white' }}>{member.name[0]}</div>
-            }
+            <MemberAvatar photo={photo} originalPhoto={originalPhoto} name={member.name} size={72} color="white" border="3px solid white" />
           </div>
         </div>
         {/* Контент */}
@@ -639,13 +636,43 @@ function DepartmentPage({ t }: { t: T; lang?: Lang }) {
   )
 }
 
+function MemberAvatar({ photo, originalPhoto, name, size, color, border }: { photo?: string; originalPhoto?: string; name: string; size: number; color: string; border?: string }) {
+  const [loaded, setLoaded] = useState(false)
+  const fontSize = size * 0.36
+  return (
+    <div style={{ width: size, height: size, borderRadius: '50%', position: 'relative', flexShrink: 0 }}>
+      <div style={{
+        width: size, height: size, borderRadius: '50%', background: color,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: 'white', fontSize, fontWeight: 800,
+        border: border || 'none', boxSizing: 'border-box',
+        position: 'absolute', inset: 0,
+      }}>{name[0]}</div>
+      {photo && (
+        <img
+          src={photo}
+          alt={name}
+          onLoad={() => setLoaded(true)}
+          onError={e => { if (originalPhoto && e.currentTarget.src !== originalPhoto) e.currentTarget.src = originalPhoto; else setLoaded(false) }}
+          style={{
+            width: size, height: size, borderRadius: '50%', objectFit: 'cover',
+            border: border || 'none', boxSizing: 'border-box',
+            position: 'absolute', inset: 0,
+            opacity: loaded ? 1 : 0,
+            transition: 'opacity 0.2s ease',
+          }}
+        />
+      )}
+    </div>
+  )
+}
+
 function MemberCard({ member, slug, onClick }: { member: Member; slug: string; onClick: () => void }) {
   const originalPhoto = member.photo ? getPhoto(member.photo) : undefined
   const photo = originalPhoto ? thumborUrl(originalPhoto, 200, 200) : undefined
   const hasBio = !!member.bio
   const isIntern = member.role === 'Intern'
   const accent = DEPT_ACCENTS[slug] || '#40ba21'
-  // вытащим первый цвет градиента для аватара
   const avatarColor = isIntern ? '#94a3b8' : (accent.includes('1d4ed8') ? '#1d4ed8' : '#40ba21')
 
   return (
@@ -661,10 +688,7 @@ function MemberCard({ member, slug, onClick }: { member: Member; slug: string; o
       onMouseEnter={e => { if (hasBio) { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)' } }}
       onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '' }}
     >
-      {photo
-        ? <img src={photo} alt={member.name} style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: `2.5px solid ${avatarColor}` }} onError={e => { if (originalPhoto) (e.currentTarget as HTMLImageElement).src = originalPhoto }} />
-        : <div style={{ width: 72, height: 72, borderRadius: '50%', background: avatarColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 26, fontWeight: 800 }}>{member.name[0]}</div>
-      }
+      <MemberAvatar photo={photo} originalPhoto={originalPhoto} name={member.name} size={72} color={avatarColor} border={`2.5px solid ${avatarColor}`} />
       <div>
         <span style={{ fontWeight: 700, color: '#0f172a', fontSize: 14, lineHeight: 1.3, display: 'block' }}>{member.name}</span>
         {member.role && <span style={{ fontSize: 11, color: avatarColor, fontWeight: 700, letterSpacing: '0.5px' }}>{member.role}</span>}
@@ -761,10 +785,7 @@ function HomePage({ t }: { t: T }) {
           const photo = originalPhoto ? thumborUrl(originalPhoto, 200, 200) : undefined
           return (
             <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-              {photo
-                ? <img src={photo} alt={m.name} style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', border: '3px solid #40ba21' }} onError={e => { if (originalPhoto) (e.currentTarget as HTMLImageElement).src = originalPhoto }} />
-                : <div style={{ width: 100, height: 100, borderRadius: '50%', background: '#40ba21', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 36, fontWeight: 'bold' }}>{m.name[0]}</div>
-              }
+              <MemberAvatar photo={photo} originalPhoto={originalPhoto} name={m.name} size={100} color="#40ba21" border="3px solid #40ba21" />
               <span style={{ fontWeight: 700, color: '#1e293b', fontSize: 15 }}>{m.name}</span>
               <span style={{ fontSize: 12, color: '#40ba21', fontWeight: 600 }}>{m.role}</span>
             </div>
