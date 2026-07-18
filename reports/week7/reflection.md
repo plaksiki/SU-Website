@@ -36,10 +36,11 @@
 
 - More fast photo upload.
 - Polls now can be uploaded seperately in csv format.
-- Now logic of csv report is located on backend, but not frontend.
-- Admin panel and departments view refactoring.
-- Now pages are updated when surfing between them through the website.
+- Now the logic of csv report is located on backend, but not frontend.
+- The Admin panel and departments view refactoring.
+- Now the pages are updated when surfing between them through the website.
 - Polls and Events can be changed.
+- The Logo SU was added from the brandbook.
 
 ## 2. Validated Assumptions
 
