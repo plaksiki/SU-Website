@@ -3,43 +3,55 @@
 ## Product Status & Handover Scope
 
 - **What this covers:** The web portal of the Innopolis University Students Union (SU) - the "business card" of SU and the interaction bridge between SU members and university students. Covers frontend (TypeScript), backend (Java), and database (PostgreSQL).
-- **What is NOT covered:** A mobile app - does not exist and is not part of the current project scope.
-- **Current state in one paragraph:** The current release is MVP v2.1.0 (2026-07-12, per CHANGELOG.md) - a TypeScript frontend paired with a Java Spring Boot backend, deployed via Docker Compose on the production VM 10.93.26.192. v2.1.0 added the SU Brandbook and fixed polls/events created from the admin panel not appearing on the site pages.
+- **What is NOT covered:** Admin Panel backlog.
+- **Current state:** The current release is MVP v3.0.0 (2026-07-19, per CHANGELOG.md) - a TypeScript frontend paired with a Java Spring Boot backend, deployed via Docker Compose on the production VM 10.93.26.192. v3.0.0 came with refactored admin panel and ability to edit created items
 
 ## Transition Scope
 
-| Item | Type | Status | Notes |
-|---|---|---|---|
-| github.com/plaksiki/SU-Website | Repository | Transferred | Public repository, MIT license; GitHub account owner is `plaksiki`, not the SU directly |
-| Production VM (`10.93.26.192`) | Deployment | Transfered | SSH access as `root`; dev team currently holds root access |
-| su-backend (Spring Boot) | Service | Retained by dev team | Deployed via `docker-compose.prod.yml` |
-| su-frontend (TS) | Service | Retained by dev team | Deployed via `docker-compose.prod.yml` |
-| PostgreSQL instance | Service | Retained by dev team | Port 5432, configured via `.env` |
-| GitHub Actions CI/CD (`.github/workflows`) | Ownership | Retained by dev team | Pipeline configuration stays with developers |
-| Netlify deployment of MVP v0 | Deployment | Deprecated | https://innopolissu.netlify.app/ - test development |
+The product is delivered as open-source code. The customer can:
+
+1. **Fork the repository** at `https://github.com/plaksiki/SU-Website`
+2. **Clone and deploy** using the provided [DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md) instructions
+3. **Customize** the code as needed for their own VM
+
+| Item | Status | Notes |
+| :--- | :--- | :--- |
+| Source Code | **Open source** | Public repository, MIT license; The customer is expected to fork the repository and deploy on their own VM |
+| Documentation | **Provided** | DEPLOY.md, docs/, AGENTS.md |
+| Production VM | **Not transferred** | Dev team's university VM is for demo purposes only |
+| Hosting | **Not included** | Customer's dev team or plaksiki team (by request) deploys on customer's own infrastructure |
+
+
+**Important:** The production VM at `10.93.26.192` is for development/demo purposes. The customer is expected to fork the repository and deploy on their own VM.
 
 ## Access & Usage
 
-- **How the customer accesses the product:** The production portal is available at `http://10.93.26.192/`.
-- **Accounts / roles:** Admin
-- **Typical usage flow:** A student opens the portal -> finds information about the SU (departments, events, contacts) -> uses the portal as the main source of news/reference about SU activities.
+- **How the customer accesses the product:** The production portal is currently available at `http://10.93.26.192/` within the univerity's wifi.
+- **Accounts / roles:** Admin (role).
+- **Typical usage flow:** A student opens the portal -> finds information about the SU departments -> go to the Events page to find information about this department activities.
 
 ## Installation / Deployment
 
-- **Deployment method:** Docker Compose (`docker-compose.prod.yml`), three services: `su-website-backend`, `su-website-db`, `su-website-frontend`.
+- **Deployment method:** Docker Compose (`docker-compose.prod.yml`), four services: `su-website-backend`, `su-website-db`, `su-website-frontend`, `su-thumbor`.
 - **Environments:** Production — VM `10.93.26.192`.
+- - **Configuration (Environment Variables):**
+  - Stored in `.env` file
+  - Required variables: `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `THUMBOR_SECURITY_KEY`
+  - See [`.env.example`](https://github.com/plaksiki/SU-Website/blob/Assignment/.env.example) in the public repository
 - **Current deployment owner:** Development team "plaksiki".
 - **Setup steps customer must follow:**
   1. `git clone https://github.com/plaksiki/SU-Website.git && cd SU-Website`
   2. `cp .env.example .env` and fill in real values
   3. `docker compose -f docker-compose.prod.yml up -d --build`
-  4. Check status: `docker ps` (backend, db, frontend should show `Up`)
+  4. Check status: `docker ps` (backend, db, frontend and thumbor should show `Up`)
   5. Open `http://<vm-ip>` in a browser
-  (Full instructions: [DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md))
-- **Recovery steps customer must follow:** We wrote instructions in [README.md](https://github.com/plaksiki/SU-Website/blob/main/README.md) and [DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md) to recovery our product.
-- **Verification steps customer must follow:** The health-check script from DEPLOY.md verifies: container status, frontend HTTP response code, backend `/actuator/health`, and PostgreSQL container status.
-
-**Auto-update:** The VM automatically checks for updates every 5 minutes via cron (`*/5 * * * * cd /root/SU-Website && /bin/bash update.sh`). Manual update: `cd /SU-Website && ./update.sh`. Logs: `tail -f /var/log/site-update.log`.
+  (**Full instructions:** [DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md-deploy-from-scratch))
+- **Recovery steps customer must follow:**
+  1. If container crashes: `docker compose -f docker-compose.prod.yml restart <service>`
+  2. If database is corrupted: restore from backup using `docker exec -i su-website-db-1 psql -U postgres < backup.sql`
+  3. If VM fails: clone repository on new VM and follow DEPLOY.md
+  4. In other case customer should follow [DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md) for step-by-step recovery procedures.
+- **Verification steps customer must follow:** The health-check described from [DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md#health-test) verifies: container status, frontend HTTP response code, backend API, PostgreSQL and Thumbor containers status.
 
 ## Configuration & Secrets Handling
 
