@@ -11,6 +11,8 @@ interface SuEvent {
   id: string
   title: string
   date: string
+  eventTime?: string
+  finishedAt?: string
   location: string
   description: string
   photoUrls?: string
@@ -29,6 +31,8 @@ interface Questionnaire {
   title: string
   description: string
   questions: Question[]
+  startedAt?: string
+  finishedAt?: string
 }
 
 // ============================================================================
@@ -492,6 +496,8 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   const [editQTitle, setEditQTitle] = useState('')
   const [editQDescription, setEditQDescription] = useState('')
   const [editQQuestions, setEditQQuestions] = useState<Question[]>([])
+  const [editQStartedAt, setEditQStartedAt] = useState('')
+  const [editQFinishedAt, setEditQFinishedAt] = useState('')
   const [editQNewText, setEditQNewText] = useState('')
   const [editQNewType, setEditQNewType] = useState<QuestionType>('open_text')
   const [editQNewOptions, setEditQNewOptions] = useState('')
@@ -537,11 +543,13 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   const refreshEvents = () => {
     fetch(`${API_URL}/events`)
       .then(r => r.json())
-      .then((data: { id: number; title: string; description: string; eventTime: string; eventLocation: string }[]) => {
+      .then((data: { id: number; title: string; description: string; eventTime: string; finishedAt?: string; eventLocation: string }[]) => {
         const mapped = data.map(e => ({
           id: e.id.toString(),
           title: e.title,
           date: e.eventTime ? e.eventTime.split('T')[0] : '',
+          eventTime: e.eventTime ?? undefined,
+          finishedAt: e.finishedAt ?? undefined,
           location: e.eventLocation || '',
           description: e.description || '',
         }))
@@ -612,6 +620,8 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
       id: Date.now().toString(),
       title: newTitle,
       date: newDate.split('T')[0],
+      eventTime: newDate,
+      finishedAt: newFinishedAt || undefined,
       location: newLocation,
       description: newDescription,
       photoUrls: newPhotoUrls.trim() || undefined,
@@ -655,6 +665,8 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
     setEditingQuestionnaire(qn)
     setEditQTitle(qn.title)
     setEditQDescription(qn.description)
+    setEditQStartedAt(qn.startedAt ? qn.startedAt.slice(0, 16) : '')
+    setEditQFinishedAt(qn.finishedAt ? qn.finishedAt.slice(0, 16) : '')
     setEditQNewText('')
     setEditQNewType('open_text')
     setEditQNewOptions('')
@@ -713,7 +725,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
 
   const handleSaveEditQ = async () => {
     if (!editingQuestionnaire) return
-    const updated = { ...editingQuestionnaire, title: editQTitle, description: editQDescription, questions: editQQuestions }
+    const updated = { ...editingQuestionnaire, title: editQTitle, description: editQDescription, questions: editQQuestions, startedAt: editQStartedAt || editingQuestionnaire.startedAt, finishedAt: editQFinishedAt || undefined }
     const stored = questionnaires.map(q => q.id === editingQuestionnaire.id ? updated : q)
     setQuestionnaires(stored)
     localStorage.setItem('admin_questionnaires', JSON.stringify(stored))
@@ -724,7 +736,12 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
       await fetch(`${API_URL}/questionnaire/${editingQuestionnaire.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: editQTitle, description: editQDescription }),
+        body: JSON.stringify({
+          title: editQTitle,
+          description: editQDescription,
+          startedAt: editQStartedAt ? new Date(editQStartedAt).toISOString().replace('Z', '') : null,
+          finishedAt: editQFinishedAt ? new Date(editQFinishedAt).toISOString().replace('Z', '') : null,
+        }),
       })
 
       // Обновляем каждый существующий вопрос (у которого id — числовой, т.е. пришёл с бэкенда)
@@ -766,8 +783,8 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
     setEditTitle(event.title)
     setEditLocation(event.location)
     setEditDescription(event.description)
-    setEditDate(event.date ? `${event.date}T00:00` : '')
-    setEditFinishedAt('')
+    setEditDate(event.eventTime ? event.eventTime.slice(0, 16) : (event.date ? `${event.date}T00:00` : ''))
+    setEditFinishedAt(event.finishedAt ? event.finishedAt.slice(0, 16) : '')
     setEditPhotoUrls(event.photoUrls || '')
     setEditGalleryUrl(event.galleryUrl || '')
   }
@@ -1130,6 +1147,10 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
                 <p className="admin-hint">{t.bilingual_hint}</p>
                 <input type="text" className="admin-input" value={editQTitle} onChange={e => setEditQTitle(e.target.value)} placeholder={t.q_title_placeholder} />
                 <textarea className="admin-input" value={editQDescription} onChange={e => setEditQDescription(e.target.value)} placeholder={t.q_desc_placeholder} rows={2} style={{ resize: 'vertical' }} />
+                <p className="admin-field-label">{t.event_start_date}</p>
+                <input type="datetime-local" className="admin-input" value={editQStartedAt} onChange={e => setEditQStartedAt(e.target.value)} max="9999-12-31T23:59" />
+                <p className="admin-field-label">{t.event_end_date}</p>
+                <input type="datetime-local" className="admin-input" value={editQFinishedAt} onChange={e => setEditQFinishedAt(e.target.value)} max="9999-12-31T23:59" />
 
                 {/* Existing questions */}
                 <p style={{ fontSize: 13, fontWeight: 600, margin: '16px 0 8px' }}>{t.questions_in_draft} ({editQQuestions.length})</p>
