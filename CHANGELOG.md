@@ -17,16 +17,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.0.0] - 2026-07-19
 
 ## Added
+
 - Tab navigation in admin panel: Create Event / Events / Create Questionnaire / Questionnaires
 - Admin username displayed in topbar
 - Data persistence via localStorage — survives page refresh
+- Ability to edit events/surveys from Admin Panel
 
 ## Changed
-- Optimistic UI updates — events and questionnaires appear instantly without waiting for server
+
+- Events and questionnaires appear instantly without waiting for server
 - Server requests run in background after UI is already updated
 - Events and polls pages load instantly from cache
 
 ## Fixed
+
 - Auto-redirect to list view after creating an event or questionnaire
 - Questionnaire form fields now always clear after submission
 - Events not appearing on Events page after creation
