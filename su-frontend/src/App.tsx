@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Link, useParams } from 'react-router-dom'
+import suLogo from './assets/Logo.png'
 import './App.css'
 import AdminPage from './AdminPage'
 import { useNavigate } from 'react-router-dom'
@@ -663,9 +664,9 @@ function MemberAvatar({ photo, originalPhoto, name, size, color, border }: { pho
   )
 }
 
-function MemberCard({ member, slug, onClick }: { member: Member; slug: string; onClick: () => void }) {
+function MemberCard({ member, slug, onClick, avatarSize = 72 }: { member: Member; slug: string; onClick: () => void; avatarSize?: number }) {
   const originalPhoto = member.photo ? getPhoto(member.photo) : undefined
-  const photo = originalPhoto ? thumborUrl(originalPhoto, 200, 200) : undefined
+  const photo = originalPhoto ? thumborUrl(originalPhoto, avatarSize * 2, avatarSize * 2) : undefined
   const hasBio = !!member.bio
   const isIntern = member.role === 'Intern'
   const accent = DEPT_ACCENTS[slug] || '#40ba21'
@@ -684,7 +685,7 @@ function MemberCard({ member, slug, onClick }: { member: Member; slug: string; o
       onMouseEnter={e => { if (hasBio) { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)' } }}
       onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '' }}
     >
-      <MemberAvatar photo={photo} originalPhoto={originalPhoto} name={member.name} size={72} color={avatarColor} border={`2.5px solid ${avatarColor}`} />
+      <MemberAvatar photo={photo} originalPhoto={originalPhoto} name={member.name} size={avatarSize} color={avatarColor} border={`2.5px solid ${avatarColor}`} />
       <div>
         <span style={{ fontWeight: 700, color: '#0f172a', fontSize: 14, lineHeight: 1.3, display: 'block' }}>{member.name}</span>
         {member.role && <span style={{ fontSize: 11, color: avatarColor, fontWeight: 700, letterSpacing: '0.5px' }}>{member.role}</span>}
@@ -741,7 +742,7 @@ function Navbar({ lang, setLang, t }: { lang: Lang; setLang: (l: Lang) => void; 
   return (
     <nav className="navbar">
       <div className="nav-logo" style={{ textDecoration: 'none' }} onClick={handleLogoClick}>
-        <span className="logo-box">IU</span>
+        <img src={suLogo} alt="SU Logo" style={{ width: 36, height: 36, objectFit: 'contain' }} />
         <span className="logo-text">Student Union Portal</span>
       </div>
       <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>☰</button>
@@ -760,11 +761,12 @@ function Navbar({ lang, setLang, t }: { lang: Lang; setLang: (l: Lang) => void; 
 }
 
 const ceoMembers: Member[] = [
-  { name: "Alena Petrenko", role: "SU:CEO", photo: "./assets/Alena.jpg" },
-  { name: "Ilya Kachalin", role: "Assistant", photo: "./assets/Ilia.jpg" },
+  { name: "Alena Petrenko", role: "SU:CEO", photo: "./assets/Alena.jpg", bio: "Working as a SU:CEO has its ups and downs, but I enjoy the process of learning and excited to continue creating a better environment for all the students" },
+  { name: "Ilya Kachalin", role: "Assistant", photo: "./assets/Ilia.jpg", bio: "heyy! my name is Ilya and I am the Executive Assistant of SU. I am also the guy that enjoys a lot of things: events, photography, editing, writing, documenting, even something as ordinary as talking to people. that is why I am here – to provide as much value as I can within and beyond SU – through actions and vision, through advice and experience, through being by your side." },
 ]
 
 function HomePage({ t }: { t: T }) {
+  const [selectedCeo, setSelectedCeo] = useState<Member | null>(null)
   return (
     <div className="container">
       <div className="hero">
@@ -776,18 +778,11 @@ function HomePage({ t }: { t: T }) {
         <h2>{t.ceo_title}</h2>
       </div>
       <div style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 48 }}>
-        {ceoMembers.map((m, i) => {
-          const originalPhoto = m.photo ? getPhoto(m.photo) : undefined
-          const photo = originalPhoto ? thumborUrl(originalPhoto, 200, 200) : undefined
-          return (
-            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-              <MemberAvatar photo={photo} originalPhoto={originalPhoto} name={m.name} size={100} color="#40ba21" border="3px solid #40ba21" />
-              <span style={{ fontWeight: 700, color: '#1e293b', fontSize: 15 }}>{m.name}</span>
-              <span style={{ fontSize: 12, color: '#40ba21', fontWeight: 600 }}>{m.role}</span>
-            </div>
-          )
-        })}
+        {ceoMembers.map((m, i) => (
+          <MemberCard key={i} member={m} slug="su-core" onClick={() => setSelectedCeo(m)} avatarSize={100} />
+        ))}
       </div>
+      {selectedCeo && <MemberModal member={selectedCeo} slug="su-core" onClose={() => setSelectedCeo(null)} />}
       <div className="section-title">
         <h2>{t.org_title}</h2>
         <p>{t.org_desc}</p>
@@ -1051,7 +1046,7 @@ function Footer() {
       <div className="footer-content">
         <div className="footer-left">
           <div className="footer-logo">
-            <span className="logo-box">IU</span>
+            <img src={suLogo} alt="SU Logo" style={{ width: 36, height: 36, objectFit: 'contain' }} />
             <span style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>Student Union Portal</span>
           </div>
           <p className="footer-subtitle">INNOPOLIS UNIVERSITY STUDENT UNION</p>
