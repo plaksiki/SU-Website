@@ -5,6 +5,15 @@
 ### Customer review and feedback:
 
 - The team conducted a customer review session on 2026-07-17. See: [meeting summary](https://github.com/plaksiki/SU-Website/blob/main/reports/week7/sprint-review-summary.md), [transcript](https://github.com/plaksiki/SU-Website/blob/main/reports/week7/sprint-review-transcript.md).
+- Key finding:
+  - The time should be right during creating a new questionnare.
+  - The leaders of SU departaments should have an extended information, as a common members.
+  - The button for choosing the time during creating a new questionnaire should be close to time, but not at the end of the raw.
+  - Polls should be tracked by id within the DB, but not randomly.
+  - Polls should have active and passive mode.
+  - Polls should be in order that they were created.
+  - It should be possible to edit polls.
+  - It should be possible to upload photos not by url, but by the photo itself.
 
 ### Documentation review
 
@@ -19,6 +28,7 @@
 
 - Git workflow stayed the same as during Sprint 3.
 - We put more effort into the documentation: added instructions for agents and contributors, updated already existed documentation we started the project with.
+- We tried to finish the main documentation by the end of Saturday and the beginning of Sunday.
 
 ### Sprint increment
 
@@ -26,6 +36,7 @@
 
 - More fast photo upload.
 - Polls now can be uploaded seperately in csv format.
+- Now logic of csv report is located on backend, but not frontend.
 - Admin panel and departments view refactoring.
 - Now pages are updated when surfing between them through the website.
 - Polls and Events can be changed.
@@ -48,12 +59,12 @@
 - The Website design is approved.
 - The architecture design decision is not good: most of logic implemented through frontend.
 - No catching of exceptions are in the system.
+- In general, out website is good for the first project, but since a small experience we have a few technical issues. 
 
 ## 3. Friction and Gaps
 
 ### Unresolved requirements
 
-- Thumbor implementation to optimize photo downloading.
 - Unsuccessful responses are not proceed.
 
 ### Technical risks
@@ -83,4 +94,6 @@
 
 ## 4. Planned Response
 
-- Demonstrate and transfer final version of the product, finish the project and present it on 21 of July as a final exam.
+- Fix the final bugs
+- Demonstrate and transfer final version of the product
+- Finish the project and present it on 21 of July as a final exam.
