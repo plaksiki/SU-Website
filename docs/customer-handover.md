@@ -145,7 +145,7 @@ The product is delivered as open-source code. The customer can:
   - Contact the Team Lead via email `al.petrova@innopolis.university`. Response time: within 24 hours during the working days.
   - **All members contacts:**
 | Name | Role | Contact |
-|---|---|---|
+| :--- | :--- | :--- |
 | Alina Petrova | Teaml-lead / Microservices Engineer | [GitHub](https://github.com/bilidjinka) · al.petrova@innopolis.university |
 | Daria Sevostianova | Scrum Master / Backend | [GitHub](https://github.com/dashasevostianova) · d.sevostianova@innopolis.university |
 | Bulat Shaikhutdinov | Frontend | [GitHub](https://github.com/LoLiTop1gg) · b.shaikhutdinov@innopolis.university |
