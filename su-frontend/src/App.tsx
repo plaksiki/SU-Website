@@ -1096,19 +1096,6 @@ function Footer() {
   )
 }
 
-function mapCachedEvent(e: { id: string; title: string; date: string; location: string; description: string; photoUrls?: string; galleryUrl?: string }, idx: number): SuEvent {
-  return {
-    id: e.id,
-    name: e.title,
-    date: e.date,
-    color: EVENT_COLORS[idx % EVENT_COLORS.length],
-    location: e.location || '',
-    description: e.description || '',
-    isActive: e.date ? new Date(e.date) >= new Date() : true,
-    photoUrls: e.photoUrls ? e.photoUrls.split('\n').map(s => s.trim()).filter(s => s) : [],
-    galleryUrl: e.galleryUrl || '',
-  }
-}
 
 function App() {
   const [lang, setLang] = useState<Lang>('en')
