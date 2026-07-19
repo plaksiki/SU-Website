@@ -5,7 +5,7 @@
 | Role | Name | Speaker Code |
 | :--- | :--- | :--- |
 | **Team Lead** | Alina | **Speaker 1** |
-| **Customer / Product Owner** | Anna | **Speaker 2** |
+| **Customer** | Anna | **Speaker 2** |
 | **Front-end Developer** | Sveta | **Speaker 3** |
 | **Front-end Developer** | Bulat | **Speaker 4** |
 | **Database Developer** | Emil | **Speaker 5** |
