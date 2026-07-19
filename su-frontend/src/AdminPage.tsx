@@ -677,7 +677,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   // ========== EVENT HANDLERS ==========
 
   const handleAddEvent = async () => {
-    if (!newTitle || !newDate || !newLocation || !newDescription) {
+    if (!newTitle || !newDate || !newDescription) {
       setEventFormError(t.form_error_fields)
       return
     }
