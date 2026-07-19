@@ -523,7 +523,6 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   const [newLocation, setNewLocation] = useState('')
   const [newDescription, setNewDescription] = useState('')
   const [newFinishedAt, setNewFinishedAt] = useState('')
-  const [newPhotoUrls, setNewPhotoUrls] = useState('')
   const [newPhotoFiles, setNewPhotoFiles] = useState<File[]>([])
   const [uploadingPhotos, setUploadingPhotos] = useState(false)
   const [newGalleryUrl, setNewGalleryUrl] = useState('')
@@ -687,7 +686,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
     setNewLocation('')
     setNewDescription('')
     setNewFinishedAt('')
-    setNewPhotoUrls('')
+
     setNewPhotoFiles([])
     setNewGalleryUrl('')
     setView('event_list')
@@ -884,18 +883,6 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
 
   const handleSaveEdit = () => {
     if (!editingEvent) return
-    const updated: SuEvent = {
-      ...editingEvent,
-      title: editTitle,
-      location: editLocation,
-      description: editDescription,
-      date: editDate ? editDate.split('T')[0] : editingEvent.date,
-      // Сохраняем и полную дату-время начала — иначе при повторном Edit
-      // время подтягивалось из устаревшего eventTime и «сбрасывалось».
-      eventTime: editDate || editingEvent.eventTime,
-      photoUrls: editPhotoUrls.trim() || undefined,
-      galleryUrl: editGalleryUrl.trim() || undefined,
-    }
     fetch(`${API_URL}/event/${editingEvent.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
