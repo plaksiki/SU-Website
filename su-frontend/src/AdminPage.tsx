@@ -512,9 +512,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   const [loginError, setLoginError] = useState('')
   const [view, setView] = useState<AdminView>('event_create')
 
-  const [events, setEvents] = useState<SuEvent[]>(() => {
-    try { return JSON.parse(localStorage.getItem('admin_events') || '[]') } catch { return [] }
-  })
+  const [events, setEvents] = useState<SuEvent[]>([])
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>(() => {
     try { return sortQuestionnaires(JSON.parse(localStorage.getItem('admin_questionnaires') || '[]')) } catch { return [] }
   })
@@ -583,7 +581,6 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
 
   const saveEvents = (list: SuEvent[]) => {
     setEvents(list)
-    localStorage.setItem('admin_events', JSON.stringify(list))
     onEventsChange?.(list)
   }
 
@@ -643,6 +640,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
 
   useEffect(() => {
     if (isLoggedIn) {
+      localStorage.removeItem('admin_events')
       refreshEvents()
       refreshQuestionnaires()
     }
@@ -683,20 +681,6 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
     }
     setEventFormError('')
 
-    const localEvent: SuEvent = {
-      id: Date.now().toString(),
-      title: newTitle,
-      date: newDate.split('T')[0],
-      eventTime: newDate,
-      finishedAt: newFinishedAt || undefined,
-      location: newLocation,
-      description: newDescription,
-      photoUrls: newPhotoUrls.trim() || undefined,
-      galleryUrl: newGalleryUrl.trim() || undefined,
-    }
-
-    // Обновляем UI сразу, не ждём сервер
-    saveEvents([localEvent, ...events])
     const filesToUpload = [...newPhotoFiles]
     setNewTitle('')
     setNewDate('')
@@ -752,8 +736,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
 
   const handleDeleteEvent = (id: string) => {
     if (!confirm(t.confirm_delete_event)) return
-    saveEvents(events.filter(e => e.id !== id))
-    fetch(`${API_URL}/event/${id}`, { method: 'DELETE' }).catch(() => {})
+    fetch(`${API_URL}/event/${id}`, { method: 'DELETE' }).then(() => refreshEvents()).catch(() => {})
   }
 
   const handleStartEditQ = async (qn: Questionnaire) => {
@@ -913,7 +896,6 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
       photoUrls: editPhotoUrls.trim() || undefined,
       galleryUrl: editGalleryUrl.trim() || undefined,
     }
-    saveEvents(events.map(e => e.id === updated.id ? updated : e))
     fetch(`${API_URL}/event/${editingEvent.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -926,7 +908,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
         photoUrls: editPhotoUrls.trim() || null,
         galleryUrl: editGalleryUrl.trim() || null,
       }),
-    }).catch(() => {})
+    }).then(() => refreshEvents()).catch(() => {})
     setEditingEvent(null)
   }
 
