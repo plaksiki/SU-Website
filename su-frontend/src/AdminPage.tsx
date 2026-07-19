@@ -885,6 +885,19 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
 
   const handleSaveEdit = () => {
     if (!editingEvent) return
+    const optimistic: SuEvent = {
+      ...editingEvent,
+      title: editTitle,
+      description: editDescription,
+      date: editDate ? editDate.split('T')[0] : editingEvent.date,
+      eventTime: toLocalDateTime(editDate) ?? undefined,
+      finishedAt: toLocalDateTime(editFinishedAt) ?? undefined,
+      location: editLocation,
+      photoUrls: editPhotoUrls.trim() || undefined,
+      galleryUrl: editGalleryUrl.trim() || undefined,
+    }
+    setEvents(prev => prev.map(e => e.id === optimistic.id ? optimistic : e))
+    setEditingEvent(null)
     fetch(`${API_URL}/event/${editingEvent.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -898,7 +911,6 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
         galleryUrl: editGalleryUrl.trim() || null,
       }),
     }).then(() => refreshEvents()).catch(() => {})
-    setEditingEvent(null)
   }
 
   // ========== QUESTION HANDLERS ==========
