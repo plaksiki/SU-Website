@@ -602,7 +602,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   const refreshEvents = () => {
     fetch(`${API_URL}/events`)
       .then(r => r.json())
-      .then((data: { id: number; title: string; description: string; eventTime: string; finishedAt?: string; eventLocation: string }[]) => {
+      .then((data: { id: number; title: string; description: string; eventTime: string; finishedAt?: string; eventLocation: string; photoUrls?: string; galleryUrl?: string }[]) => {
         const mapped = data.map(e => ({
           id: e.id.toString(),
           title: e.title,
@@ -611,6 +611,8 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
           finishedAt: e.finishedAt ?? undefined,
           location: e.eventLocation || '',
           description: e.description || '',
+          photoUrls: e.photoUrls ?? undefined,
+          galleryUrl: e.galleryUrl ?? undefined,
         }))
         saveEvents(mapped)
       })
