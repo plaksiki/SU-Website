@@ -13,3 +13,44 @@ body {
   width: 100%;
   min-height: 100vh;
 }
+
+/* Поле даты с иконкой слева. Нативную иконку браузера (справа) убираем
+   кроссбраузерно: контейнер обрезает overflow, а input растянут шире него,
+   поэтому нативная иконка уезжает за границу обрезки и не видна нигде
+   (в т.ч. в Firefox, где её нельзя спрятать через CSS). */
+.dt-field {
+  position: relative;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  background: #fff;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.dt-field:focus-within { border-color: #40ba21; }
+.dt-field::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  background: center / 18px 18px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3C/svg%3E");
+}
+.dt-field input {
+  display: block;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 12px 16px 12px 40px;
+  width: calc(100% + 48px);
+  box-sizing: border-box;
+  cursor: pointer;
+}
+/* На всякий случай прячем и webkit-иконку (Chrome/Edge) */
+.dt-field input::-webkit-calendar-picker-indicator { opacity: 0; }

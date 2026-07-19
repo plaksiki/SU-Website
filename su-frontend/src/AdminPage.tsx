@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, type MouseEvent as ReactMouseEvent } from 'react'
 
 const API_URL = 'http://10.93.26.192:8080'
 const ADMIN_USERNAME = 'admin'
@@ -452,6 +452,37 @@ const ADMIN_STYLES = `
 // MAIN COMPONENT
 // ============================================================================
 
+// Сортировка опросников по дате создания: самый новый — первым.
+// Берём startedAt (проставляется при создании), а если его нет —
+// падаем на числовой id (у свежесозданных локальных это Date.now(), т.е. тоже «свежесть»).
+const questionnaireSortKey = (q: Questionnaire) =>
+  q.startedAt ? new Date(q.startedAt).getTime() : Number(q.id) || 0
+const sortQuestionnaires = (list: Questionnaire[]) =>
+  [...list].sort((a, b) => questionnaireSortKey(b) - questionnaireSortKey(a))
+
+// Поле выбора даты-времени: своя иконка слева, нативная иконка браузера справа
+// скрыта через обрезку контейнера (см. .dt-field в index.css). Клик по иконке
+// слева (левые ~40px) открывает нативный календарь через showPicker().
+function DateTimeField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const ref = useRef<HTMLInputElement>(null)
+  const handleClick = (e: ReactMouseEvent<HTMLDivElement>) => {
+    const offsetX = e.clientX - e.currentTarget.getBoundingClientRect().left
+    const el = ref.current
+    if (offsetX <= 40 && el && typeof el.showPicker === 'function') el.showPicker()
+  }
+  return (
+    <div className="dt-field" onClick={handleClick}>
+      <input
+        ref={ref}
+        type="datetime-local"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        max="9999-12-31T23:59"
+      />
+    </div>
+  )
+}
+
 type AdminView = 'event_create' | 'event_list' | 'q_create' | 'q_list'
 
 function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (events: unknown[]) => void }) {
@@ -468,7 +499,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
     try { return JSON.parse(localStorage.getItem('admin_events') || '[]') } catch { return [] }
   })
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>(() => {
-    try { return JSON.parse(localStorage.getItem('admin_questionnaires') || '[]') } catch { return [] }
+    try { return sortQuestionnaires(JSON.parse(localStorage.getItem('admin_questionnaires') || '[]')) } catch { return [] }
   })
 
   // Event create form
@@ -538,8 +569,9 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   }
 
   const saveQuestionnaires = (list: Questionnaire[]) => {
-    setQuestionnaires(list)
-    localStorage.setItem('admin_questionnaires', JSON.stringify(list))
+    const sorted = sortQuestionnaires(list)
+    setQuestionnaires(sorted)
+    localStorage.setItem('admin_questionnaires', JSON.stringify(sorted))
   }
 
   const refreshEvents = () => {
@@ -565,10 +597,12 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
       .then(r => r.json())
       .then(data =>
         saveQuestionnaires(
-          data.map((q: { id: number; title: string; description: string }) => ({
+          data.map((q: { id: number; title: string; description: string; startedAt?: string; finishedAt?: string }) => ({
             id: q.id.toString(),
             title: q.title,
             description: q.description,
+            startedAt: q.startedAt,
+            finishedAt: q.finishedAt,
             questions: [],
           }))
         )
@@ -728,9 +762,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   const handleSaveEditQ = async () => {
     if (!editingQuestionnaire) return
     const updated = { ...editingQuestionnaire, title: editQTitle, description: editQDescription, questions: editQQuestions, startedAt: editQStartedAt || editingQuestionnaire.startedAt, finishedAt: editQFinishedAt || undefined }
-    const stored = questionnaires.map(q => q.id === editingQuestionnaire.id ? updated : q)
-    setQuestionnaires(stored)
-    localStorage.setItem('admin_questionnaires', JSON.stringify(stored))
+    saveQuestionnaires(questionnaires.map(q => q.id === editingQuestionnaire.id ? updated : q))
     setEditingQuestionnaire(null)
 
     // Сохраняем на бэкенд
@@ -799,6 +831,9 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
       location: editLocation,
       description: editDescription,
       date: editDate ? editDate.split('T')[0] : editingEvent.date,
+      // Сохраняем и полную дату-время начала — иначе при повторном Edit
+      // время подтягивалось из устаревшего eventTime и «сбрасывалось».
+      eventTime: editDate || editingEvent.eventTime,
       photoUrls: editPhotoUrls.trim() || undefined,
       galleryUrl: editGalleryUrl.trim() || undefined,
     }
@@ -857,10 +892,11 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
     setQFormError('')
 
     const localId = Date.now().toString()
+    const createdAt = qStartedAt ? new Date(qStartedAt).toISOString() : new Date().toISOString()
     const snapshot = { title: qTitle, description: qDescription, questions: [...draftQuestions] }
 
     // Обновляем UI сразу
-    saveQuestionnaires([{ id: localId, ...snapshot }, ...questionnaires])
+    saveQuestionnaires([{ id: localId, startedAt: createdAt, ...snapshot }, ...questionnaires])
     setQTitle('')
     setQDescription('')
     setQStartedAt('')
@@ -1004,9 +1040,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
           <input type="text" className="admin-input" value={newLocation} onChange={e => setNewLocation(e.target.value)} placeholder={t.event_location_placeholder} />
           <textarea className="admin-input" value={newDescription} onChange={e => setNewDescription(e.target.value)} placeholder={t.event_description_placeholder} rows={3} style={{ resize: 'vertical' }} />
           <p className="admin-field-label">{t.event_start_date}</p>
-          <input type="datetime-local" className="admin-input" value={newDate} onChange={e => setNewDate(e.target.value)} max="9999-12-31T23:59" />
-          <p className="admin-field-label">{t.event_end_date}</p>
-          <input type="datetime-local" className="admin-input" value={newFinishedAt} onChange={e => setNewFinishedAt(e.target.value)} max="9999-12-31T23:59" />
+          <DateTimeField value={newDate} onChange={setNewDate} />
           <button className="btn" onClick={handleAddEvent} style={{ width: '100%' }}>{t.create_event}</button>
           {eventFormError && <p className="admin-error">{eventFormError}</p>}
         </div>
@@ -1030,9 +1064,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
                 <input type="text" className="admin-input" value={editLocation} onChange={e => setEditLocation(e.target.value)} placeholder={t.event_location_placeholder} />
                 <textarea className="admin-input" value={editDescription} onChange={e => setEditDescription(e.target.value)} placeholder={t.event_description_placeholder} rows={3} style={{ resize: 'vertical' }} />
                 <p className="admin-field-label">{t.event_start_date}</p>
-                <input type="datetime-local" className="admin-input" value={editDate} onChange={e => setEditDate(e.target.value)} max="9999-12-31T23:59" />
-                <p className="admin-field-label">{t.event_end_date}</p>
-                <input type="datetime-local" className="admin-input" value={editFinishedAt} onChange={e => setEditFinishedAt(e.target.value)} max="9999-12-31T23:59" />
+                <DateTimeField value={editDate} onChange={setEditDate} />
                 <p className="admin-field-label">{t.event_photos_placeholder}</p>
                 <p className="admin-hint">{t.event_photos_hint}</p>
                 <textarea className="admin-input" value={editPhotoUrls} onChange={e => setEditPhotoUrls(e.target.value)} placeholder={t.event_photos_placeholder} rows={3} style={{ resize: 'vertical' }} />
@@ -1077,9 +1109,9 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
           <input type="text" className="admin-input" value={qTitle} onChange={e => setQTitle(e.target.value)} placeholder={t.q_title_placeholder} />
           <textarea className="admin-input" value={qDescription} onChange={e => setQDescription(e.target.value)} placeholder={t.q_desc_placeholder} rows={2} style={{ resize: 'vertical' }} />
           <p className="admin-field-label">{t.event_start_date}</p>
-          <input type="datetime-local" className="admin-input" value={qStartedAt} onChange={e => setQStartedAt(e.target.value)} max="9999-12-31T23:59" />
+          <DateTimeField value={qStartedAt} onChange={setQStartedAt} />
           <p className="admin-field-label">{t.event_end_date}</p>
-          <input type="datetime-local" className="admin-input" value={qFinishedAt} onChange={e => setQFinishedAt(e.target.value)} max="9999-12-31T23:59" />
+          <DateTimeField value={qFinishedAt} onChange={setQFinishedAt} />
 
           {/* Список вопросов, которые УЖЕ войдут в опросник — показываем его первым и всегда,
               чтобы было наглядно видно: то, что ты добавляешь ниже, попадает именно сюда,
@@ -1156,9 +1188,9 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
                 <input type="text" className="admin-input" value={editQTitle} onChange={e => setEditQTitle(e.target.value)} placeholder={t.q_title_placeholder} />
                 <textarea className="admin-input" value={editQDescription} onChange={e => setEditQDescription(e.target.value)} placeholder={t.q_desc_placeholder} rows={2} style={{ resize: 'vertical' }} />
                 <p className="admin-field-label">{t.event_start_date}</p>
-                <input type="datetime-local" className="admin-input" value={editQStartedAt} onChange={e => setEditQStartedAt(e.target.value)} max="9999-12-31T23:59" />
+                <DateTimeField value={editQStartedAt} onChange={setEditQStartedAt} />
                 <p className="admin-field-label">{t.event_end_date}</p>
-                <input type="datetime-local" className="admin-input" value={editQFinishedAt} onChange={e => setEditQFinishedAt(e.target.value)} max="9999-12-31T23:59" />
+                <DateTimeField value={editQFinishedAt} onChange={setEditQFinishedAt} />
 
                 {/* Existing questions */}
                 <p style={{ fontSize: 13, fontWeight: 600, margin: '16px 0 8px' }}>{t.questions_in_draft} ({editQQuestions.length})</p>
