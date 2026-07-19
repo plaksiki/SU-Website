@@ -65,8 +65,8 @@ The product is delivered as open-source code. The customer can:
 
 | Name | Purpose | Where it's set | Who owns the value |
 |---|---|---|---|
-| `DB_NAME` | PostgreSQL database name | `.env` on VM |  **Customer** (set by customer) |
-| `DB_USER` | PostgreSQL user | `.env` on VM |  **Customer** (set by customer) |
+| `DB_NAME` | PostgreSQL database name | `.env` on VM | **Customer** (set by customer) |
+| `DB_USER` | PostgreSQL user | `.env` on VM | **Customer** (set by customer) |
 | `DB_PASSWORD` | PostgreSQL password | `.env` on VM | **Customer** (set by customer) |
 | `THUMBOR_SECURITY_KEY` | Thumbor security | `.env` on VM  | **Customer** (set by customer) |
 
@@ -141,17 +141,7 @@ The product is delivered as open-source code. The customer can:
 
 - **Common issues and fixes:** [Troubleshooting](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md#troubleshooting) section in `DEPLOY.md`.
 - **Support channel:** GitHub Issues — [`https://github.com/plaksiki/SU-Website/issues`](https://github.com/plaksiki/SU-Website/issues).
-- **Escalation path:**
-  - Contact the Team Lead via email `al.petrova@innopolis.university`. Response time: within 24 hours during the working days.
-  - **All members contacts:**
-  | Name | Role | Contact |
-  |---|---|---|
-  | Alina Petrova | Teaml-lead / Microservices Engineer | [GitHub](https://github.com/bilidjinka) · al.petrova@innopolis.university |
-  | Daria Sevostianova | Scrum Master / Backend | [GitHub](https://github.com/dashasevostianova) · d.sevostianova@innopolis.university |
-  | Bulat Shaikhutdinov | Frontend | [GitHub](https://github.com/LoLiTop1gg) · b.shaikhutdinov@innopolis.university |
-  | Emil Gilfanov | Database | [GitHub](https://github.com/EMIL2007da) · e.gilfanov@innopolis.university |
-  | Kristina Butkina | Frontend | [GitHub](https://github.com/smorodina2128506) · k.butkina@innopolis.university |
-  | Svetlana Levagina | Frontend | [GitHub](https://github.com/moddyl) · s.levagina@innopolis.university |
+- **Escalation path:** Contact the Team Lead (Alina Petrova) via email `al.petrova@innopolis.university` or [GitHub](https://github.com/bilidjinka). Response time: within 24 hours during the working days.
 - **Support still necessary:** No.
 
 ---

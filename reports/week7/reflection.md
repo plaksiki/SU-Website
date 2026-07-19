@@ -59,7 +59,7 @@
 - The Website design is approved.
 - The architecture design decision still is not good: most of logic is still implemented through frontend.
 - No catching of exceptions are in the system.
-- In general, out website is good for the first project, but due to small experience we have a few technical issues. 
+- In general, our website is good for the first project, but due to small experience we have a few technical issues. 
 
 ## 3. Friction and Gaps
 
@@ -87,6 +87,18 @@
 - Most of logic is performed on frontend and sometimes it confuses development team (it is harder to classify the issue type and find who is responsible for thst)
 
 ### Uncertainties
+
+- No uncertainties.
+
+### UAT
+
+- A new UAT session with a SU representative is planned for Sprint 5, where a fully ready-made product will be demonstrated and tested successfully.
+
+## 4. Planned Response
+
+- Fix the final bugs
+- Demonstrate and transfer final version of the product
+- Finish the project and present it on 21 of July as a final exam.
 
 - No uncertainties.
 
