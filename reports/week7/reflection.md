@@ -100,8 +100,14 @@
 - Demonstrate and transfer final version of the product
 - Finish the project and present it on 21 of July as a final exam.
 
-### Uncertainties:
 - No uncertainties.
 
+### UAT
+
+- A new UAT session with a SU representative is planned for Sprint 5, where a fully ready-made product will be demonstrated and tested successfully.
+
 ## 4. Planned Response
-- Demonstrate and transfer final version of the product and finish the project.
+
+- Fix the final bugs
+- Demonstrate and transfer final version of the product
+- Finish the project and present it on 21 of July as a final exam.
