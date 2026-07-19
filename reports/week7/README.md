@@ -43,7 +43,7 @@
 
 ## Product Access Artifact
 
-[su-portal](https://10.93.26.192/)
+[su-portal](http://10.93.26.192/)
 
 ---
 
