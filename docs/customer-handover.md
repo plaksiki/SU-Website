@@ -141,8 +141,7 @@ The product is delivered as open-source code. The customer can:
 
 - **Common issues and fixes:** [Troubleshooting](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md#troubleshooting) section in `DEPLOY.md`.
 - **Support channel:** GitHub Issues — [`https://github.com/plaksiki/SU-Website/issues`](https://github.com/plaksiki/SU-Website/issues).
-- **Escalation path:**
-  - Contact the Team Lead (Alina Petrova) via email `al.petrova@innopolis.university` or [GitHub](https://github.com/bilidjinka). Response time: within 24 hours during the working days.
+- **Escalation path:** Contact the Team Lead (Alina Petrova) via email `al.petrova@innopolis.university` or [GitHub](https://github.com/bilidjinka). Response time: within 24 hours during the working days.
 - **Support still necessary:** No.
 
 ---
