@@ -37,6 +37,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Infinite loading on Polls page when server is unavailable
 - Admin panel showing empty username after login via localStorage
 - Year field in date inputs limited to 4 digits
+- Poll start/end dates no longer reset to random values after poll creation
+- Expired polls are now correctly removed from the public polls page
+- Fixed submit button not working when answering a poll
 
 ---
 
