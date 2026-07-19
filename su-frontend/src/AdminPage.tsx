@@ -4,6 +4,23 @@ const API_URL = 'http://10.93.26.192:8080'
 const ADMIN_USERNAME = 'admin'
 const ADMIN_PASSWORD = 'admin123'
 
+// Бэкенд хранит даты как LocalDateTime — «стенные» часы без таймзоны
+// ("2026-07-19T15:30:00"). Значение <input type="datetime-local"> уже в этом
+// формате, поэтому его нельзя гонять через Date/toISOString(): это переводит
+// время в UTC и сдвигает дату на offset таймзоны (в MSK — на 3 часа назад).
+// Отдаём строку как есть, добивая секунды.
+const toLocalDateTime = (value: string): string | null => {
+  if (!value) return null
+  return value.length === 16 ? `${value}:00` : value
+}
+
+// Текущий момент в том же формате (локальные часы, без Z).
+const nowAsLocalDateTime = (): string => {
+  const d = new Date()
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
+}
+
 type QuestionType = 'open_text' | 'single_choice' | 'multiple_choice'
 type Lang = 'en' | 'ru'
 
@@ -574,6 +591,16 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
     localStorage.setItem('admin_questionnaires', JSON.stringify(sorted))
   }
 
+  // Функциональный вариант: нужен там, где новое значение зависит от текущего
+  // списка, а тот мог измениться, пока шли фоновые запросы к серверу.
+  const updateQuestionnaires = (fn: (prev: Questionnaire[]) => Questionnaire[]) => {
+    setQuestionnaires(prev => {
+      const sorted = sortQuestionnaires(fn(prev))
+      localStorage.setItem('admin_questionnaires', JSON.stringify(sorted))
+      return sorted
+    })
+  }
+
   const refreshEvents = () => {
     fetch(`${API_URL}/events`)
       .then(r => r.json())
@@ -595,15 +622,17 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   const refreshQuestionnaires = () => {
     fetch(`${API_URL}/questionnaires`)
       .then(r => r.json())
-      .then(data =>
-        saveQuestionnaires(
-          data.map((q: { id: number; title: string; description: string; startedAt?: string; finishedAt?: string }) => ({
+      .then((data: { id: number; title: string; description: string; startedAt?: string; finishedAt?: string }[]) =>
+        updateQuestionnaires(prev =>
+          data.map(q => ({
             id: q.id.toString(),
             title: q.title,
             description: q.description,
             startedAt: q.startedAt,
             finishedAt: q.finishedAt,
-            questions: [],
+            // Сервер не отдаёт вопросы вместе с опросником; сохраняем уже
+            // известные локально, чтобы не затирать кэш пустым списком.
+            questions: prev.find(x => x.id === q.id.toString())?.questions ?? [],
           }))
         )
       )
@@ -682,9 +711,9 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
       body: JSON.stringify({
         title: newTitle,
         description: newDescription,
-        eventTime: new Date(newDate).toISOString().replace('Z', ''),
+        eventTime: toLocalDateTime(newDate),
         eventLocation: newLocation,
-        finishedAt: newFinishedAt ? new Date(newFinishedAt).toISOString().replace('Z', '') : null,
+        finishedAt: toLocalDateTime(newFinishedAt),
         photoUrls: newPhotoUrls.trim() || null,
         galleryUrl: newGalleryUrl || null,
       }),
@@ -773,8 +802,8 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
         body: JSON.stringify({
           title: editQTitle,
           description: editQDescription,
-          startedAt: editQStartedAt ? new Date(editQStartedAt).toISOString().replace('Z', '') : null,
-          finishedAt: editQFinishedAt ? new Date(editQFinishedAt).toISOString().replace('Z', '') : null,
+          startedAt: toLocalDateTime(editQStartedAt),
+          finishedAt: toLocalDateTime(editQFinishedAt),
         }),
       })
 
@@ -844,9 +873,9 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
       body: JSON.stringify({
         title: editTitle,
         description: editDescription,
-        eventTime: editDate ? new Date(editDate).toISOString().replace('Z', '') : null,
+        eventTime: toLocalDateTime(editDate),
         eventLocation: editLocation,
-        finishedAt: editFinishedAt ? new Date(editFinishedAt).toISOString().replace('Z', '') : null,
+        finishedAt: toLocalDateTime(editFinishedAt),
         photoUrls: editPhotoUrls.trim() || null,
         galleryUrl: editGalleryUrl.trim() || null,
       }),
@@ -892,11 +921,18 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
     setQFormError('')
 
     const localId = Date.now().toString()
-    const createdAt = qStartedAt ? new Date(qStartedAt).toISOString() : new Date().toISOString()
+    // Даты держим в том же «стенном» формате, что и бэкенд, — иначе список
+    // после создания покажет время, сдвинутое на offset таймзоны.
+    const startedAt = toLocalDateTime(qStartedAt) ?? nowAsLocalDateTime()
+    const finishedAt = toLocalDateTime(qFinishedAt)
     const snapshot = { title: qTitle, description: qDescription, questions: [...draftQuestions] }
 
-    // Обновляем UI сразу
-    saveQuestionnaires([{ id: localId, startedAt: createdAt, ...snapshot }, ...questionnaires])
+    // Обновляем UI сразу. finishedAt обязательно кладём в локальную запись:
+    // без него дата окончания «пропадала» до следующей перезагрузки админки.
+    saveQuestionnaires([
+      { id: localId, startedAt, finishedAt: finishedAt ?? undefined, ...snapshot },
+      ...questionnaires,
+    ])
     setQTitle('')
     setQDescription('')
     setQStartedAt('')
@@ -911,13 +947,18 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
       body: JSON.stringify({
         title: snapshot.title,
         description: snapshot.description,
-        startedAt: qStartedAt ? new Date(qStartedAt).toISOString().replace('Z', '') : new Date().toISOString().replace('Z', ''),
-        finishedAt: qFinishedAt ? new Date(qFinishedAt).toISOString().replace('Z', '') : null,
+        startedAt,
+        finishedAt,
       }),
     })
       .then(r => r.ok ? r.json() : Promise.reject())
-      .then(created =>
-        Promise.all(
+      .then(created => {
+        // Меняем временный id (Date.now()) на настоящий сразу, как узнали его:
+        // по нему строятся ссылки публичной страницы и запросы на редактирование.
+        updateQuestionnaires(prev =>
+          prev.map(q => q.id === localId ? { ...q, id: String(created.id) } : q)
+        )
+        return Promise.all(
           snapshot.questions.map((q, index) =>
             fetch(`${API_URL}/questions`, {
               method: 'POST',
@@ -945,7 +986,10 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
             })
           )
         )
-      )
+      })
+      // Подтягиваем сохранённую версию с сервера, чтобы список показывал
+      // именно то, что лежит в БД (а не оптимистичный локальный снимок).
+      .then(() => refreshQuestionnaires())
       .catch(() => {})
   }
 
