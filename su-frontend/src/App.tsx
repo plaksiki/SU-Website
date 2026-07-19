@@ -253,6 +253,23 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
       .catch(() => {})
   }, [])
 
+  // Публичный список: сначала убираем опросники с истёкшим сроком (finishedAt в
+  // прошлом), затем сортируем оставшиеся по дате создания — новые первыми.
+  // Истёкшие остаются в БД (нужны для админки/экспорта) — здесь только скрываются.
+  // Время фиксируем один раз при монтировании (ленивый init — чистый рендер).
+  const [now] = useState(() => Date.now())
+  const visiblePolls = [...backendPolls]
+    .filter(p => {
+      if (!p.finishedAt) return true // без даты окончания — бессрочный, показываем
+      const end = new Date(p.finishedAt).getTime()
+      return isNaN(end) || end > now // невалидную дату не считаем истёкшей
+    })
+    .sort((a, b) => {
+      const ta = a.startedAt ? new Date(a.startedAt).getTime() : Number(a.id) || 0
+      const tb = b.startedAt ? new Date(b.startedAt).getTime() : Number(b.id) || 0
+      return tb - ta
+    })
+
   return (
     <div style={{ width: '100%', padding: '40px 32px', boxSizing: 'border-box' as const }}>
       <style>{`.polls-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; } @media(max-width:900px){.polls-grid{grid-template-columns:repeat(2,1fr)}} @media(max-width:560px){.polls-grid{grid-template-columns:1fr}}`}</style>
@@ -261,8 +278,13 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
         <p style={{ color: '#64748b', fontSize: 15, margin: 0 }}>{t.polls_desc}</p>
       </div>
       {fetchError && <p style={{ textAlign: 'center', color: '#dc2626' }}>Could not connect to server.</p>}
+      {!fetchError && visiblePolls.length === 0 && (
+        <p style={{ textAlign: 'center', color: '#64748b' }}>
+          {lang === 'en' ? 'No active questionnaires right now.' : 'Сейчас нет активных опросников.'}
+        </p>
+      )}
       <div className="polls-grid">
-        {backendPolls.map(poll => (
+        {visiblePolls.map(poll => (
           <div key={poll.id} style={{
             background: 'white', borderRadius: 20, overflow: 'hidden',
             border: '1px solid #e8edf2', cursor: 'pointer', display: 'flex', flexDirection: 'column',
@@ -353,8 +375,15 @@ function PollDetailPage({ t, lang }: { t: T; lang: Lang }) {
     fetch(`${API_URL}/question/by-questionnaire/${id}`)
       .then(r => r.ok ? r.json() : null)
       .then(async (qs: BackendQuestion[] | null) => {
-        if (!qs) return
+        // `[]` — тоже истина, поэтому пустой ответ раньше затирал вопросы,
+        // отрисованные из кэша, и форма оставалась без единого вопроса.
+        if (!qs || qs.length === 0) return
         setQuestions(qs.sort((a, b) => a.orderIndex - b.orderIndex))
+        // У серверных вопросов свои id, а `answers` хранится по id из кэша.
+        // Не сбросив их, ответы «повисают» и валидация ругается на
+        // заполненные вопросы.
+        setAnswers({})
+        setErrors({})
         const optsByQuestion: Record<number, BackendOption[]> = {}
         await Promise.all(
           qs.filter(q => q.questionType !== 'open_text').map(async q => {
@@ -377,6 +406,7 @@ function PollDetailPage({ t, lang }: { t: T; lang: Lang }) {
       const cur = (p[qid] as number[]) || []
       return { ...p, [qid]: cur.includes(optionId) ? cur.filter(o => o !== optionId) : [...cur, optionId] }
     })
+    setErrors(p => ({ ...p, [qid]: false }))
   }
 
   const handleText = (qid: number, val: string) => {
