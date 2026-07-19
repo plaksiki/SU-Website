@@ -1117,8 +1117,12 @@ function App() {
 
     loadEvents()
     const intervalId = setInterval(loadEvents, 60_000) // каждую минуту пересчитываем, кто сейчас актуален, а кто уже прошел
+    window.addEventListener('admin-events-changed', loadEvents)
 
-    return () => clearInterval(intervalId)
+    return () => {
+      clearInterval(intervalId)
+      window.removeEventListener('admin-events-changed', loadEvents)
+    }
   }, [])
 
   return (

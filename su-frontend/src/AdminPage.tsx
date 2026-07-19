@@ -581,6 +581,7 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   const saveEvents = (list: SuEvent[]) => {
     setEvents(list)
     onEventsChange?.(list)
+    window.dispatchEvent(new CustomEvent('admin-events-changed'))
   }
 
   const saveQuestionnaires = (list: Questionnaire[]) => {
