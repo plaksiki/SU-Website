@@ -18,7 +18,7 @@
 ### Current Sprint
 
 - **[Sprint-5 Backlog Board](https://github.com/orgs/plaksiki/projects/18)**
-- **[Sprint-5 Milestone](https://github.com/plaksiki/SU-Website/milestone/7)**
+- **[Sprint-5 Milestone](https://github.com/plaksiki/SU-Website/milestone/9)**
 - **Sprint-5 Goal:** Admin panel refactoring.
 - **Sprint-5 Dates:** 2026-07-13 – 2026-07-19
 - **Total Sprint-5 Size:** 20 Story Points
@@ -43,7 +43,7 @@
 
 ## Product Access Artifact
 
-[su-portal](https://10.93.26.192/)
+[su-portal][(https://10.93.26.192/)]
 
 ---
 
