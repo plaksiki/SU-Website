@@ -865,6 +865,11 @@ function EventPage({ t, lang, events }: { t: T; lang: Lang; events: SuEvent[] })
   const { id } = useParams()
   const event = events.find(e => e.id === id)
   const [lightbox, setLightbox] = useState<string | null>(null)
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setLightbox(null) }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [])
 
   if (!event) return (
     <div className="container">
