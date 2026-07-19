@@ -1,5 +1,6 @@
 # User Acceptance Tests
-**Last Updated:** 2026-07-10
+
+**Last Updated:** 2026-07-18
 
 This document defines UAT scenarios for the SU Website.
 Scenarios are executed with the customer during Sprint Review.
@@ -163,17 +164,49 @@ Scenarios are executed with the customer during Sprint Review.
 
 ---
 
+### UAT-11: SU members Info cards
+
+| Field | Details |
+|-------|---------|
+| **Related User Story** | US-03 - Viewing SU structure |
+| **Priority** | Must Have |
+| **Status** | ✅ Pass (Sprint 5 Review - 2026-07-18) |
+
+- **Given** a user opens any department card on the SU Website Home page
+- **When** user clicks on any member photo in the list
+- **Then** member's bio card opens
+- **And** cuser can learn more about members of the department.
+
+---
+
+### UAT-12: Events editing
+
+| Field | Details |
+|-------|---------|
+| **Related User Story** | US-01 - Viewing event details |
+| **Priority** | Must Have |
+| **Status** | ✅ Pass (Sprint 5 Review - 2026-07-18) |
+
+- **Given** Admin is on Events page in admin panel
+- **When** at least one events exists
+- **Then** Admin can click on `Edit` in left bottom of the picked event card and edit already created Event
+- **And** if Admin click `Save changes` button, event's info will be updated on "Events" page
+
+---
+
 ## Execution History
 
-| Scenario | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 |
-|----------|----------|----------|----------|----------|
-| UAT-1: Viewing events | Not tested | ✅ Pass | Not tested | Not tested |
-| UAT-2: Submitting questionnaire | Not tested | ✅ Pass | Not tested | Not tested |
-| UAT-3: Language switching | Not tested | ✅ Pass | Not tested | Not tested |
-| UAT-4: Admin Login page | Not tested | Not tested | ✅ Pass | Not tested |
-| UAT-5: Log in Admin Panel and log out | Not tested | Not tested | ✅ Pass | Not tested |
-| UAT-6: csv Export from the Admin Panel | Not tested | Not tested | ✅ Pass | Not tested |
-| UAT-7: Events Details | Not tested | Not tested | ✅ Pass | Not tested |
-| UAT-8: Creating a questionnaire via Admin Panel | Not tested | Not tested | Not tested | ✅ Pass |
-| UAT-9: Viewing answers in CSV export | Not tested | Not tested | Not tested | ✅ Pass |
-| UAT-10: Viewing department members on home page | Not tested | Not tested | Not tested | ✅ Pass |
+| Scenario | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 | Sprint 5 |
+|----------|----------|----------|----------|----------|----------|
+| UAT-1: Viewing events | Not tested | ✅ Pass | Not tested | Not tested | ✅ Pass |
+| UAT-2: Submitting questionnaire | Not tested | ✅ Pass | Not tested | Not tested | Not tested |
+| UAT-3: Language switching | Not tested | ✅ Pass | Not tested | Not tested | ✅ Pass |
+| UAT-4: Admin Login page | Not tested | Not tested | ✅ Pass | Not tested | Not tested |
+| UAT-5: Log in Admin Panel and log out | Not tested | Not tested | ✅ Pass | Not tested | Not tested |
+| UAT-6: csv Export from the Admin Panel | Not tested | Not tested | ✅ Pass | Not tested | ✅ Pass |
+| UAT-7: Events Details | Not tested | Not tested | ✅ Pass | Not tested | ✅ Pass |
+| UAT-8: Creating a questionnaire via Admin Panel | Not tested | Not tested | Not tested | ✅ Pass | ✅ Pass |
+| UAT-9: Viewing answers in CSV export | Not tested | Not tested | Not tested | ✅ Pass | Not tested |
+| UAT-10: Viewing department members on home page | Not tested | Not tested | Not tested | ✅ Pass | Not tested |
+| UAT-11: SU members Info cards | Not tested | Not tested | Not tested | Not tested | ✅ Pass |
+| UAT-12: Events editing | Not tested | Not tested | Not tested | Not tested | ✅ Pass |
