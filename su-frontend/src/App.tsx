@@ -1071,6 +1071,18 @@ function DonationsPage({ t }: { t: T }) {
   )
 }
 
+function NotFoundPage() {
+  const navigate = useNavigate()
+  return (
+    <div style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, textAlign: 'center', padding: 32 }}>
+      <div style={{ fontSize: 80, fontWeight: 800, color: '#40ba21', lineHeight: 1 }}>404</div>
+      <div style={{ fontSize: 22, fontWeight: 600 }}>Page not found</div>
+      <div style={{ color: '#6b7280', fontSize: 15 }}>The page you're looking for doesn't exist.</div>
+      <button className="btn" onClick={() => navigate('/')} style={{ marginTop: 8 }}>← Back to Home</button>
+    </div>
+  )
+}
+
 function Footer() {
   return (
     <footer className="footer">
@@ -1139,6 +1151,7 @@ function App() {
         <Route path="/polls/:id" element={<PollDetailPage t={t} lang={lang} />} />
         <Route path="/donations" element={<DonationsPage t={t} />} />
         <Route path="/admin" element={<AdminPage lang={lang} />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
     </BrowserRouter>
