@@ -765,7 +765,7 @@ function Navbar({ lang, setLang, t }: { lang: Lang; setLang: (l: Lang) => void; 
     const newCount = logoClicks + 1
     setLogoClicks(newCount)
     if (newCount === 3) {
-      navigate('/admin')
+      navigate('/su-panel-x7k2')
       setLogoClicks(0)
     }
   }
@@ -1168,7 +1168,7 @@ function App() {
         <Route path="/polls" element={<PollsPage t={t} lang={lang} />} />
         <Route path="/polls/:id" element={<PollDetailPage t={t} lang={lang} />} />
         <Route path="/donations" element={<DonationsPage t={t} />} />
-        <Route path="/admin" element={<AdminPage lang={lang} />} />
+        <Route path="/su-panel-x7k2" element={<AdminPage lang={lang} />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
