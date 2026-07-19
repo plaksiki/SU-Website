@@ -1,6 +1,6 @@
 # Roadmap
 
-**Last Updated:** 2026-06-21
+**Last Updated:** 2026-15-07
 
 ## Sprint 1
 
@@ -125,19 +125,23 @@
 | **Sprint** | Sprint 5 |
 | **Milestone** | [Sprint 5](https://github.com/orgs/plaksiki/projects/18) |
 | **Dates** | Start: 2026-07-13 / Finish: 2026-07-19 |
-| **Sprint Goal** | Admin panel refactoring and pages auto upadte |
+| **Sprint Goal** | Admin panel refactoring |
 
 ### Focus & Outcomes
 
 - Separate admin panel on different pages
 - Make only one csv table dowmloading per one pick
-- Continue backend structure building
+- Continue developing backend logic
 
 ### Planned Items
 
 - **Supporting PBIs:**
-  - [#200](https://github.com/plaksiki/SU-Website/issues/200)
+  - [#62](https://github.com/plaksiki/SU-Website/issues/62)
   - [#199](https://github.com/plaksiki/SU-Website/issues/199)
   - [#198](https://github.com/plaksiki/SU-Website/issues/198)
+  - [#200](https://github.com/plaksiki/SU-Website/issues/200)
+  - [#208](https://github.com/plaksiki/SU-Website/issues/208)
+  - [#209](https://github.com/plaksiki/SU-Website/issues/209)
+  - [#216](https://github.com/plaksiki/SU-Website/issues/216)
 
 ---
