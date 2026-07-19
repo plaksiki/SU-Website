@@ -683,6 +683,7 @@ function MemberAvatar({ photo, originalPhoto, name, size, color, border }: { pho
           onError={e => { if (originalPhoto && e.currentTarget.src !== originalPhoto) e.currentTarget.src = originalPhoto; else setLoaded(false) }}
           style={{
             width: size, height: size, borderRadius: '50%', objectFit: 'cover',
+            imageOrientation: 'from-image',
             border: border || 'none', boxSizing: 'border-box',
             position: 'absolute', inset: 0,
             opacity: loaded ? 1 : 0,
