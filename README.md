@@ -26,14 +26,23 @@ Website of the Innopolis University students union. This is the bussines card of
 
 ## Deployment
 
-### MVP v2.0.0 (Current Release - Assignment 5)
+### MVP v3.0.0(Current Release - Assignment 7)
 
 - **Production:** [SU Portal](http://10.93.26.192/)
+- **Release:** [v3.0.0](https://github.com/plaksiki/SU-Website/releases/tag/v3.0.0)
+- **Video demonstration:** [v3.0.0 Demo](https://drive.google.com/file/d/1pCvHi0qGTcXQbeWgT9cAeUpZI6PY-ioU/view)
+
+### MVP v2.1.0(Previous Release - Assignment 6)
+
+- **Release:** [v2.1.0](https://github.com/plaksiki/SU-Website/releases/tag/v2.1.0)
+- **Video demonstration:** [v2.1.0 Demo](https://drive.google.com/file/d/19_jMtjvAgveWeAxcuQlBGg93141sVt3H/view?usp=sharing)
+
+### MVP v2.0.0 (Assignment 5)
+
 - **Release:** [v2.0.0](https://github.com/plaksiki/SU-Website/releases/tag/v2.0.0)
-- **Deploy instructions:** [DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md)
 - **Video demonstration:** [MVP v2 Demo](https://drive.google.com/file/d/1PS55YtFoy9vcffSBwMiFZKob6eziSQN4/view?usp=sharing)
   
-### MVP v1.0.0 (Previous Version - Assignment 3)
+### MVP v1.0.0 (Assignment 3)
 
 - **Release:** [v1.0.0](https://github.com/plaksiki/SU-Website/releases/tag/v1.0.0)
 - **Video demonstration:** [MVP v1 Demo](https://drive.google.com/file/d/1BB24vPEWdS3sDSKUaNwpFbZiY8T7Vzl2/view)
@@ -52,6 +61,7 @@ Website of the Innopolis University students union. This is the bussines card of
 - **[DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md)** — Deployment instructions
 - **[CHANGELOG.md](https://github.com/plaksiki/SU-Website/blob/main/CHANGELOG.md)** — Version history
 - **[Development Process](https://github.com/plaksiki/SU-Website/blob/main/docs/development-process.md)**
+- **[Customer Handover](docs/customer-handover.md)**
 
 ### 📐 Architecture
 
@@ -69,6 +79,8 @@ Website of the Innopolis University students union. This is the bussines card of
 
 ## 📌 **Version History**
 
-- **v2.0.0** - MVP v2 (Assignment 5) - Admin Panel, History page, updatem main and Events pages
+-  **v3.0.0** - MVP v3 (Assignment 7) - Admin Panel refactoring, events and survey management, separate csv export
+-  **v2.1.0** (Assignment 6) - SU brandbook implementation, info cards for SU members
+- **v2.0.0** - MVP v2 (Assignment 5) - Admin Panel, History page, update main and Events pages
 - **v1.0.0** - MVP v1 (Assignment 3) - React frontend with Docker deployment
-- **v0.1.0** - MVP v0 - Initial HTML/CSS prototype
+- **v0.1.0** - MVP v0 (Assignment 2) - Initial HTML/CSS prototype

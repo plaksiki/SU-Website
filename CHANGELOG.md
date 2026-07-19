@@ -5,29 +5,49 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+
+---
+
+## [3.0.0] - 2026-07-19
+
 ## Added
+
 - Tab navigation in admin panel: Create Event / Events / Create Questionnaire / Questionnaires
 - Admin username displayed in topbar
 - Data persistence via localStorage — survives page refresh
+- Ability to edit events/surveys from Admin Panel
 
 ## Changed
-- Optimistic UI updates — events and questionnaires appear instantly without waiting for server
+
+- Events and questionnaires appear instantly without waiting for server
 - Server requests run in background after UI is already updated
 - Events and polls pages load instantly from cache
 
 ## Fixed
+
 - Auto-redirect to list view after creating an event or questionnaire
 - Questionnaire form fields now always clear after submission
 - Events not appearing on Events page after creation
 - Infinite loading on Polls page when server is unavailable
 - Admin panel showing empty username after login via localStorage
 - Year field in date inputs limited to 4 digits
+- Poll start/end dates no longer reset to random values after poll creation
+- Expired polls are now correctly removed from the public polls page
+- Fixed submit button not working when answering a poll
 
 ---
 
 ## [2.1.0] - 2026-07-12
 
 ### Added
+
+- Info cards for SU members of departments
 
 ### Changed
 

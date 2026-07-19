@@ -1,10 +1,26 @@
 services:
+  thumbor:
+    image: ghcr.io/thumbor/thumbor:latest
+    container_name: su-thumbor
+    ports:
+      - "8888:8888"
+    environment:
+      ALLOW_UNSAFE_URL: "True"
+      MAX_WIDTH: 1920
+      MAX_HEIGHT: 1080
+      RESULT_STORAGE: thumbor.result_storages.file_storage
+      RESULT_STORAGE_FILE_STORAGE_ROOT_PATH: /data/result_storage
+      RESULT_STORAGE_EXPIRATION_SECONDS: 604800
+    volumes:
+      - thumbor_cache:/data/result_storage
+    restart: unless-stopped
+
   backend:
     image: su-backend
-    build: 
+    build:
       context: ./su-backend
     depends_on:
-        db: 
+        db:
           condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME}
@@ -27,9 +43,13 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
-        
+
   db:
     image: postgres:16.0
+
+    ports:
+    - "5432:5432"
+
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_USER: ${DB_USER}
@@ -44,6 +64,7 @@ services:
       - db_data:/var/lib/postgresql/data
       - ./su-backend/migrations:/docker-entrypoint-initdb.d
     restart: unless-stopped
-  
+
 volumes:
   db_data:
+  thumbor_cache:

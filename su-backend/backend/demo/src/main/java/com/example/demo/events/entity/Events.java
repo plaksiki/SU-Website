@@ -16,6 +16,7 @@ public class Events {
     @Id
     private Long id;
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String description;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -26,13 +27,19 @@ public class Events {
     @Column(name = "event_location")
     private String eventLocation;
 
+    @Column(name = "photo_urls", columnDefinition = "TEXT")
+    private String photoUrls;
+
+    @Column(name = "gallery_url")
+    private String galleryUrl;
+
 
     public Events () {
         title = "default";
         description = "no description";
     }
 
-    public Events(Long id, String title, String description, LocalDateTime createdAt, LocalDateTime finishedAt, LocalDateTime eventTime, String eventLocation) {
+    public Events(Long id, String title, String description, LocalDateTime createdAt, LocalDateTime finishedAt, LocalDateTime eventTime, String eventLocation, String photoUrls, String galleryUrl) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -40,6 +47,8 @@ public class Events {
         this.finishedAt = finishedAt;
         this.eventTime = eventTime;
         this.eventLocation = eventLocation;
+        this.photoUrls = photoUrls;
+        this.galleryUrl = galleryUrl;
     }
 
     public Long getId() {
@@ -96,5 +105,21 @@ public class Events {
 
     public void setEventLocation(String eventLocation) {
         this.eventLocation = eventLocation;
+    }
+
+    public String getPhotoUrls() {
+        return this.photoUrls;
+    }
+
+    public void setPhotoUrls(String photoUrls) {
+        this.photoUrls = photoUrls;
+    }
+
+    public String getGalleryUrl() {
+        return this.galleryUrl;
+    }
+
+    public void setGalleryUrl(String galleryUrl) {
+        this.galleryUrl = galleryUrl;
     }
 }
