@@ -1,34 +1,34 @@
 #!/bin/bash
 
+BASE_URL="${BASE_URL:-http://localhost}"
+
 echo "==================================="
 echo "🔍 Health Check: SU Website"
+echo "BASE_URL: $BASE_URL"
 echo "==================================="
 
-# Container status
-echo "📦 Container Status:"
-docker compose -f docker-compose.prod.yml ps --format "table {{.Name}}\t{{.Status}}"
+FAILED=0
 
-# Frontend
-echo ""
-echo "🌐 Frontend:"
-curl -s -o /dev/null -w "HTTP %{http_code}\n" http://localhost || echo "❌ Not reachable"
+check_url() {
+  local url="$1"
+  local code
+  code=$(curl -s -o /dev/null -w "%{http_code}" "$url")
+  if [ "$code" = "200" ]; then
+    echo "✅ $url — HTTP $code"
+  else
+    echo "❌ $url — HTTP $code (expected 200)"
+    FAILED=1
+  fi
+}
 
-# Backend
-echo ""
-echo "⚙️ Backend API:"
-curl -s -o /dev/null -w "HTTP %{http_code}\n" http://localhost:8080/actuator/health 2>/dev/null || echo "❌ Not reachable"
+check_url "$BASE_URL/"
+check_url "$BASE_URL/events"
+check_url "$BASE_URL/polls"
 
-# Thumbor
-echo ""
-echo "🖼️  Thumbor:"
-curl -s -o /dev/null -w "HTTP %{http_code}\n" http://localhost:8888/healthcheck 2>/dev/null || echo "❌ Not reachable"
-
-# PostgreSQL
-echo ""
-echo "🐘 PostgreSQL:"
-docker ps --filter "name=db" --filter "status=running" --format "{{.Status}}" | grep -q "Up" && echo "✅ Up" || echo "❌ Not running"
-
-echo ""
 echo "==================================="
+if [ "$FAILED" -eq 1 ]; then
+  echo "❌ Health Check FAILED"
+  exit 1
+fi
 echo "✅ Health Check Complete"
 echo "==================================="

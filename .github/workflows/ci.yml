@@ -31,6 +31,14 @@ jobs:
       - name: Lint (ESLint)
         run: npm run lint
 
+      - name: QR-1 No suppressed warnings
+        run: |
+          if grep -rn "eslint-disable\|@ts-ignore\|as any" src/ --include="*.ts" --include="*.tsx"; then
+            echo "❌ Suppressed warnings found. Remove eslint-disable / @ts-ignore / 'as any' and fix the underlying issue."
+            exit 1
+          fi
+          echo "✅ No suppressed warnings found"
+
       - name: Run tests
         run: npm run test
 
@@ -46,6 +54,27 @@ jobs:
             exit 1
           fi
           echo "✅ Bundle size is within 1 MB limit"
+
+  healthcheck:
+    name: QR-2 Healthcheck
+    runs-on: ubuntu-latest
+    needs: frontend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Start preview server
+        working-directory: su-frontend
+        run: |
+          npm ci
+          npm run build
+          npx vite preview --port 5173 &
+          sleep 3
+
+      - name: Run healthcheck
+        run: |
+          chmod +x healthcheck.sh
+          BASE_URL=http://localhost:5173 bash healthcheck.sh
 
   backend:
     name: Backend Checks
