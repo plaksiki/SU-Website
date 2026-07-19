@@ -13,7 +13,7 @@
 ### Product Backlog
 
 - **[Product Backlog Board](https://github.com/orgs/plaksiki/projects/2)**
-- **Total Size:** 110 Story Points
+- **Total Size:** 130 Story Points
 
 ### Current Sprint
 
@@ -21,7 +21,7 @@
 - **[Sprint-5 Milestone](https://github.com/plaksiki/SU-Website/milestone/7)**
 - **Sprint-5 Goal:** Admin panel refactoring.
 - **Sprint-5 Dates:** 2026-07-13 – 2026-07-19
-- **Total Sprint-5 Size:** 8 Story Points
+- **Total Sprint-5 Size:** 20 Story Points
 
 ### Selected Scope for Current Sprint
 
@@ -32,8 +32,11 @@
 ## Week 7 maintenance and final `MVP v3` changes
 
 - ✅ Separated pages for admin panel functionality (creating/managing events, surveys)
-- ✅ List of departments' members
-- ✅
+- ✅ Info cards for SU member
+- ✅ Events and polls are editable
+- ✅ Photo optimization for events and departments via Thumbor
+- ✅ Csv export performing on backend and export only picked survey's results
+- ✅ Swagger documentation
 - ✅ Week 7 changes follow up documentation
 
 ---
@@ -44,7 +47,7 @@
 
 ---
 
-### Core Documentation
+## Core Documentation
 
 - [DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md)
 - [README.md](https://github.com/plaksiki/SU-Website/blob/main/README.md)
@@ -61,27 +64,27 @@
 
 | **Aspect** | **Status** |
 | :--- | :--- |
-| **Handover Level Reached** | [Full / Partial / Pilot / etc.] |
+| **Handover Level Reached** | Full |
 | **Customer Confirmation Status** | Confirmed |
-| **Date of Confirmation** | 18.07.2026 |
+| **Date of Confirmation** | 2026-07-18 |
 
-### What Was Transferred / Delegated / Made Available
+### What Was Transferred
 
-[Provide a summary of what was transferred, delegated, or otherwise made available during the final transition. Reference the current `docs/customer-handover.md` directly.]
+- Public Repository link was transferred to the customer.
+- [`docs/customer-handover.md`](https://github.com/plaksiki/SU-Website/blob/main/docs/customer-handover.md): customer-facing handover artifact for the current product state was finilized
+- [DEPLOY.md](https://github.com/plaksiki/SU-Website/blob/main/DEPLOY.md): Deployment, update and troubleshooting instructions for development team
 
 ### Remaining Transition Blockers, Limitations, or Follow-Up Items
 
-[Explain any remaining transition blockers, limitations, support expectations, or follow-up items identified by the customer.]
-
 | **Item** | **Description** | **Responsible Party** | **Target Resolution** |
 | :--- | :--- | :--- | :--- |
-| [Item 1] | [Description] | [Who] | [When] |
-| [Item 2] | [Description] | [Who] | [When] |
+| Configure HTTPS | Generate SSL certificate and configure nginx to enable HTTPS. Currently only HTTP is available. Required for production use with sensitive data. | Dev team | After Demo Day (if customer requests) |
+| Document backup/restore | Add step-by-step recovery instructions to DEPLOY.md | Dev team | After Demo Day (if customer requests) |
+| Customer VM deployment | Customer should follow `DEPLOY.md` | Customer | After Demo Day (if product is selected among all three teams) |
 
 ### Customer Independent Use / Deployment / Operation Evidence
 
-[Summarize evidence of customer-independent use, customer-side deployment, or customer-side operation where available.]
-At the moment customer does not use or deploy the product, because there is three project to choose among three final products after Demo Day is passed. However, the product readiness is confirmed by the customer.
+At the moment customer does not use (deploy) the product, because there is three project to choose among after Demo Day is passed. However, the product transfer readiness is confirmed by the customer.
 
 ---
 
@@ -91,36 +94,41 @@ At the moment customer does not use or deploy the product, because there is thre
 
 | **Feedback Point** | **Resulting PBI / Issue** | **Status** | **Notes** |
 | :--- | :--- | :--- | :--- |
-| [Feedback 1] | [Link to PBI/issue] | [Status] | [Notes] |
-| [Feedback 2] | [Link to PBI/issue] | [Status] | [Notes] |
-| [Feedback 3] | [Link to PBI/issue] | [Status] | [Notes] |
+| **No editor for surveys** | [#230](https://github.com/plaksiki/SU-Website/issues/230) | Backlog | `Edit` button for polls (as how for events) |
+| **Info cards for SU heads** | [#232](https://github.com/plaksiki/SU-Website/issues/232) | - | SU heads on the Home page should also have extended information cards |
+| **Fix survey page routing** | [#225](https://github.com/plaksiki/SU-Website/issues/225) | [Status] | When navigating to /surveys/123, the page renders the general surveys list instead of the individual survey view; Back button from /surveys/:id returns to /surveys |
 
 ### Week 7 UAT / Customer Trial Results
 
-[Provide a summary of relevant Week 7 UAT or customer-trial results. Include pass/fail rates, critical issues found, and overall customer satisfaction.]
+- User Acceptance Test (UAT) for Week 7 was conducted during the sprint 5 review. This week we added [UAT-11](https://github.com/plaksiki/SU-Website/blob/main/docs/user-acceptance-tests.md#uat-11-su-members-info-cards) and [UAT-12](https://github.com/plaksiki/SU-Website/blob/main/docs/user-acceptance-tests.md#uat-12-events-editing) to test edit of events and info cards for presented SU members.
+- Customer liked the UI design for added features
+- Customer requested to make surveys editable
 
 #### Key Findings
-- [Finding 1]
-- [Finding 2]
-- [Finding 3]
+
+- Events are editable
+- csv export is available only if at least one person submited answers for the picked poll
+- Photos are uploading only during the first department card opening, after that photos open simultaneously
 
 #### Issues Found During UAT
-- [Issue 1 – with link]
-- [Issue 2 – with link]
-- [Issue 3 – with link]
+
+- Some fotos of SU members are flipping because of some problems with Thumbor
+- Time drops after event is created
+- No info cards for two SU members on the Home page
+- Surveys are not editable
 
 ---
 
-### Demo Day Preparation
+## Demo Day Preparation
 
 The required Week 7 rehearsal preparation was completed on 2026-07-19.
 
 | **Item** | **Status** | **Notes** |
 | :--- | :--- | :--- |
-| Presentation Slides | ✅ | We changed some slides from Week 6 Presentation, including Qulity Requirements and Vision Pages |
-| Demo Script | ✅ | We distributed speech between all team members in such way that every person speak about stuff he used to work with or understand deeply |
+| Presentation Slides | ✅ | We changed some slides from Week 6 Presentation, including Qulity Requirements and Vision Pages. Slides numeration is presented for navigation. Slides order was changed according to recommendations from `Assignment 6` instructions |
+| Demo Script | ✅ | We distributed speech parts between all team members in such way that every person speak about stuff he used to work with or understand deeply. |
 | Rehearsal | ✅ | Rehearsal was conducted on 2026-07-19. All team members were presented. First two times we tried to present with the script, after that had three tries without the script. We were in time during all tries and also had extra time left. |
-| Product Demo Video | ✅ | The final vesrion Product video was recorded after Sprint 5 changes were deployed. |
+| Product Demo Video | ✅ | The Product Demo video was recorded after Sprint 5 when final version product was deployed. |
 
 ---
 
@@ -142,19 +150,30 @@ The required Week 7 rehearsal preparation was completed on 2026-07-19.
 
 ### Summary
 
-[Provide a comprehensive summary of the final product status at the end of Sprint 5. Describe what works, what doesn't, overall quality level, and whether the product meets the Definition of Done and customer expectations.]
+- By the end of week 7 all [User Stories](https://github.com/plaksiki/SU-Website/blob/main/docs/user-stories.md) were addressed
+- We responded to most of feedback points given by customer
+- Product is curently deployed and available via [`10.93.26.192`](http://10.93.26.192/)
+- Users can submit answer form on created surveys and Admins can create surveys and export csv tables of data received
+- Admins can create events cards and add photos to them via URLs
+- Duringevelopment proccess followed Definition of done criterias
+- Customers are satisfied with the results of our work as for first serious development project (citated from sprint 5 review)
 
 ### Key Achievements
 
 - Intuitive pages navigaton
-- Splited interface: no need long scrolling, different functionality and information panels were splited
-- Mobile Responsiveness: Website render correctly on mobile devices([QR-4](https://github.com/plaksiki/SU-Website/blob/main/docs/quality-requirements.md#qr-4-usability--mobile-responsiveness) completes)
+- Splited interface: no long scrolling, different functionality was splitted
+- Mobile Responsiveness: Website render correctly on mobile devices([QR-4](https://github.com/plaksiki/SU-Website/blob/main/docs/quality-requirements.md#qr-4-usability--mobile-responsiveness) completness)
 - Language switching does not slide/glitch the text on page
 - Creation of items is available only for admins
+- Created events and surveys are editable
 
 ### Known Limitations / Open Issues
 
-- 
+- No backup for database
+- HTTPS is not configured
+- Admins verification is happening on frontend (not safe)
+- Dark Theme was not implemented due to lack of time
+- Surveys can be submitted more then once per user from the same device
 
 ---
 
@@ -162,12 +181,12 @@ The required Week 7 rehearsal preparation was completed on 2026-07-19.
 
 | **Team Member** | **Issues** | **PRs/MRs** | **Reviews** | **Testing** | **Docs** | **Transition** | **Deployment** | **Demo Day prep** |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Alina P. | [#192](https://github.com/plaksiki/SU-Website/issues/192) | [#194](https://github.com/plaksiki/SU-Website/pull/194), [#204](https://github.com/plaksiki/SU-Website/pull/204) | 1 | - | customer handover update, README.md for Week 7, existing documentation update | - | - | Speech distribution |
-| Bulat S | [#178](https://github.com/plaksiki/SU-Website/issues/178) | [#195](https://github.com/plaksiki/SU-Website/pull/195) | - | Local tests/deployment of the dev branch | LLM report | - | - | Presentation update |
-| Dasha S. | [#191](https://github.com/plaksiki/SU-Website/issues/191), [#196](https://github.com/plaksiki/SU-Website/issues/196) | [#202](https://github.com/plaksiki/SU-Website/pull/202) | - | - | - | - | - | - |
-| Emil G. | - | - | - | - | Week 7 reflection | - | - | - |
-| Kristina B. | [#182](https://github.com/plaksiki/SU-Website/issues/182) | [#203](https://github.com/plaksiki/SU-Website/pull/203) | - | - | Week 7 retropective | - | - | - |
-| Svetlana L. | [#185](https://github.com/plaksiki/SU-Website/issues/185) | - | - | - | Week 7 Review transcript and summary | - | - | - |
+| Alina P. | [#193](https://github.com/plaksiki/SU-Website/issues/193), [#198](https://github.com/plaksiki/SU-Website/issues/198) | [#224](https://github.com/plaksiki/SU-Website/pull/224) | 3 | - | customer handover update, README.md for Week 7, existing documentation update | Custmoer handover, DEPLOY.md update | - | Speech distribution, participation in rehearsal |
+| Bulat S | [#225](https://github.com/plaksiki/SU-Website/issues/225), [#227](https://github.com/plaksiki/SU-Website/pull/227), [#230](https://github.com/plaksiki/SU-Website/pull/230), [#232](https://github.com/plaksiki/SU-Website/pull/232), [#240](https://github.com/plaksiki/SU-Website/pull/224) | [#219](https://github.com/plaksiki/SU-Website/pull/219) | 2 | Local tests/deployment of the dev branch | LLM report | - | Deploy of MVP v3 on VM | Presentation update, participation in rehearsal |
+| Dasha S. | [#208](https://github.com/plaksiki/SU-Website/issues/208), [#209](https://github.com/plaksiki/SU-Website/issues/209), [#216](https://github.com/plaksiki/SU-Website/issues/216) [#221](https://github.com/plaksiki/SU-Website/issues/221) | [#202](https://github.com/plaksiki/SU-Website/pull/202) | - | Local tests/deployment of the dev branch | - | - | - | Participation in rehearsal |
+| Emil G. | [#187](https://github.com/plaksiki/SU-Website/issues/187) | [#239](https://github.com/plaksiki/SU-Website/pull/239) | - | - | Week 7 reflection | - | - | Participation in rehearsal |
+| Kristina B. | [#236](https://github.com/plaksiki/SU-Website/issues/236) | [#228](https://github.com/plaksiki/SU-Website/pull/228), [#238](https://github.com/plaksiki/SU-Website/pull/238) | - | - | Week 7 retropective | - | - | Participation in rehearsal |
+| Svetlana L. | - | - | 2 | - | Week 7 Review transcript and summary | - | - | Participation in rehearsal |
 
 ---
 
