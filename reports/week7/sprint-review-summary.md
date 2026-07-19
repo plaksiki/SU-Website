@@ -9,7 +9,7 @@
 | **Date** | 18 July 2026 |
 | **Sprint** | Sprint 5 (Week 7) |
 | **Sprint Dates** | 13.07.2026 – 19.07.2026 |
-| **Total Sprint Size** | 130 Story Points |
+| **Sprint Size** | 20 Story Points |
 | **Type** | Final Sprint Review & Transition Confirmation |
 | **Recording Permitted** | Yes |
 | **Public Transcript Publication Permitted** | Yes |
@@ -22,7 +22,7 @@
 | **Role** | **Name** |
 | :--- | :--- |
 | Team Lead | Alina Petrova |
-| Customer | Anna |
+| Customer | Anna Zyrianova|
 | Front-end Developer | Svetlana Levagina|
 | Front-end Developer | Bulat Shaikhutdinov |
 | Database Developer | Emil Gilfanov|
@@ -71,7 +71,6 @@
 | PUT Endpoint for Polls | ✅ Complete | #216 delivered |
 | Photo Upload | ✅ Complete | Direct upload implemented (#240) |
 | Cards with Toggle | ✅ Complete | Modal window display |
-| Routing | ✅ Complete | Working correctly |
 | Deployment Documentation | ✅ Complete | Confirmed sufficient by customer |
 
 ---
