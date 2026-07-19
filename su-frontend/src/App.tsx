@@ -864,6 +864,7 @@ function HistoryPage({ t, lang }: { t: T; lang: Lang }) {
 function EventPage({ t, lang, events }: { t: T; lang: Lang; events: SuEvent[] }) {
   const { id } = useParams()
   const event = events.find(e => e.id === id)
+  const [lightbox, setLightbox] = useState<string | null>(null)
 
   if (!event) return (
     <div className="container">
@@ -921,15 +922,32 @@ function EventPage({ t, lang, events }: { t: T; lang: Lang; events: SuEvent[] })
               {event.photoUrls && event.photoUrls.length > 0 && (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12, marginBottom: 16 }}>
                   {event.photoUrls.map((url, i) => (
-                    <a key={i} href={url} target="_blank" rel="noopener noreferrer">
-                      <img
-                        src={thumborUrl(url, 600, 400)}
-                        alt=""
-                        style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', borderRadius: 12, border: '1px solid #e2e8f0', display: 'block' }}
-                        onError={e => { (e.currentTarget as HTMLImageElement).src = url }}
-                      />
-                    </a>
+                    <img
+                      key={i}
+                      src={thumborUrl(url, 600, 400)}
+                      alt=""
+                      onClick={() => setLightbox(url)}
+                      style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', borderRadius: 12, border: '1px solid #e2e8f0', display: 'block', cursor: 'pointer' }}
+                      onError={e => { (e.currentTarget as HTMLImageElement).src = url }}
+                    />
                   ))}
+                </div>
+              )}
+              {lightbox && (
+                <div
+                  onClick={() => setLightbox(null)}
+                  style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
+                >
+                  <img
+                    src={lightbox}
+                    alt=""
+                    onClick={e => e.stopPropagation()}
+                    style={{ maxWidth: '90vw', maxHeight: '90vh', borderRadius: 12, objectFit: 'contain' }}
+                  />
+                  <button
+                    onClick={() => setLightbox(null)}
+                    style={{ position: 'absolute', top: 20, right: 24, background: 'none', border: 'none', color: 'white', fontSize: 32, cursor: 'pointer', lineHeight: 1 }}
+                  >×</button>
                 </div>
               )}
               {event.galleryUrl && (
@@ -1078,7 +1096,7 @@ function NotFoundPage() {
       <div style={{ fontSize: 80, fontWeight: 800, color: '#40ba21', lineHeight: 1 }}>404</div>
       <div style={{ fontSize: 22, fontWeight: 600 }}>Page not found</div>
       <div style={{ color: '#6b7280', fontSize: 15 }}>The page you're looking for doesn't exist.</div>
-      <button className="btn" onClick={() => navigate('/')} style={{ marginTop: 8 }}>← Back to Home</button>
+      <button className="btn" onClick={() => navigate('/')} style={{ marginTop: 8 }}>Back to Home</button>
     </div>
   )
 }
