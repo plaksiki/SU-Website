@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -40,5 +41,19 @@ public class QuestionnaireController {
     @DeleteMapping("/questionnaire/{id}")
     public void deleteQuestionnaire(@PathVariable Long id) {
         repository.deleteById(id);
+    }
+
+    @PutMapping("questionnaire/{id}")
+    public Questionnaire editQuestionnaire(@PathVariable Long id, @RequestBody Questionnaire entity) {
+        Optional<Questionnaire> optional = repository.findById(id);
+        if (optional.isPresent()) {
+            Questionnaire questionnaire = optional.get();
+            questionnaire.setTitle(entity.getTitle());
+            questionnaire.setDescription(entity.getDescription());
+            questionnaire.setStartedAt(entity.getStartedAt());
+            questionnaire.setFinishedAt(entity.getFinishedAt());
+            return repository.save(questionnaire);
+        }
+        return null;
     }
 }

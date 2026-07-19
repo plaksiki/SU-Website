@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -28,5 +29,17 @@ public class OptionsController {
     @PostMapping("/options")
     public Options createOption(@RequestBody Options entity) {
         return repository.save(entity);
+    }
+    @PutMapping("option/{id}")
+    public Options editOption(@PathVariable Long id, @RequestBody Options entity) {
+        Optional<Options> optional = repository.findById(id);
+        if (optional.isPresent()) {
+            Options option = optional.get();
+            option.setOrderIndex(entity.getOrderIndex());
+            option.setQuestionId(entity.getQuestionId());
+            option.setText(entity.getText());
+            return repository.save(option);
+        }
+        return null;
     }
 }

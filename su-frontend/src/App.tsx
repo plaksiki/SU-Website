@@ -1,11 +1,18 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Link, useParams } from 'react-router-dom'
+import suLogo from './assets/Logo.png'
 import './App.css'
 import AdminPage from './AdminPage'
 import { useNavigate } from 'react-router-dom'
 
 const deptImages = import.meta.glob('./assets/**/*', { eager: true, query: '?url', import: 'default' }) as Record<string, string>
 function getPhoto(path: string): string | undefined { return deptImages[path] }
+
+function thumborUrl(src: string, width: number, height: number): string {
+  if (!src || import.meta.env.DEV) return src
+  const fullSrc = src.startsWith('http') ? src : `${window.location.origin}${src}`
+  return `/thumbor/unsafe/${width}x${height}/${fullSrc}`
+}
 
 const API_URL = 'http://10.93.26.192:8080'
 
@@ -106,6 +113,8 @@ interface SuEvent {
   location: string
   description: string
   isActive?: boolean
+  photoUrls?: string[]
+  galleryUrl?: string
 }
 
 interface BackendEvent {
@@ -115,6 +124,8 @@ interface BackendEvent {
   eventTime: string
   eventLocation: string
   finishedAt: string | null
+  photoUrls?: string | null
+  galleryUrl?: string | null
 }
 
 const EVENT_COLORS = ['#16a34a', '#0891b2', '#7c3aed', '#dc2626', '#d97706', '#0d9488']
@@ -129,6 +140,8 @@ function mapBackendEvent(e: BackendEvent, idx: number): SuEvent {
     location: e.eventLocation || '',
     description: e.description || '',
     isActive: e.finishedAt ? new Date(e.finishedAt) >= new Date() : (date ? new Date(date) >= new Date() : true),
+    photoUrls: e.photoUrls ? e.photoUrls.split('\n').map(s => s.trim()).filter(s => s) : [],
+    galleryUrl: e.galleryUrl || '',
   }
 }
 
@@ -183,11 +196,11 @@ const getDepartments = (t: T) => [
     id: 3, slug: "su-media", name: "SU Media", tag: "SU.MEDIA", icon: "📸", description: t.dept_media_desc,
     members: [
       { name: "Silvia Fedorovskaya", role: "COO", photo: "./assets/Media/Silvia.jpg", bio: "My name is Silvia; I love creating content and I'm the COO of SU:Media. I joined the Student Union to cover our activities in the media, raise our profile and gain experience. I'm also involved with Innopolis City Media and act as the SMM ambassador coordinator." },
-      { name: "Egor Lesnykh", role: "Assistant", photo: "./assets/Media/Egor(1).jpg", bio: "Hey, I'm Egor, a first-year bachelor student. I've recently joined SU:Media because I'm really astonished by video content and social medias. My goal is to provide students and other people info about our SU in a visual-catchy way." },
+      { name: "Egor Lesnykh", role: "Assistant", photo: "./assets/Media/Egor.jpg", bio: "Hey, I'm Egor, a first-year bachelor student. I've recently joined SU:Media because I'm really astonished by video content and social medias. My goal is to provide students and other people info about our SU in a visual-catchy way." },
       { name: "Ksenia Minaeva", photo: "./assets/Media/Ksenia.jpeg", bio: "Hi everyone! I'm Kseniia. I really like photography! and because of this i'm in SU:Media. I like creating photos for students and give them some sort of memories from university events!!" },
       { name: "Daniyar Fairushin", photo: "./assets/Media/Daniyar.jpg", bio: "Hi there, I'm Daniyar. One of my favorite things to do is photography, that's why I'm here." },
       { name: "Yana Birkina", photo: "./assets/Media/Yana.jpg", bio: "Hi, I'm Yana, and I've recently joined the SU:Media team. As a photographer, I want to capture the real atmosphere of university events — the emotions, details, and moments that make student life memorable." },
-      { name: "Egor Khramtsov", photo: "./assets/Media/Egor.jpg", bio: "Hi! I'm Egor, a second-year student. I enjoy taking photos at events to capture good moments and create lasting memories for people." },
+      { name: "Egor Khramtsov", photo: "./assets/Media/Egor(1).jpg", bio: "Hi! I'm Egor, a second-year student. I enjoy taking photos at events to capture good moments and create lasting memories for people." },
     ] as Member[]
   },
 ]
@@ -227,49 +240,161 @@ function localize(text: string, lang: Lang): string {
 }
 
 function PollsPage({ t, lang }: { t: T; lang: Lang }) {
-  const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [answers, setAnswers] = useState<Record<string, string | number | number[]>>({})
-  const [submitted, setSubmitted] = useState(false)
-  const [errors, setErrors] = useState<Record<string, boolean>>({})
-  const [backendPolls, setBackendPolls] = useState<BackendQuestionnaire[]>([])
-  const [questions, setQuestions] = useState<BackendQuestion[]>([])
-  const [options, setOptions] = useState<Record<number, BackendOption[]>>({})
-  const [loading, setLoading] = useState(true)
-  const [questionsLoading, setQuestionsLoading] = useState(false)
-  const [fetchError, setFetchError] = useState(false)
+  const navigate = useNavigate()
+  const [backendPolls, setBackendPolls] = useState<BackendQuestionnaire[]>(() => {
+    try { return JSON.parse(localStorage.getItem('admin_questionnaires') || '[]') } catch { return [] }
+  })
+  const [fetchError] = useState(false)
 
   useEffect(() => {
     fetch(`${API_URL}/questionnaires`)
-      .then(res => res.ok ? res.json() : [])
-      .then(data => {
-        setBackendPolls(data)
-        setLoading(false)
-      })
-      .catch(() => { setFetchError(true); setLoading(false) })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => { if (data) setBackendPolls(data) })
+      .catch(() => {})
   }, [])
 
-  const loadQuestionnaire = async (id: string) => {
-    setQuestionsLoading(true)
-    setQuestions([])
-    setOptions({})
-    setSelectedId(id)
-    try {
-      const qs: BackendQuestion[] = await fetch(`${API_URL}/question/by-questionnaire/${id}`).then(r => r.json())
-      setQuestions(qs.sort((a, b) => a.orderIndex - b.orderIndex))
+  // Публичный список: сначала убираем опросники с истёкшим сроком (finishedAt в
+  // прошлом), затем сортируем оставшиеся по дате создания — новые первыми.
+  // Истёкшие остаются в БД (нужны для админки/экспорта) — здесь только скрываются.
+  // Время фиксируем один раз при монтировании (ленивый init — чистый рендер).
+  const [now] = useState(() => Date.now())
+  const visiblePolls = [...backendPolls]
+    .filter(p => {
+      if (!p.finishedAt) return true // без даты окончания — бессрочный, показываем
+      const end = new Date(p.finishedAt).getTime()
+      return isNaN(end) || end > now // невалидную дату не считаем истёкшей
+    })
+    .sort((a, b) => {
+      const ta = a.startedAt ? new Date(a.startedAt).getTime() : Number(a.id) || 0
+      const tb = b.startedAt ? new Date(b.startedAt).getTime() : Number(b.id) || 0
+      return tb - ta
+    })
 
-      const optsByQuestion: Record<number, BackendOption[]> = {}
-      await Promise.all(
-        qs.filter(q => q.questionType !== 'open_text').map(async q => {
-          const opts: BackendOption[] = await fetch(`${API_URL}/options/by-question/${q.id}`).then(r => r.json())
-          optsByQuestion[q.id] = opts.sort((a, b) => a.orderIndex - b.orderIndex)
-        })
-      )
-      setOptions(optsByQuestion)
-    } catch {
-      // вопросы не загрузились
-    }
-    setQuestionsLoading(false)
-  }
+  return (
+    <div style={{ width: '100%', padding: '40px 32px', boxSizing: 'border-box' as const }}>
+      <style>{`.polls-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; } @media(max-width:900px){.polls-grid{grid-template-columns:repeat(2,1fr)}} @media(max-width:560px){.polls-grid{grid-template-columns:1fr}}`}</style>
+      <div style={{ marginBottom: 32, textAlign: 'center' }}>
+        <h1 style={{ fontSize: 40, fontWeight: 900, color: '#0f172a', margin: '0 0 6px' }}>{t.polls_title}</h1>
+        <p style={{ color: '#64748b', fontSize: 15, margin: 0 }}>{t.polls_desc}</p>
+      </div>
+      {fetchError && <p style={{ textAlign: 'center', color: '#dc2626' }}>Could not connect to server.</p>}
+      {!fetchError && visiblePolls.length === 0 && (
+        <p style={{ textAlign: 'center', color: '#64748b' }}>
+          {lang === 'en' ? 'No active questionnaires right now.' : 'Сейчас нет активных опросников.'}
+        </p>
+      )}
+      <div className="polls-grid">
+        {visiblePolls.map(poll => (
+          <div key={poll.id} style={{
+            background: 'white', borderRadius: 20, overflow: 'hidden',
+            border: '1px solid #e8edf2', cursor: 'pointer', display: 'flex', flexDirection: 'column',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+            onClick={() => navigate(`/polls/${poll.id}`)}
+            onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-5px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 32px rgba(0,0,0,0.1)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '' }}
+          >
+            <div style={{
+              background: 'linear-gradient(160deg, #40ba21ee, #14532d99)',
+              padding: '22px 22px 22px', minHeight: 200,
+              position: 'relative', overflow: 'hidden',
+              display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+            }}>
+              <div style={{ position: 'absolute', top: -40, right: -40, width: 160, height: 160, borderRadius: '50%', background: 'rgba(255,255,255,0.12)' }} />
+              <div style={{ position: 'absolute', bottom: -25, right: 30, width: 90, height: 90, borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
+              <span style={{
+                alignSelf: 'flex-start',
+                background: 'rgba(255,255,255,0.28)', backdropFilter: 'blur(6px)',
+                color: 'white', fontWeight: 800, fontSize: 10,
+                letterSpacing: '1.5px', padding: '5px 13px', borderRadius: 20, textTransform: 'uppercase',
+              }}>Live</span>
+              <h3 style={{ color: 'white', fontSize: 22, fontWeight: 900, margin: 0, lineHeight: 1.2, position: 'relative' }}>
+                {localize(poll.title, lang)}
+              </h3>
+            </div>
+            <div style={{ padding: '16px 22px 20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 12 }}>
+              <p style={{ color: '#64748b', fontSize: 14, margin: 0, lineHeight: 1.5 }}>{localize(poll.description, lang)}</p>
+              <span style={{ color: '#40ba21', fontWeight: 700, fontSize: 13 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function parseCachedPoll(id: string) {
+  try {
+    const cached = JSON.parse(localStorage.getItem('admin_questionnaires') || '[]')
+    const found = cached.find((q: { id: string }) => String(q.id) === id)
+    if (!found) return { poll: null, questions: [], options: {} }
+    const questions: BackendQuestion[] = found.questions?.map((q: { id: string; text: string; type: string }, i: number) => ({
+      id: Number(q.id) || i + 1,
+      questionnaireId: Number(id),
+      text: q.text,
+      questionType: q.type as 'single_choice' | 'multiple_choice' | 'open_text',
+      orderIndex: i + 1,
+    })) || []
+    const options: Record<number, BackendOption[]> = {}
+    found.questions?.forEach((q: { id: string; type: string; options: string[] }, i: number) => {
+      if (q.type !== 'open_text' && q.options?.length) {
+        options[Number(q.id) || i + 1] = q.options.map((text: string, j: number) => ({
+          id: j + 1, questionId: Number(q.id) || i + 1, text, orderIndex: j + 1,
+        }))
+      }
+    })
+    return { poll: found as BackendQuestionnaire, questions, options }
+  } catch { return { poll: null, questions: [], options: {} } }
+}
+
+function PollDetailPage({ t, lang }: { t: T; lang: Lang }) {
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const [answers, setAnswers] = useState<Record<string, string | number | number[]>>({})
+  const [submitted, setSubmitted] = useState(false)
+  const [errors, setErrors] = useState<Record<string, boolean>>({})
+  const cached = id ? parseCachedPoll(id) : { poll: null, questions: [], options: {} }
+  const [poll, setPoll] = useState<BackendQuestionnaire | null>(cached.poll)
+  const [questions, setQuestions] = useState<BackendQuestion[]>(cached.questions)
+  const [options, setOptions] = useState<Record<number, BackendOption[]>>(cached.options)
+
+  useEffect(() => {
+    if (!id) return
+
+    // Обновляем с сервера в фоне
+    fetch(`${API_URL}/questionnaires`)
+      .then(r => r.ok ? r.json() : null)
+      .then((data: BackendQuestionnaire[] | null) => {
+        if (data) {
+          const found = data.find(q => String(q.id) === id)
+          if (found) setPoll(found)
+        }
+      })
+      .catch(() => {})
+
+    fetch(`${API_URL}/question/by-questionnaire/${id}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(async (qs: BackendQuestion[] | null) => {
+        // `[]` — тоже истина, поэтому пустой ответ раньше затирал вопросы,
+        // отрисованные из кэша, и форма оставалась без единого вопроса.
+        if (!qs || qs.length === 0) return
+        setQuestions(qs.sort((a, b) => a.orderIndex - b.orderIndex))
+        // У серверных вопросов свои id, а `answers` хранится по id из кэша.
+        // Не сбросив их, ответы «повисают» и валидация ругается на
+        // заполненные вопросы.
+        setAnswers({})
+        setErrors({})
+        const optsByQuestion: Record<number, BackendOption[]> = {}
+        await Promise.all(
+          qs.filter(q => q.questionType !== 'open_text').map(async q => {
+            const opts: BackendOption[] = await fetch(`${API_URL}/options/by-question/${q.id}`).then(r => r.json())
+            optsByQuestion[q.id] = opts.sort((a, b) => a.orderIndex - b.orderIndex)
+          })
+        )
+        setOptions(optsByQuestion)
+      })
+      .catch(() => {})
+  }, [id])
 
   const handleSingle = (qid: number, optionId: number) => {
     setAnswers(p => ({ ...p, [qid]: optionId }))
@@ -281,6 +406,7 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
       const cur = (p[qid] as number[]) || []
       return { ...p, [qid]: cur.includes(optionId) ? cur.filter(o => o !== optionId) : [...cur, optionId] }
     })
+    setErrors(p => ({ ...p, [qid]: false }))
   }
 
   const handleText = (qid: number, val: string) => {
@@ -289,7 +415,7 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
   }
 
   const handleSubmit = async () => {
-    if (!selectedId || questions.length === 0) return
+    if (!id || questions.length === 0) return
     const errs: Record<string, boolean> = {}
     for (const q of questions) {
       const v = answers[q.id]
@@ -301,7 +427,7 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
       const responseRes = await fetch(`${API_URL}/responses`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ questionnaireId: Number(selectedId) })
+        body: JSON.stringify({ questionnaireId: Number(id) })
       })
       if (!responseRes.ok) throw new Error('Failed to create response')
       const responseData = await responseRes.json()
@@ -339,94 +465,24 @@ function PollsPage({ t, lang }: { t: T; lang: Lang }) {
     }
   }
 
-  const handleBack = () => {
-    setSelectedId(null)
-    setAnswers({})
-    setSubmitted(false)
-    setErrors({})
-    setQuestions([])
-    setOptions({})
-  }
-
-  const selectedPoll = backendPolls.find(p => String(p.id) === selectedId)
-
-  if (!selectedId) return (
-    <div style={{ width: '100%', padding: '40px 32px', boxSizing: 'border-box' as const }}>
-      <style>{`.polls-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; } @media(max-width:900px){.polls-grid{grid-template-columns:repeat(2,1fr)}} @media(max-width:560px){.polls-grid{grid-template-columns:1fr}}`}</style>
-      <div style={{ marginBottom: 32, textAlign: 'center' }}>
-        <h1 style={{ fontSize: 40, fontWeight: 900, color: '#0f172a', margin: '0 0 6px' }}>{t.polls_title}</h1>
-        <p style={{ color: '#64748b', fontSize: 15, margin: 0 }}>{t.polls_desc}</p>
-      </div>
-      {loading && <p style={{ textAlign: 'center', color: '#64748b' }}>Loading...</p>}
-      {fetchError && <p style={{ textAlign: 'center', color: '#dc2626' }}>Could not connect to server.</p>}
-      <div className="polls-grid">
-        {!loading && !fetchError && backendPolls.map(poll => (
-          <div key={poll.id} style={{
-            background: 'white', borderRadius: 20, overflow: 'hidden',
-            border: '1px solid #e8edf2', cursor: 'pointer', display: 'flex', flexDirection: 'column',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-          }}
-            onClick={() => loadQuestionnaire(String(poll.id))}
-            onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-5px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 32px rgba(0,0,0,0.1)' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '' }}
-          >
-            {/* Та же цветная шапка что у ивентов */}
-            <div style={{
-              background: 'linear-gradient(160deg, #40ba21ee, #14532d99)',
-              padding: '22px 22px 22px', minHeight: 200,
-              position: 'relative', overflow: 'hidden',
-              display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-            }}>
-              <div style={{ position: 'absolute', top: -40, right: -40, width: 160, height: 160, borderRadius: '50%', background: 'rgba(255,255,255,0.12)' }} />
-              <div style={{ position: 'absolute', bottom: -25, right: 30, width: 90, height: 90, borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
-              <span style={{
-                alignSelf: 'flex-start',
-                background: 'rgba(255,255,255,0.28)', backdropFilter: 'blur(6px)',
-                color: 'white', fontWeight: 800, fontSize: 10,
-                letterSpacing: '1.5px', padding: '5px 13px', borderRadius: 20, textTransform: 'uppercase',
-              }}>Live</span>
-              <h3 style={{ color: 'white', fontSize: 22, fontWeight: 900, margin: 0, lineHeight: 1.2, position: 'relative' }}>
-                {localize(poll.title, lang)}
-              </h3>
-            </div>
-            {/* Тело */}
-            <div style={{ padding: '16px 22px 20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 12 }}>
-              <p style={{ color: '#64748b', fontSize: 14, margin: 0, lineHeight: 1.5 }}>{localize(poll.description, lang)}</p>
-              <span style={{ color: '#40ba21', fontWeight: 700, fontSize: 13 }}>{lang === 'en' ? 'Open →' : 'Открыть →'}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-
-  // Загружаются вопросы
-  if (questionsLoading) return (
-    <div className="container">
-      <p style={{ textAlign: 'center', color: '#64748b', marginTop: 40 }}>Loading...</p>
-    </div>
-  )
-
-  // Отправлено
   if (submitted) return (
     <div className="container">
       <div className="donation-card" style={{ marginTop: 40 }}>
         <h3 style={{ color: '#40ba21' }}>✓ {t.submitted}</h3>
         <br />
-        <button className="btn" onClick={handleBack}>{lang === 'en' ? '← Back to polls' : '← К опросникам'}</button>
+        <button className="btn" onClick={() => navigate('/polls')}>{lang === 'en' ? '← Back to polls' : '← К опросникам'}</button>
       </div>
     </div>
   )
 
-  // Форма опросника
   return (
     <div className="container">
-      <button onClick={handleBack} style={{ background: 'none', border: 'none', color: '#40ba21', fontWeight: 'bold', cursor: 'pointer', marginBottom: 16 }}>
+      <button onClick={() => navigate('/polls')} style={{ background: 'none', border: 'none', color: '#40ba21', fontWeight: 'bold', cursor: 'pointer', marginBottom: 16 }}>
         ← {lang === 'en' ? 'Back' : 'Назад'}
       </button>
       <div className="hero" style={{ padding: 40 }}>
-        <h1 style={{ fontSize: 28, marginBottom: 8 }}>{selectedPoll ? localize(selectedPoll.title, lang) : ''}</h1>
-        <p style={{ marginBottom: 32 }}>{selectedPoll ? localize(selectedPoll.description, lang) : ''}</p>
+        <h1 style={{ fontSize: 28, marginBottom: 8 }}>{poll ? localize(poll.title, lang) : ''}</h1>
+        <p style={{ marginBottom: 32 }}>{poll ? localize(poll.description, lang) : ''}</p>
         {questions.map((q, idx) => {
           const opts = options[q.id] || []
           const hasErr = errors[q.id]
@@ -472,7 +528,8 @@ const DEPT_ACCENTS: Record<string, string> = {
 }
 
 function MemberModal({ member, slug, onClose }: { member: Member; slug: string; onClose: () => void }) {
-  const photo = member.photo ? getPhoto(member.photo) : undefined
+  const originalPhoto = member.photo ? getPhoto(member.photo) : undefined
+  const photo = originalPhoto ? thumborUrl(originalPhoto, 200, 200) : undefined
   const accent = DEPT_ACCENTS[slug] || 'linear-gradient(135deg, #40ba21, #166534)'
   const isIntern = member.role === 'Intern'
   return (
@@ -482,10 +539,7 @@ function MemberModal({ member, slug, onClose }: { member: Member; slug: string; 
         {/* Цветная шапка с фото */}
         <div style={{ background: accent, padding: '36px 32px 48px', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
           <div style={{ position: 'absolute', bottom: -36, left: '50%', transform: 'translateX(-50%)' }}>
-            {photo
-              ? <img src={photo} alt={member.name} style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: '3px solid white', display: 'block' }} />
-              : <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#40ba21', fontSize: 28, fontWeight: 900, border: '3px solid white' }}>{member.name[0]}</div>
-            }
+            <MemberAvatar photo={photo} originalPhoto={originalPhoto} name={member.name} size={72} color="white" border="3px solid white" />
           </div>
         </div>
         {/* Контент */}
@@ -609,12 +663,43 @@ function DepartmentPage({ t }: { t: T; lang?: Lang }) {
   )
 }
 
-function MemberCard({ member, slug, onClick }: { member: Member; slug: string; onClick: () => void }) {
-  const photo = member.photo ? getPhoto(member.photo) : undefined
+function MemberAvatar({ photo, originalPhoto, name, size, color, border }: { photo?: string; originalPhoto?: string; name: string; size: number; color: string; border?: string }) {
+  const [loaded, setLoaded] = useState(false)
+  const fontSize = size * 0.36
+  return (
+    <div style={{ width: size, height: size, borderRadius: '50%', position: 'relative', flexShrink: 0 }}>
+      <div style={{
+        width: size, height: size, borderRadius: '50%', background: color,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: 'white', fontSize, fontWeight: 800,
+        border: border || 'none', boxSizing: 'border-box',
+        position: 'absolute', inset: 0,
+      }}>{name[0]}</div>
+      {photo && (
+        <img
+          src={photo}
+          alt={name}
+          onLoad={() => setLoaded(true)}
+          onError={e => { if (originalPhoto && e.currentTarget.src !== originalPhoto) e.currentTarget.src = originalPhoto; else setLoaded(false) }}
+          style={{
+            width: size, height: size, borderRadius: '50%', objectFit: 'cover',
+            border: border || 'none', boxSizing: 'border-box',
+            position: 'absolute', inset: 0,
+            opacity: loaded ? 1 : 0,
+            transition: 'opacity 0.2s ease',
+          }}
+        />
+      )}
+    </div>
+  )
+}
+
+function MemberCard({ member, slug, onClick, avatarSize = 72 }: { member: Member; slug: string; onClick: () => void; avatarSize?: number }) {
+  const originalPhoto = member.photo ? getPhoto(member.photo) : undefined
+  const photo = originalPhoto ? thumborUrl(originalPhoto, avatarSize * 2, avatarSize * 2) : undefined
   const hasBio = !!member.bio
   const isIntern = member.role === 'Intern'
   const accent = DEPT_ACCENTS[slug] || '#40ba21'
-  // вытащим первый цвет градиента для аватара
   const avatarColor = isIntern ? '#94a3b8' : (accent.includes('1d4ed8') ? '#1d4ed8' : '#40ba21')
 
   return (
@@ -630,10 +715,7 @@ function MemberCard({ member, slug, onClick }: { member: Member; slug: string; o
       onMouseEnter={e => { if (hasBio) { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)' } }}
       onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '' }}
     >
-      {photo
-        ? <img src={photo} alt={member.name} style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: `2.5px solid ${avatarColor}` }} />
-        : <div style={{ width: 72, height: 72, borderRadius: '50%', background: avatarColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 26, fontWeight: 800 }}>{member.name[0]}</div>
-      }
+      <MemberAvatar photo={photo} originalPhoto={originalPhoto} name={member.name} size={avatarSize} color={avatarColor} border={`2.5px solid ${avatarColor}`} />
       <div>
         <span style={{ fontWeight: 700, color: '#0f172a', fontSize: 14, lineHeight: 1.3, display: 'block' }}>{member.name}</span>
         {member.role && <span style={{ fontSize: 11, color: avatarColor, fontWeight: 700, letterSpacing: '0.5px' }}>{member.role}</span>}
@@ -690,7 +772,7 @@ function Navbar({ lang, setLang, t }: { lang: Lang; setLang: (l: Lang) => void; 
   return (
     <nav className="navbar">
       <div className="nav-logo" style={{ textDecoration: 'none' }} onClick={handleLogoClick}>
-        <span className="logo-box">IU</span>
+        <img src={suLogo} alt="SU Logo" style={{ width: 36, height: 36, objectFit: 'contain' }} />
         <span className="logo-text">Student Union Portal</span>
       </div>
       <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>☰</button>
@@ -709,11 +791,12 @@ function Navbar({ lang, setLang, t }: { lang: Lang; setLang: (l: Lang) => void; 
 }
 
 const ceoMembers: Member[] = [
-  { name: "Alena Petrenko", role: "SU:CEO", photo: "./assets/Alena.jpg" },
-  { name: "Ilya Kachalin", role: "Assistant", photo: "./assets/Ilia.jpg" },
+  { name: "Alena Petrenko", role: "SU:CEO", photo: "./assets/Alena.jpg", bio: "Working as a SU:CEO has its ups and downs, but I enjoy the process of learning and excited to continue creating a better environment for all the students" },
+  { name: "Ilya Kachalin", role: "Assistant", photo: "./assets/Ilia.jpg", bio: "heyy! my name is Ilya and I am the Executive Assistant of SU. I am also the guy that enjoys a lot of things: events, photography, editing, writing, documenting, even something as ordinary as talking to people. that is why I am here – to provide as much value as I can within and beyond SU – through actions and vision, through advice and experience, through being by your side." },
 ]
 
 function HomePage({ t }: { t: T }) {
+  const [selectedCeo, setSelectedCeo] = useState<Member | null>(null)
   return (
     <div className="container">
       <div className="hero">
@@ -725,20 +808,11 @@ function HomePage({ t }: { t: T }) {
         <h2>{t.ceo_title}</h2>
       </div>
       <div style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 48 }}>
-        {ceoMembers.map((m, i) => {
-          const photo = m.photo ? getPhoto(m.photo) : undefined
-          return (
-            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-              {photo
-                ? <img src={photo} alt={m.name} style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', border: '3px solid #40ba21' }} />
-                : <div style={{ width: 100, height: 100, borderRadius: '50%', background: '#40ba21', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 36, fontWeight: 'bold' }}>{m.name[0]}</div>
-              }
-              <span style={{ fontWeight: 700, color: '#1e293b', fontSize: 15 }}>{m.name}</span>
-              <span style={{ fontSize: 12, color: '#40ba21', fontWeight: 600 }}>{m.role}</span>
-            </div>
-          )
-        })}
+        {ceoMembers.map((m, i) => (
+          <MemberCard key={i} member={m} slug="su-core" onClick={() => setSelectedCeo(m)} avatarSize={100} />
+        ))}
       </div>
+      {selectedCeo && <MemberModal member={selectedCeo} slug="su-core" onClose={() => setSelectedCeo(null)} />}
       <div className="section-title">
         <h2>{t.org_title}</h2>
         <p>{t.org_desc}</p>
@@ -837,6 +911,41 @@ function EventPage({ t, lang, events }: { t: T; lang: Lang; events: SuEvent[] })
           <div style={{ padding: '32px 40px' }}>
             <p style={{ color: '#475569', fontSize: 16, lineHeight: 1.8, margin: 0 }}>{localize(event.description, lang)}</p>
           </div>
+          {/* Галерея — только для прошедших ивентов */}
+          {!event.isActive && ((event.photoUrls && event.photoUrls.length > 0) || event.galleryUrl) && (
+            <div style={{ padding: '0 40px 40px' }}>
+              <h3 style={{ fontSize: 18, fontWeight: 800, color: '#0f172a', marginBottom: 16 }}>
+                {lang === 'en' ? 'Photos' : 'Фотографии'}
+              </h3>
+              {event.photoUrls && event.photoUrls.length > 0 && (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12, marginBottom: 16 }}>
+                  {event.photoUrls.map((url, i) => (
+                    <a key={i} href={url} target="_blank" rel="noopener noreferrer">
+                      <img
+                        src={thumborUrl(url, 600, 400)}
+                        alt=""
+                        style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', borderRadius: 12, border: '1px solid #e2e8f0', display: 'block' }}
+                        onError={e => { (e.currentTarget as HTMLImageElement).src = url }}
+                      />
+                    </a>
+                  ))}
+                </div>
+              )}
+              {event.galleryUrl && (
+                <a
+                  href={event.galleryUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 8,
+                    color: '#40ba21', fontWeight: 700, fontSize: 14, textDecoration: 'none',
+                  }}
+                >
+                  📷 {lang === 'en' ? 'View all photos →' : 'Все фотографии →'}
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -967,7 +1076,7 @@ function Footer() {
       <div className="footer-content">
         <div className="footer-left">
           <div className="footer-logo">
-            <span className="logo-box">IU</span>
+            <img src={suLogo} alt="SU Logo" style={{ width: 36, height: 36, objectFit: 'contain' }} />
             <span style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>Student Union Portal</span>
           </div>
           <p className="footer-subtitle">INNOPOLIS UNIVERSITY STUDENT UNION</p>
@@ -987,16 +1096,47 @@ function Footer() {
   )
 }
 
+function mapCachedEvent(e: { id: string; title: string; date: string; location: string; description: string; photoUrls?: string; galleryUrl?: string }, idx: number): SuEvent {
+  return {
+    id: e.id,
+    name: e.title,
+    date: e.date,
+    color: EVENT_COLORS[idx % EVENT_COLORS.length],
+    location: e.location || '',
+    description: e.description || '',
+    isActive: e.date ? new Date(e.date) >= new Date() : true,
+    photoUrls: e.photoUrls ? e.photoUrls.split('\n').map(s => s.trim()).filter(s => s) : [],
+    galleryUrl: e.galleryUrl || '',
+  }
+}
+
 function App() {
   const [lang, setLang] = useState<Lang>('en')
-  const [events, setEvents] = useState<SuEvent[]>([])
+  const [events, setEvents] = useState<SuEvent[]>(() => {
+    try {
+      const cached = JSON.parse(localStorage.getItem('admin_events') || '[]')
+      return cached.map(mapCachedEvent)
+    } catch { return [] }
+  })
   const t = translations[lang]
 
   useEffect(() => {
-    fetch(`${API_URL}/events`)
-      .then(r => r.ok ? r.json() : [])
-      .then((data: BackendEvent[]) => setEvents(data.map(mapBackendEvent)))
-      .catch(() => {})
+    // загружаем сразу при монтировании, а потом периодически перезапрашиваем,
+    // чтобы isActive пересчитывался заново и событие, у которого кончился дедлайн,
+    // само переехало в «Прошедшие», без обновления страницы вручную.
+    const loadEvents = () => {
+      fetch(`${API_URL}/events`)
+        .then(r => r.ok ? r.json() : null)
+        .then((data: BackendEvent[] | null) => {
+          if (data) setEvents(data.map(mapBackendEvent))
+        })
+        .catch(() => {})
+    }
+
+    loadEvents()
+    const intervalId = setInterval(loadEvents, 60_000) // каждую минуту пересчитываем, кто сейчас актуален, а кто уже прошел
+
+    return () => clearInterval(intervalId)
   }, [])
 
   return (
@@ -1009,6 +1149,7 @@ function App() {
         <Route path="/" element={<HomePage t={t} />} />
         <Route path="/events" element={<EventsPage t={t} lang={lang} events={events} />} />
         <Route path="/polls" element={<PollsPage t={t} lang={lang} />} />
+        <Route path="/polls/:id" element={<PollDetailPage t={t} lang={lang} />} />
         <Route path="/donations" element={<DonationsPage t={t} />} />
         <Route path="/admin" element={<AdminPage lang={lang} onEventsChange={(evts) => setEvents(evts as SuEvent[])} />} />
       </Routes>
