@@ -30,7 +30,7 @@ Website of the Innopolis University students union. This is the bussines card of
 
 - **Production:** [SU Portal](http://10.93.26.192/)
 - **Release:** [v3.0.0](https://github.com/plaksiki/SU-Website/releases/tag/v3.0.0)
-- **Video demonstration:** [v3.0.0 Demo]()
+- **Video demonstration:** [v3.0.0 Demo](https://drive.google.com/file/d/1pCvHi0qGTcXQbeWgT9cAeUpZI6PY-ioU/view)
 
 ### MVP v2.1.0(Previous Release - Assignment 6)
 
