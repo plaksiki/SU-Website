@@ -679,6 +679,7 @@ function MemberAvatar({ photo, originalPhoto, name, size, color, border }: { pho
         <img
           src={photo}
           alt={name}
+          loading="lazy"
           onLoad={() => setLoaded(true)}
           onError={e => { if (originalPhoto && e.currentTarget.src !== originalPhoto) e.currentTarget.src = originalPhoto; else setLoaded(false) }}
           style={{
@@ -924,7 +925,8 @@ function EventPage({ t, lang, events }: { t: T; lang: Lang; events: SuEvent[] })
                       <img
                         src={thumborUrl(url, 600, 400)}
                         alt=""
-                        style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', borderRadius: 12, border: '1px solid #e2e8f0', display: 'block' }}
+                        loading="lazy"
+                      style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', borderRadius: 12, border: '1px solid #e2e8f0', display: 'block' }}
                         onError={e => { (e.currentTarget as HTMLImageElement).src = url }}
                       />
                     </a>
