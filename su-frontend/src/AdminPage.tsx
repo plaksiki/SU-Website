@@ -526,6 +526,8 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
   const [newDescription, setNewDescription] = useState('')
   const [newFinishedAt, setNewFinishedAt] = useState('')
   const [newPhotoUrls, setNewPhotoUrls] = useState('')
+  const [newPhotoFiles, setNewPhotoFiles] = useState<File[]>([])
+  const [uploadingPhotos, setUploadingPhotos] = useState(false)
   const [newGalleryUrl, setNewGalleryUrl] = useState('')
   const [eventFormError, setEventFormError] = useState('')
 
@@ -695,29 +697,57 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
 
     // Обновляем UI сразу, не ждём сервер
     saveEvents([localEvent, ...events])
+    const filesToUpload = [...newPhotoFiles]
     setNewTitle('')
     setNewDate('')
     setNewLocation('')
     setNewDescription('')
     setNewFinishedAt('')
     setNewPhotoUrls('')
+    setNewPhotoFiles([])
     setNewGalleryUrl('')
     setView('event_list')
+
+    // Сохраняем данные для использования после создания
+    const eventData = {
+      title: newTitle,
+      description: newDescription,
+      eventTime: toLocalDateTime(newDate),
+      eventLocation: newLocation,
+      finishedAt: toLocalDateTime(newFinishedAt),
+      galleryUrl: newGalleryUrl || null,
+    }
 
     // Отправляем на сервер в фоне
     fetch(`${API_URL}/event`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: newTitle,
-        description: newDescription,
-        eventTime: toLocalDateTime(newDate),
-        eventLocation: newLocation,
-        finishedAt: toLocalDateTime(newFinishedAt),
-        photoUrls: newPhotoUrls.trim() || null,
-        galleryUrl: newGalleryUrl || null,
-      }),
-    }).then(() => refreshEvents()).catch(() => {})
+      body: JSON.stringify({ ...eventData, photoUrls: null }),
+    })
+      .then(r => r.json())
+      .then(async created => {
+        if (filesToUpload.length > 0) {
+          const urls = await uploadPhotosToEvent(String(created.id), filesToUpload)
+          if (urls.length > 0) {
+            await fetch(`${API_URL}/event/${created.id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ ...eventData, photoUrls: urls.join('\n') }),
+            })
+          }
+        }
+        refreshEvents()
+      })
+      .catch(() => {})
+  }
+
+  const uploadPhotosToEvent = async (eventId: string, files: File[]): Promise<string[]> => {
+    if (files.length === 0) return []
+    const formData = new FormData()
+    files.forEach(f => formData.append('files', f))
+    const res = await fetch(`${API_URL}/event/${eventId}/photos`, { method: 'POST', body: formData })
+    if (!res.ok) return []
+    return res.json()
   }
 
   const handleDeleteEvent = (id: string) => {
@@ -839,6 +869,23 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
         }
       }))
     } catch { /* локальное сохранение уже выполнено */ }
+  }
+
+  const handleEditPhotoUpload = async (files: FileList | null) => {
+    if (!files || !editingEvent) return
+    setUploadingPhotos(true)
+    const urls = await uploadPhotosToEvent(editingEvent.id, Array.from(files))
+    if (urls.length > 0) {
+      const current = editPhotoUrls.trim()
+      setEditPhotoUrls(current ? `${current}\n${urls.join('\n')}` : urls.join('\n'))
+    }
+    setUploadingPhotos(false)
+  }
+
+  const handleDeleteEditPhoto = async (url: string) => {
+    if (!editingEvent) return
+    await fetch(`${API_URL}/event/${editingEvent.id}/photos?url=${encodeURIComponent(url)}`, { method: 'DELETE' })
+    setEditPhotoUrls(editPhotoUrls.split('\n').filter(u => u.trim() !== url).join('\n'))
   }
 
   const handleStartEdit = (event: SuEvent) => {
@@ -1085,6 +1132,15 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
           <textarea className="admin-input" value={newDescription} onChange={e => setNewDescription(e.target.value)} placeholder={t.event_description_placeholder} rows={3} style={{ resize: 'vertical' }} />
           <p className="admin-field-label">{t.event_start_date}</p>
           <DateTimeField value={newDate} onChange={setNewDate} />
+          <p className="admin-field-label">{t.event_photos_placeholder}</p>
+          <input type="file" accept="image/*" multiple className="admin-input" onChange={e => setNewPhotoFiles(Array.from(e.target.files || []))} style={{ padding: 8 }} />
+          {newPhotoFiles.length > 0 && (
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+              {newPhotoFiles.map((f, i) => (
+                <img key={i} src={URL.createObjectURL(f)} style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8 }} />
+              ))}
+            </div>
+          )}
           <button className="btn" onClick={handleAddEvent} style={{ width: '100%' }}>{t.create_event}</button>
           {eventFormError && <p className="admin-error">{eventFormError}</p>}
         </div>
@@ -1110,8 +1166,18 @@ function AdminPage({ lang, onEventsChange }: { lang: Lang; onEventsChange?: (eve
                 <p className="admin-field-label">{t.event_start_date}</p>
                 <DateTimeField value={editDate} onChange={setEditDate} />
                 <p className="admin-field-label">{t.event_photos_placeholder}</p>
-                <p className="admin-hint">{t.event_photos_hint}</p>
-                <textarea className="admin-input" value={editPhotoUrls} onChange={e => setEditPhotoUrls(e.target.value)} placeholder={t.event_photos_placeholder} rows={3} style={{ resize: 'vertical' }} />
+                {editPhotoUrls && (
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+                    {editPhotoUrls.split('\n').filter(u => u.trim()).map((url, i) => (
+                      <div key={i} style={{ position: 'relative' }}>
+                        <img src={url.trim()} style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8 }} />
+                        <button onClick={() => handleDeleteEditPhoto(url.trim())} style={{ position: 'absolute', top: -6, right: -6, background: '#dc2626', color: 'white', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', fontSize: 12, lineHeight: '20px', padding: 0 }}>×</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <input type="file" accept="image/*" multiple className="admin-input" onChange={e => handleEditPhotoUpload(e.target.files)} disabled={uploadingPhotos} style={{ padding: 8 }} />
+                {uploadingPhotos && <p className="admin-hint">Uploading...</p>}
                 <input type="text" className="admin-input" value={editGalleryUrl} onChange={e => setEditGalleryUrl(e.target.value)} placeholder={t.event_gallery_placeholder} />
                 <div style={{ display: 'flex', gap: 12 }}>
                   <button className="btn" onClick={handleSaveEdit} style={{ flex: 1 }}>{t.save}</button>
