@@ -1112,12 +1112,7 @@ function mapCachedEvent(e: { id: string; title: string; date: string; location: 
 
 function App() {
   const [lang, setLang] = useState<Lang>('en')
-  const [events, setEvents] = useState<SuEvent[]>(() => {
-    try {
-      const cached = JSON.parse(localStorage.getItem('admin_events') || '[]')
-      return cached.map(mapCachedEvent)
-    } catch { return [] }
-  })
+  const [events, setEvents] = useState<SuEvent[]>([])
   const t = translations[lang]
 
   useEffect(() => {
