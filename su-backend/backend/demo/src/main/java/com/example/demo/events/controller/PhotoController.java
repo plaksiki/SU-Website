@@ -16,7 +16,7 @@ import java.util.UUID;
 @RestController
 public class PhotoController {
 
-    @Value("${upload.path}")
+    @Value("${upload.path:/app/uploads}")
     private String uploadPath;
 
     @PostMapping("/event/{id}/photos")
